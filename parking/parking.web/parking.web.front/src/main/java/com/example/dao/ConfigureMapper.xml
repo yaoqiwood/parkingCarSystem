@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.ConfigureMapper">
+	<!-- 刷新配置表 -->
+	<select id="refConfigure" resultMap="configureMap">
+		SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_CONFIGURE WHERE PCF_STATE != 9
+			<if test="configureName != null and configureName != '' ">
+				AND PCF_NAME LIKE CONCAT(CONCAT('%',#{configureName}),'%') 
+			</if>
+        ORDER BY PCF_CREATE_TIME DESC )A) A WHERE A.RN BETWEEN #{begin} AND #{end}		
+	</select>
+	
+	<!-- 统计配置表 -->
+	<select id="cntConfigure" resultType="string">
+		SELECT COUNT(0) Count FROM PARK_CONFIGURE WHERE PCF_STATE != 9
+			<if test="configureName != null and configureName != '' ">
+				AND PCF_NAME LIKE CONCAT(CONCAT('%',#{configureName}),'%') 
+			</if>
+        ORDER BY PCF_CREATE_TIME DESC 
+	</select>
+	
+	<!-- 查重 -->
+	<select id="checkConfigName" resultType="integer">
+		SELECT COUNT(0) Count FROM PARK_CONFIGURE WHERE PCF_NAME = #{configureName}
+	</select>
+	
+	<insert id="addConfigure">
+		INSERT INTO PARK_CONFIGURE VALUES (SEQ_PARK_CONFIGURE.nextval,#{configureName},#{configureValue},1,null,SYSDATE,SYSDATE)
+	</insert>
+	
+	<update id="upConfigure">
+		UPDATE PARK_CONFIGURE SET PCF_NAME = #{upConfigName}, PCF_PARAMETER = #{upConfigParamter}, PCF_UPDATE_TIME = SYSDATE  WHERE PCF_ID = #{upConfigID}
+	</update>
+	
+	<update id="upStateConfigure">
+		UPDATE PARK_CONFIGURE SET PCF_STATE = #{upState}, PCF_UPDATE_TIME = SYSDATE WHERE PCF_ID = #{Fid}	
+	</update>
+	
+	<!-- =====================================resultMap========================================== -->
+	
+	<resultMap type="com.example.bean.Configure" id="configureMap">
+		<result property="pcfId" column="PCF_ID" />
+		<result property="pcfName" column="PCF_NAME"/>
+		<result property="pcfParameter" column="PCF_PARAMETER"/>
+		<result property="pcfState" column="PCF_STATE"/>
+		<result property="pcfMemo" column="PCF_MEMO"/>
+		<result property="pcfCreateTime" column="PCF_CREATE_TIME"/>
+		<result property="pcfUpdateTime" column="PCF_UPDATE_TIME"/>
+	</resultMap>
+
+</mapper>

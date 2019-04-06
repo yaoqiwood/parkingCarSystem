@@ -1,0 +1,42 @@
+/**
+ * 
+ */
+package com.example.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.bean.Menu;
+import com.example.dao.ManagerBackMapper;
+import com.example.service.ManagerBackMenuService;
+
+/**用于后台管理及菜单栏初始化
+ * <p>Title : ManagerFrontMenuServiceImpl</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64</p>
+ * <p>DevelopSystem : Win10</p>
+ * <p>Company : org.NorwegianWoods</p>
+ * @author : CatWood
+ * @date : Feb 21, 2019 11:22:42 PM
+ * @version : 12.0.0
+ */
+@Service
+public class ManagerBackMenuServiceImpl implements ManagerBackMenuService {
+	
+	@Autowired
+	private ManagerBackMapper managerBackMapper;
+	
+	/* (non-Javadoc)
+	 * @see com.example.service.ManagerFrontMenuService#initLeftMenu(java.lang.String)
+	 */
+	@Override
+	public List<Menu> initLeftMenu(String menuParent) {
+		// TODO Auto-generated method stub
+		
+		List<Menu> menus = managerBackMapper.initLeftMenu(Integer.parseInt(menuParent));
+		return menus;
+	}
+	
+}

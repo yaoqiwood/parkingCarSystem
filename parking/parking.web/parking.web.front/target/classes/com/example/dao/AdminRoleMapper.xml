@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AdminRoleMapper">
+<resultMap type="com.example.bean.AdminRole" id="adminRoleMapper">
+	<result property="adminRoleId" column="PAR_ID"/>
+	<result property="adminRoleName" column="PAR_NAME"/>
+	<result property="adminRoleState" column="PAR_STATE"/>
+	<result property="adminRoleMemo" column="PAR_MEMO"/>
+	<result property="adminRoleCreateTime" column="PAR_CREATE_TIME"/>
+</resultMap>
+
+<select id="listrole" resultMap="adminRoleMapper">
+	SELECT * FROM PARK_ADMIN_ROLE WHERE PAR_STATE = 1
+</select>
+	
+</mapper>

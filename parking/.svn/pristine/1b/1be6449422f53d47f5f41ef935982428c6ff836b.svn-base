@@ -1,0 +1,21 @@
+*{
+    overflow: hidden;
+}
+
+#p-iframe{
+  /*   margin-left: 232px; */
+    margin-top:-1px;
+    left:0;
+   /*  box-shadow: 0 0 2px black ; */
+    position: relative;
+    top: 51px;
+    padding: 1px;
+    border: 0;
+}
+
+.xy-down{
+	position: fixed;
+	top: 50px;
+	left: 92px;
+	margin-right: 23px;
+}

@@ -1,0 +1,279 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+<!-- <link rel="stylesheet" href="css/common.css"> -->
+<!-- <link rel="stylesheet" href="css/payment.css"> -->
+<link rel="stylesheet"
+	href="3rd/zui/lib/datetimepicker/datetimepicker.min.css">
+<link rel="stylesheet" href="3rd/layer/theme/default/layer.css">
+<link rel="stylesheet" href="css/payment.css">
+<title>缴费信息</title>
+
+</head>
+
+<body>
+	<div id="body" class="body1">
+		<div class="col-xs-12 no-padding panel panel-primary container-fluid">
+			<div class="panel-heading center">缴费信息</div>
+		</div>
+
+		<div class="head1"></div>
+		<div class="mid1">
+			<div class="login-main ">
+				<div class="input-group">
+					<div
+						class="input-control search-box search-box-circle has-icon-left has-icon-right search-example"
+						id="searchboxExample">
+						<input id="name" type="search"
+							class="form-control search-input" placeholder="请输入车牌"> <label
+							for="inputSearchExample3"
+							class="input-control-icon-left search-icon"><i
+							class="icon icon-search"></i></label>
+					</div>
+					<span class="input-group-btn">
+						<button class="btn btn-primary" id="selectBtn" type="button">显示</button>
+					</span>
+				</div>
+				
+				<br/>
+
+				<div class="input-group">
+					<span class="input-group-addon">序号 ：</span> <span id="carId"
+						name="carId" class="form-control"  />
+				</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">车牌号 ：</span> <span id="carNo"
+								name="carNo" class="form-control"  />
+						</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">进入时间 ：</span> <span id="carIn"
+								name="carIn" class="form-control"  />
+						</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">离开时间 ：</span> <span id="carOut"
+								name="carOut" class="form-control"  />
+						</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">商户订单号 ：</span> <span
+								id="WIDout_trade_no" name="WIDout_trade_no" class="form-control"
+								 />
+
+						</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">订单名称 ：</span> <span
+								id="WIDsubject" name="WIDsubject" class="form-control"
+								 />
+						</div>
+				<br/>
+				<div class="input-group">
+							<span class="input-group-addon">付款金额 ：</span> <span
+								id="WIDtotal_amount" name="WIDtotal_amount" class="form-control"
+								 />
+						</div>
+				<br/>
+				<div class="input-group">
+					<span class="input-group-addon">商品描述：</span> <span id="WIDbody"
+						name="WIDbody" class="form-control" />
+				</div>
+				<br/>
+				<button class="btn btn-block btn-primary" id="btn" type="button">付  款</button>
+					<input id="payState" value="${message}" type="hidden" />
+			</div>
+		</div>
+		<div class="bottom1"></div>
+	</div>
+
+</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="3rd/zui/js/zui.min.js"></script>
+<script src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script src="js/table_funs.js"></script>
+<script src="3rd/layer/layer.js"></script>
+<!-- <script src="js/payment.js"></script> -->
+<script type="text/javascript">
+//支付页面js
+var $payState = $("#payState");
+	//alert($("#payState").val());
+	if ($("#payState").val() == null || $("#payState").val() == '') {
+		/* setTimeout(function(){
+			zuiAlert("支付失败！", 'danger');
+		},2000); */
+	} else {
+		setTimeout(function() {
+			zuiAlert("支付成功！", 'success');
+		}, 1000);
+	}
+
+	
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length)
+				+ "-" + date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	//获取终端ID
+	var mechineId = 1;
+	//定义搜索变量
+	var searchName = "";
+	//定义分页变量
+	var start = 1;//开始
+	var end = 5;//结束
+	var count = 0;//一共多少条
+	var currPage = 1;//当前第几页
+	var allPage = 0;//一共多少页
+	var limit = 5;//每页显示多少条
+	//初始化
+	function init() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-payment.ajax",
+			type : "POST",
+			data : {
+				"name" : searchName
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				
+				var id = data.id;
+				var queryRecord = data.queryRecord;
+				var money = data.money;
+				if (id == 0) {
+					var $carId = $("#carId");
+					var $carNo = $("#carNo");
+					var $carIn = $("#carIn");
+					var $carOut = $("#carOut");
+					var $WIDout_trade_no = $("#WIDout_trade_no");
+					var $WIDsubject = $("#WIDsubject");
+					var $WIDtotal_amount = $("#WIDtotal_amount");
+					var $WIDbody = $("#WIDbody");
+					$carId.html(queryRecord.carRecordId);
+					$carNo.html(queryRecord.carNum);
+					$carIn.html(formatUnixtimestamp(new Date(
+							queryRecord.carRecordComeTime)));
+					$carOut.html(formatUnixtimestamp(new Date(
+							queryRecord.carRecordOutTime)));
+					$WIDout_trade_no.html(GetDateNow());
+					$WIDsubject.html("停车订单");
+					$WIDtotal_amount.html(money);
+					$WIDbody.html("无");
+					
+				} else if(id == 2){
+					//alert("暂无数据");
+					zuiAlert("此车辆无停车记录", 'danger');
+				}else {
+					//alert("暂无数据");
+					zuiAlert("暂无数据", 'danger');
+				}
+			},
+			error : function(msg) {
+				//alert("请联系管理员...");
+				zuiAlert("请联系管理员...", 'danger');
+			}
+		});
+	}
+	//init();
+	//页码监听
+	$('#myPager').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			//tempData.CurrentPage = state.page;
+			currPage = state.page;
+			init();
+		}
+	});
+	//搜索
+	$("#selectBtn").click(function() {
+		searchName = $("#name").val();
+		//alert(searchName );
+		if (searchName == "") {
+			//alert("车牌不能为空！");
+			zuiAlert("车牌不能为空！", 'danger');
+		} else {
+			init();
+		}
+	});
+	//缴费
+	$("#btn").click(function() {
+		searchName = $("#name").val();
+		var $carId = $("#carId");
+		var $carNo = $("#carNo");
+		var $carIn = $("#carIn");
+		var $carOut = $("#carOut");
+		var $WIDout_trade_no = $("#WIDout_trade_no");
+		var $WIDsubject = $("#WIDsubject");
+		var $WIDtotal_amount = $("#WIDtotal_amount");
+		var $WIDbody = $("#WIDbody");
+		//alert($carIn.html());
+		if (searchName == "") {
+			//alert("车牌不能为空！");
+			zuiAlert("车牌不能为空！", 'danger');
+		} else {
+
+			$.ajax({
+				url : "do-alipay.ajax",
+				type : "POST",
+				data : {
+					"id" : $carId.html(),
+					"carNo" : $carNo.html(),
+					"mechineId" : mechineId,
+					"out_trade_no" : $WIDout_trade_no.html(),
+					"subject" : $WIDsubject.html(),
+					"total_amount" : $WIDtotal_amount.html(),
+					"body" : $WIDbody.html()
+				},
+				dataType : "json",
+				success : function(data) {
+					console.log(data);
+					var result = data.result;
+					//var win = window.open();  
+					//win.document.write(result);
+					var $body = $("#body");
+					$body.html(result);
+				},
+				error : function(msg) {
+					//alert("请联系管理员...");
+					zuiAlert("请联系管理员..", 'danger');
+				}
+			});
+
+		}
+
+	});
+	
+
+	function GetDateNow() {
+		var vNow = new Date();
+		var sNow = "";
+		sNow += String(vNow.getFullYear());
+		sNow += String(vNow.getMonth() + 1);
+		sNow += String(vNow.getDate());
+		sNow += String(vNow.getHours());
+		sNow += String(vNow.getMinutes());
+		sNow += String(vNow.getSeconds());
+		sNow += String(vNow.getMilliseconds());
+		return sNow;
+	}
+</script>
+</html>

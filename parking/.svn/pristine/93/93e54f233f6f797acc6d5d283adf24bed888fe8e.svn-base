@@ -1,0 +1,155 @@
+//支付页面js
+var $payState = $("#payState");
+	//alert($("#payState").val());
+	if ($("#payState").val() == null || $("#payState").val() == '') {
+		/* setTimeout(function(){
+			zuiAlert("支付失败！", 'danger');
+		},2000); */
+	} else {
+		setTimeout(function() {
+			zuiAlert("支付成功！", 'success');
+		}, 1000);
+	}
+
+	
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length)
+				+ "-" + date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	//初始化
+	function init() {
+		$.ajax({
+			url : "do-payment.ajax",
+			type : "POST",
+			data : {
+				"name" : searchName
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				
+				var id = data.id;
+				var queryRecord = data.queryRecord;
+				var money = data.money;
+				if (id == 0) {
+					var $carId = $("#carId");
+					var $carNo = $("#carNo");
+					var $carIn = $("#carIn");
+					var $carOut = $("#carOut");
+					var $WIDout_trade_no = $("#WIDout_trade_no");
+					var $WIDsubject = $("#WIDsubject");
+					var $WIDtotal_amount = $("#WIDtotal_amount");
+					var $WIDbody = $("#WIDbody");
+					$carId.html(queryRecord.carRecordId);
+					$carNo.html(queryRecord.carNum);
+					$carIn.html(formatUnixtimestamp(new Date(
+							queryRecord.carRecordComeTime)));
+					$carOut.html(formatUnixtimestamp(new Date(
+							queryRecord.carRecordOutTime)));
+					$WIDout_trade_no.html(GetDateNow());
+					$WIDsubject.html("停车订单");
+					$WIDtotal_amount.html(money);
+					$WIDbody.html("无");
+					
+				} else {
+					//alert("暂无数据");
+					zuiAlert("暂无数据", 'danger');
+				}
+			},
+			error : function(msg) {
+				//alert("请联系管理员...");
+				zuiAlert("请联系管理员...", 'danger');
+			}
+		});
+	}
+	//init();
+	//页码监听
+	$('#myPager').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			//tempData.CurrentPage = state.page;
+			currPage = state.page;
+			init();
+		}
+	});
+	//搜索
+	$("#selectBtn").click(function() {
+		searchName = $("#name").val();
+		//alert(searchName );
+		if (searchName == "") {
+			//alert("车牌不能为空！");
+			zuiAlert("车牌不能为空！", 'danger');
+		} else {
+			init();
+		}
+	});
+	//缴费
+	$("#btn").click(function() {
+		searchName = $("#name").val();
+		var $carId = $("#carId");
+		var $carNo = $("#carNo");
+		var $carIn = $("#carIn");
+		var $carOut = $("#carOut");
+		var $WIDout_trade_no = $("#WIDout_trade_no");
+		var $WIDsubject = $("#WIDsubject");
+		var $WIDtotal_amount = $("#WIDtotal_amount");
+		var $WIDbody = $("#WIDbody");
+		//alert($carIn.html());
+		if (searchName == "") {
+			//alert("车牌不能为空！");
+			zuiAlert("车牌不能为空！", 'danger');
+		} else {
+
+			$.ajax({
+				url : "do-alipay.ajax",
+				type : "POST",
+				data : {
+					"id" : $carId.html(),
+					"carNo" : $carNo.html(),
+					"mechineId" : mechineId,
+					"out_trade_no" : $WIDout_trade_no.html(),
+					"subject" : $WIDsubject.html(),
+					"total_amount" : $WIDtotal_amount.html(),
+					"body" : $WIDbody.html()
+				},
+				dataType : "json",
+				success : function(data) {
+					console.log(data);
+					var result = data.result;
+					//var win = window.open();  
+					//win.document.write(result);
+					var $body = $("#body");
+					$body.html(result);
+				},
+				error : function(msg) {
+					//alert("请联系管理员...");
+					zuiAlert("请联系管理员..", 'danger');
+				}
+			});
+
+		}
+
+	});
+	
+	function GetDateNow() {
+		var vNow = new Date();
+		var sNow = "";
+		sNow += String(vNow.getFullYear());
+		sNow += String(vNow.getMonth() + 1);
+		sNow += String(vNow.getDate());
+		sNow += String(vNow.getHours());
+		sNow += String(vNow.getMinutes());
+		sNow += String(vNow.getSeconds());
+		sNow += String(vNow.getMilliseconds());
+		return sNow;
+	}

@@ -1,0 +1,103 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>Forty by HTML5</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="3rd/assets/css/main.css" />
+	<link rel="stylesheet" href="css/font-awesome.4.6.0.css">
+	<link rel="stylesheet" href="3rd/layer/theme/default/layer.css">
+	<link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+		<!-- Header -->
+		<header id="header" class="alt">
+			<a href="index.html" class="logo"><strong>智能停车场</strong> <span></span></a>
+			<nav>
+				<!-- <a href="#menu">Menu</a> -->
+			</nav>
+		</header>
+
+		<!-- Menu -->
+		<!-- <nav id="menu">
+						<ul class="links">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="landing.html">Landing</a></li>
+							<li><a href="generic.html">Generic</a></li>
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+						<ul class="actions vertical">
+							<li><a href="#" class="button special fit">Get Started</a></li>
+							<li><a href="#" class="button fit">Log In</a></li>
+						</ul>
+					</nav> -->
+
+		<!-- Banner -->
+		<section id="banner" class="major">
+			<div class="inner">
+				<header class="major">
+					<h2>这里是智能停车场</h2>
+				</header>
+				<div class="content">
+					<!-- <p>A responsive site template designed by HTML5<br />
+								and released under the Creative Commons.</p> -->
+					<!-- <ul class="actions">
+						<li><a href="#one" class="button next scrolly">点击开始</a></li>
+					</ul> -->
+				</div>
+			</div>
+		</section>
+
+		<!-- Main -->
+		<div id="main">
+
+			<!-- One -->
+			<section id="one" class="tiles">
+				<article>
+					<span class="image">
+						<img src="img/pic01.jpg" alt="" />
+					</span>
+					<header class="major">
+						<h3><a href="payment" class="link">自助缴费</a></h3>
+						<p>Self service payment</p>
+					</header>
+				</article>
+				<article>
+					<span class="image">
+						<img src="img/pic02.jpg" alt="" />
+					</span>
+					<header class="major">
+						<h3><a href="parkState" class="link">反向寻车</a></h3>
+						<p>Reverse vehicle searching</p>
+					</header>
+				</article>
+				
+			</section>
+
+		</div>
+
+	
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="3rd/assets/js/jquery.min.js"></script>
+	<script src="3rd/assets/js/jquery.scrolly.min.js"></script>
+	<script src="3rd/assets/js/jquery.scrollex.min.js"></script>
+	<script src="3rd/layer/layer.js"></script>
+	<script src="3rd/assets/js/skel.min.js"></script>
+	<script src="3rd/assets/js/util.js"></script>
+	<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+	<script src="3rd/assets/js/main.js"></script>
+	<!-- <script src="js/index.js"></script> -->
+
+</body>
+
+</html>

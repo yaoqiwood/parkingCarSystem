@@ -1,0 +1,426 @@
+/*==============================================================*/
+/* DBMS name:      ORACLE Version 11g                           */
+/* Created on:     2019/2/20 0:35:21                            */
+/*==============================================================*/
+
+
+drop table PARK_ADMIN cascade constraints;
+
+drop table PARK_ADMIN_ROLE cascade constraints;
+
+drop table PARK_ADMIN_ROLE_MENU cascade constraints;
+
+drop table PARK_AMOUNT_LOG cascade constraints;
+
+drop table PARK_CARNUM cascade constraints;
+
+drop table PARK_CAR_RECORD cascade constraints;
+
+drop table PARK_CAR_ROLE cascade constraints;
+
+drop table PARK_CAR_SERVICE cascade constraints;
+
+drop table PARK_DAILY_ACCOUNT cascade constraints;
+
+drop table PARK_FEE_RULE cascade constraints;
+
+drop table PARK_LOG cascade constraints;
+
+drop table PARK_MENU cascade constraints;
+
+drop table PARK_MONTH_PRODUCT cascade constraints;
+
+drop table PARK_PLACE cascade constraints;
+
+drop table PARK_SUBAREA cascade constraints;
+
+drop table PARK_SELF_MACHINE cascade constraints;
+
+drop table PARK_MACHINE_LOG cascade constraints;
+
+drop table PARK_WHITE_LIST cascade constraints;
+
+drop table PARK_DAY_SUM cascade constraints;
+
+
+drop sequence SEQ_PARK_ADMIN;
+
+drop sequence SEQ_PARK_ADMIN_ROLE;
+
+drop sequence SEQ_PARK_ADMIN_ROLE_MENU;
+
+drop sequence SEQ_PARK_AMOUNT_LOG;
+
+drop sequence SEQ_PARK_CARNUM;
+
+drop sequence SEQ_PARK_CAR_RECORD;
+
+drop sequence SEQ_PARK_CAR_ROLE;
+
+drop sequence SEQ_PARK_CAR_SERVICE;
+
+drop sequence SEQ_PARK_DAILY_ACCOUNT;
+
+drop sequence SEQ_PARK_FEE_RULE;
+
+drop sequence SEQ_PARK_LOG;
+
+drop sequence SEQ_PARK_MENU;
+
+drop sequence SEQ_PARK_MONTH_PRODUCT;
+
+drop sequence SEQ_PARK_PLACE;
+
+drop sequence SEQ_PARK_SUBAREA;
+
+drop sequence SEQ_SELF_MACHINE;
+
+drop sequence SEQ_PARK_MACHINE_LOG;
+
+drop sequence SEQ_PARK_WHITE_LIST;
+
+drop sequence SEQ_PARK_DAY_SUM;
+
+
+create sequence SEQ_PARK_ADMIN
+start with 100;
+
+create sequence SEQ_PARK_ADMIN_ROLE
+start with 100;
+
+create sequence SEQ_PARK_ADMIN_ROLE_MENU
+start with 100;
+
+create sequence SEQ_PARK_AMOUNT_LOG
+start with 100;
+
+create sequence SEQ_PARK_CARNUM
+start with 100;
+
+create sequence SEQ_PARK_CAR_RECORD
+start with 100;
+
+create sequence SEQ_PARK_CAR_ROLE
+start with 100;
+
+create sequence SEQ_PARK_CAR_SERVICE
+start with 100;
+
+create sequence SEQ_PARK_DAILY_ACCOUNT
+start with 100;
+
+create sequence SEQ_PARK_FEE_RULE
+start with 100;
+
+create sequence SEQ_PARK_LOG
+start with 100;
+
+create sequence SEQ_PARK_MENU
+start with 100;
+
+create sequence SEQ_PARK_MONTH_PRODUCT
+start with 100;
+
+create sequence SEQ_PARK_PLACE
+start with 100;
+
+create sequence SEQ_PARK_SUBAREA
+start with 100;
+
+create sequence SEQ_SELF_MACHINE
+start with 100;
+
+create sequence SEQ_PARK_MACHINE_LOG
+start with 100;
+
+create sequence SEQ_PARK_WHITE_LIST
+start with 100;
+
+create sequence SEQ_PARK_DAY_SUM
+start with 100;
+
+
+/*==============================================================*/
+/* Table: PARK_ADMIN                                            */
+/*==============================================================*/
+create table PARK_ADMIN 
+(
+   PA_ID                NUMBER(10)           not null,
+   PA_PR_ID             NUMBER(10)           not null,
+   PA_NAME              VARCHAR2(100)        not null,
+   PA_PASSWORD          VARCHAR2(100)        not null,
+   PA_STATE             NUMBER(1)            not null,
+   PA_MEMO              VARCHAR2(100),
+   PA_CREATE_TIME       DATE                 not null,
+   PA_UPDATE_TIME       DATE                 not null,
+   constraint PK_PARK_ADMIN primary key (PA_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_ADMIN_ROLE                                       */
+/*==============================================================*/
+create table PARK_ADMIN_ROLE 
+(
+   PAR_ID               NUMBER(10)           not null,
+   PAR_NAME             VARCHAR2(50)         not null,
+   PAR_STATE            NUMBER(1)            not null,
+   PAR_MEMO             VARCHAR2(100),
+   PAR_CREATE_TIME      DATE                 not null,
+   constraint PK_PARK_ADMIN_ROLE primary key (PAR_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_ADMIN_ROLE_MENU                                  */
+/*==============================================================*/
+create table PARK_ADMIN_ROLE_MENU 
+(
+   PARM_ID              NUMBER(10)           not null,
+   PARM_PAR_ID          NUMBER(10)           not null,
+   PARM_MENU_ID         NUMBER(10)           not null,
+   PARM_STATE           NUMBER(10)           not null,
+   PARM_MEMO            VARCHAR2(300),
+   PARM_CREATE_TIME     DATE                 not null,
+   PARM_UPDATE_TIME     DATE                 not null,
+   constraint PK_PARK_ADMIN_ROLE_MENU primary key (PARM_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_AMOUNT_LOG                                       */
+/*==============================================================*/
+create table PARK_AMOUNT_LOG 
+(
+   PAL_ID               NUMBER(10)           not null,
+   PAL_PA_ID            NUMBER(10)           not null,
+   PAL_PC_NUM           VARCHAR2(100)        not null,
+   PAL_MONEY            NUMBER(10)           not null,
+   PAL_DESC             VARCHAR2(100)        not null,
+   PAL_STATE            NUMBER(1)            not null,
+   PAL_MEMO             VARCHAR2(100),
+   PAL_CREATE_TIME      DATE                 not null,
+   constraint PK_PARK_AMOUNT_LOG primary key (PAL_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_CARNUM                                           */
+/*==============================================================*/
+create table PARK_CARNUM 
+(
+   PC_ID                NUMBER(10)           not null,
+   PC_PCR_ID            NUMBER(10)           not null,
+   PC_NUM               VARCHAR2(100)        not null,
+   PC_PHOTO_URL         VARCHAR2(300)        not null,
+   PC_STATE             NUMBER(1)            not null,
+   PC_MEMO              VARCHAR2(300),
+   PC_CREATE_TIME       DATE                 not null,
+   PC_UPDATE_TIME       DATE                 not null,
+   constraint PK_PARK_CARNUM primary key (PC_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_CAR_RECORD                                       */
+/*==============================================================*/
+create table PARK_CAR_RECORD
+(
+   PCRD_ID               NUMBER(10)           not null,
+   PCRD_PC_ID            NUMBER(10)           not null,
+   PCRD_COME_TIME        DATE                 not null,
+   PCRD_OUT_TIME         DATE                 not null,
+   PCRD_STATE            NUMBER(1)            not null,
+   PCRD_MEMO             VARCHAR2(100),
+   PCRD_CREATE_TIME      DATE                 not null,
+   PCRD_UPDATE_TIME      DATE                 not null,
+   constraint PK_PARK_CAR_RECORD primary key (PCRD_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_CAR_ROLE                                         */
+/*==============================================================*/
+create table PARK_CAR_ROLE 
+(
+   PCR_ID               NUMBER(10)           not null,
+   PCR_NAME             VARCHAR2(100)        not null,
+   PCR_STATE                   NUMBER(1)            not null,
+   PCR_MEMO                   VARCHAR2(100),
+   PCR_CREATE_TIME                 DATE                 not null,
+   PCR_UPDATE_TIME                DATE                 not null,
+   constraint PK_PARK_CAR_ROLE primary key (PCR_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_CAR_SERVICE                                      */
+/*==============================================================*/
+create table PARK_CAR_SERVICE 
+(
+   PCS_ID               NUMBER(10)           not null,
+   PCS_PC_ID            NUMBER(10)           not null,
+   PCS_PMP_ID               NUMBER(10)           not null,
+   PCS_STATE             NUMBER(1),
+   PCS_MEMO              VARCHAR2(100 BYTE),
+   PCS_CTIME             DATE 	not null,
+   PCS_UTIME             DATE	not null,
+   constraint PK_PARK_CAR_SERVICE primary key (PCS_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_DAILY_ACCOUNT                                    */
+/*==============================================================*/
+create table PARK_DAILY_ACCOUNT 
+(
+   PDA_ID               NUMBER(10)           not null,
+   PDA_TIME             VARCHAR2(20)         not null,
+   PDA_MONEY            NUMBER(10)           not null,
+   PDA_STATE            NUMBER(1)            not null,
+   PDA_MEMO             VARCHAR2(100),
+   PDA_CREATE_TIME      DATE                 not null,
+   constraint PK_PARK_DAILY_ACCOUNT primary key (PDA_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_FEE_RULE                                         */
+/*==============================================================*/
+create table PARK_FEE_RULE 
+(
+   PFR_ID               NUMBER(10)           not null,
+   PFR_TIME             VARCHAR2(300)        not null,
+   PFR_MONEY            NUMBER(10)           not null,
+   PFR_STATE            NUMBER(1)            not null,
+   PFR_MEMO             VARCHAR2(300),
+   PFR_CREATE_TIME      DATE                 not null,
+   PFR_UPDATE_TIME      DATE                 not null,
+   constraint PK_PARK_FEE_RULE primary key (PFR_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_LOG                                              */
+/*==============================================================*/
+create table PARK_LOG 
+(
+   PL_ID                NUMBER(10)           not null,
+   PA_ID 				NUMBER(10)           not null,
+   PL_DESC              VARCHAR2(300)        not null,
+   PL_STATE             NUMBER(1)            not null,
+   PL_MEMO              VARCHAR2(100),
+   PL_CREATE_TIME       DATE                 not null,
+   constraint PK_PARK_LOG primary key (PL_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_MENU                                             */
+/*==============================================================*/
+create table PARK_MENU 
+(
+   PM_ID                NUMBER(10)           not null,
+   PM_PARENT            NUMBER(10)           not null,
+   PM_NAME              VARCHAR2(100 BYTE)   not null,
+   PM_URL               VARCHAR2(100)        not null,
+   PM_STATE             NUMBER(10)           not null,
+   PM_MEMO              VARCHAR2(100),
+   PM_CREATE_TIME       DATE                 not null,
+   PM_UPDATE_TIME       DATE                 not null,
+   constraint PK_PARK_MENU primary key (PM_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_MONTH_PRODUCT                                    */
+/*==============================================================*/
+create table PARK_MONTH_PRODUCT 
+(
+   PMP_ID               NUMBER(10)           not null,
+   PMP_NAME             VARCHAR2(50)         not null,
+   PMP_MONTH            NUMBER(2)            not null,
+   PMP_MONEY            NUMBER(10)           not null,
+   PMP_STATE            NUMBER(1)            not null,
+   PMP_MEMO             VARCHAR2(100),
+   PMP_CREATE_TIME      DATE                 not null,
+   PMP_UPDATE_TIME      DATE                 not null,
+   constraint PK_PARK_MONTH_PRODUCT primary key (PMP_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_PLACE                                            */
+/*==============================================================*/
+create table PARK_PLACE 
+(
+   PP_ID                NUMBER(10)           not null,
+   PP_PS_ID             NUMBER(10)           not null,
+   PP_NUMBER            VARCHAR2(50)         not null,
+   PP_URL               VARCHAR2(100)        not null,
+   PP_STATE             NUMBER(1)            not null,
+   PP_MEMO              VARCHAR2(300),
+   PP_CREATE_TIME       DATE                 not null,
+   PP_UPDATE_TIME       DATE                 not null,
+   constraint PK_PARK_PLACE primary key (PP_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_SUBAREA                                          */
+/*==============================================================*/
+create table PARK_SUBAREA 
+(
+   PS_ID                NUMBER(10)           not null,
+   PS_NAME              VARCHAR2(100 BYTE)   not null,
+   PS_FLOOR             VARCHAR2(100)        not null,
+   PS_STATE             NUMBER(1)            not null,
+   PS_MEMO              VARCHAR2(100 BYTE),
+   PS_CREATE_TIME       DATE,
+   PS_UPDATE_TIME       DATE                 not null,
+   constraint PK_PARK_SUBAREA primary key (PS_ID)
+);
+
+/*==============================================================*/
+/* Table: PARK_SELF_MACHINE */
+/*==============================================================*/
+CREATE TABLE PARK_SELF_MACHINE 
+(
+   PSM_ID		NUMBER(10) 	not null,
+   PSM_NUM  	VARCHAR2(100)	not null,
+   PSM_STATE 	NUMBER(1)  	not null,
+   PSM_MEMO         VARCHAR2(100),
+   PSM_CREATE_TIME	DATE	not null,
+   PSM_UPDATE_TIME	DATE	not null,
+   constraint PK_PARK_SELF_MACHINE primary key (PSM_ID)
+ );
+
+/*==============================================================*/
+/* Table: PARK_MACHINE_LOG*/
+/*==============================================================*/
+CREATE TABLE PARK_MACHINE_LOG
+(
+   PML_ID		NUMBER(10) 	not null,
+   PML_PSM_ID	NUMBER(10) 	not null,
+   PML_PC_NUM	VARCHAR2(100)        not null,
+   PML_MONEY 	NUMBER(10)	not null,
+   PML_DESC	VARCHAR2(100)        not null,
+   PML_STATE 	NUMBER(1)  	not null,
+   PML_MEMO         VARCHAR2(100),
+   PML_CREATE_TIME	DATE	not null,
+   constraint PK_PARK_MACHINE_LOG primary key (PML_ID)
+ );
+
+/*==============================================================*/
+/* Table: PARK_WHITE_LIST */
+/*==============================================================*/
+CREATE TABLE PARK_WHITE_LIST
+(
+   PWL_ID		NUMBER(10) 	not null,
+   PWL_CARNUM  	VARCHAR2(100)	not null,
+   PWL_STATE 	NUMBER(1)  	not null,
+   PWL_MEMO         VARCHAR2(100),
+   PWL_CREATE_TIME	DATE	not null,
+   PWL_UPDATE_TIME	DATE	not null,
+   constraint PK_PARK_WHITE_LIST primary key (PWL_ID)
+ );
+
+/*==============================================================*/
+/* Table: PARK_DAY_SUM                                    */
+/*==============================================================*/
+create table PARK_DAY_SUM 
+(
+   PDS_ID               NUMBER(10)           not null,
+   PDS_TIME             DATE                 not null,
+   PDS_MONEY            NUMBER(10)           not null,
+   PDS_STATE            NUMBER(1)            not null,
+   PDS_MEMO             VARCHAR2(100),
+   PDS_CREATE_TIME      DATE                 not null,
+   constraint PK_PARK_DAY_SUM primary key (PDS_ID)
+);

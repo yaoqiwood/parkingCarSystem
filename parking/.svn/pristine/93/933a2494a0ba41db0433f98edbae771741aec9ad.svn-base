@@ -1,0 +1,29 @@
+package com.example.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.FeeRule;
+
+public interface FeeRuleMapper {
+	/**
+	 * 查询停车费用规则表格用
+	 * @param ruleMoney
+	 * @param time
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	List<FeeRule> refFeeRuleView(@Param("ruleMoney") Integer ruleMoney, @Param("time") String time,
+			@Param("begin") String begin, @Param("end") String end);
+
+	/**
+	 * 统计停车费用规则表行数量
+	 * @param ruleMoney
+	 * @param time
+	 * @return
+	 */
+	Integer cntFeeRuleView(@Param("ruleMoney") Integer ruleMoney, @Param("time") String time);
+}
+

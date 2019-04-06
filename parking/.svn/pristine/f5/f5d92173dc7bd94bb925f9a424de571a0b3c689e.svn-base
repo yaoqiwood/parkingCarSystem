@@ -1,0 +1,20 @@
+$("#login").click(function() {
+	var name = $("#name").val();
+	var password = $("#password").val();
+	var code = $("#code").val();
+	$.ajax({
+		type : "POST",
+		url : "login.action",
+		data : {"name" :name,"password" :password,"code" :code},
+		success : function(msg) {
+			var obj = eval("("+msg+")");
+			alert(obj.message);
+			if( obj.location != null ){
+				document.location = obj.location;
+			}
+		},
+		error : function(msg) {
+			alert("请联系管理员！");
+		}
+	});
+});

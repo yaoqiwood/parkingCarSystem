@@ -1,0 +1,28 @@
+.center{
+    text-align: center;
+}
+
+.inlin-block{
+    display: inline-block;
+}
+
+.blockCenter{
+    margin: 0 auto;
+}
+
+.floatRight{
+    float: right;
+}
+
+.floatLeft{
+    float: left;
+}
+
+.rightSpace{
+    margin-right: 5px;
+}
+
+.rightBigSpace{
+    margin-right:15px;
+}
+

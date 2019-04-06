@@ -1,0 +1,107 @@
+/**
+ * 
+ */
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.AdminRole;
+import com.example.service.RoleManagerService;
+import com.example.utils.CheckInfoUtils;
+
+/**
+ * Title : RoleManagerController Description : DevelopTools : Eclipse_x64
+ * DevelopSystem : Win10 Company : org.NorwegianWoods 角色管理控制层
+ * 
+ * @author : CatWood
+ * @date : Feb 22, 2019 7:15:22 PM
+ * @version : 12.0.0
+ */
+
+@Controller
+public class RoleManagerController {
+
+	@Autowired
+	private RoleManagerService roleManagerService;
+
+	@RequestMapping("ref-roleManager.action")
+	@ResponseBody
+	public JSONArray refRoleManager(HttpServletRequest req, HttpServletResponse res) {
+		String roleName = req.getParameter("roleName");
+		String roleState = req.getParameter("roleState");
+		String CurrentPage = req.getParameter("CurrentPage");
+		String Limit = req.getParameter("Limit");
+		String begin = BeginPage(CurrentPage, Limit);
+		String end = EndPage(CurrentPage, Limit);
+		JSONArray jsonArray = new JSONArray();
+		Integer set = roleState.equals("") ? null : Integer.parseInt(roleState);
+		List<AdminRole> adminRoles = roleManagerService.refRoleManager(roleName,set,begin,end);
+		jsonArray = (JSONArray) JSONArray.toJSON(adminRoles);
+
+		return jsonArray;
+	}
+
+	// ==================================================自用封装================================================//
+	/**
+	 * 计算分页开始
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String BeginPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim - (Lim - 1));
+	}
+
+	/**
+	 * 计算分页结束
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String EndPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim);
+	}
+
+	/**
+	 * 是否为空
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public boolean isEmpty(String str) {
+		return CheckInfoUtils.isEmpty(str);
+	}
+
+	/**
+	 * 检查不为空且检查是否为为数字
+	 * 
+	 * @param str
+	 * @return boolean
+	 */
+	public boolean isEmpAnIsNum(String str) {
+		boolean ret = false;
+		if (!CheckInfoUtils.isEmpty(str)) {
+			if (CheckInfoUtils.IsInteger(str)) {
+				ret = true;
+			}
+		}
+		return ret;
+	}
+
+}

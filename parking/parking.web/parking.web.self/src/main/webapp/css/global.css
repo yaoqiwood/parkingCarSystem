@@ -1,0 +1,130 @@
+/**
+ * Created by helang on 2018/5/20.
+ * Email:helang.love@qq.com
+ * qq:1846492969
+ */
+
+/*全局样式*/
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-size: 0.28rem;
+    font-family: Helvetica,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing: 0;
+    word-wrap:break-word;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+/*表单元素默认字体大小及字体*/
+input,select,textarea{
+    font-size: 0.28rem;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+/* 列式弹性盒子 */
+.flex_col {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: flex-start;
+    -webkit-align-items: center;
+    -webkit-align-content: center;
+}
+/* 行式弹性盒子 */
+.flex_row {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: flex-start;
+    -webkit-align-items: flex-start;
+    -webkit-align-content: flex-start;
+}
+/* 弹性盒子弹性容器 */
+.flex_col .flex_grow{
+    width: 0;
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+}
+.flex_row .flex_grow{
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-grow: 1;
+    -webkit-flex-grow: 1;
+}
+/* 弹性盒子允许换行 */
+.flex_col.flex_wrap{
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+}
+/* 弹性盒子居中 */
+.flex_col.flex_center,.flex_row.flex_center{
+    justify-content: center;
+    -webkit-justify-content: center;
+}
+/* 弹性盒子快速分栏 */
+.flex_col.flex_col_2>div{
+    width: 50%;
+}
+.flex_col.flex_col_3>div{
+    width: 33.33333%;
+}
+.flex_col.flex_col_4>div{
+    width: 25%;
+}
+.flex_col.flex_col_5>div{
+    width: 20%;
+}
+.flex_col.flex_col_6>div{
+    width: 16.66666%;
+}
+
+a{
+    text-decoration: none;
+    -webkit-tap-highlight-color:transparent;
+}
+
+
+/* 字体颜色 */
+.color_333 {
+    color: #333;
+}
+
+.color_666 {
+    color: #666;
+}
+
+.color_999 {
+    color: #999;
+}
+
+.color_fff {
+    color: #fff;
+}
+.color_6dc{
+    color: #6dca6d;
+}
+.color_d51{
+    color: #d51917;
+}
+.color_09f{
+    color: #0099ff;
+}
+
+/* 背景色*/
+.bg_fff{
+    background-color: #ffffff;
+}

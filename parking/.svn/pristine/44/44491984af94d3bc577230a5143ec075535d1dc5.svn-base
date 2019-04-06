@@ -1,0 +1,37 @@
+.iframe{
+    /* border:2px solid black; */
+    position: relative;
+    /* left: 25%; */
+    width: 300px;
+    height:300px;
+    margin-top:100px;
+    margin-left:100px;
+}
+
+.carnum-plugin{
+    margin-top: 100px;
+    margin-left: 100px;
+    /* margin-right: 50px; */
+    height:330px;
+}
+
+.btn-center{
+    text-align: center;
+}
+
+.text-heading{
+    text-align: center;
+}
+
+body{
+    background-color: #f3f3f3;
+}
+
+.table_btn{
+    height: 175px;
+}
+
+.right-btn-box{
+    margin-top: 168px;
+    margin-left:100px;
+}

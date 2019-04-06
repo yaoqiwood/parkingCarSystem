@@ -1,0 +1,177 @@
+// 分页显示
+// 定义搜索变量
+var searchName = "";
+// 定义分页变量
+var count = 0;
+var pageCount = 1;
+var page = 0;
+var rowPage = 5;
+
+function init() {
+	$
+			.ajax({
+				type : "POST",
+				url : "carServicePage.action",
+				data : {
+					"carNum" : searchName,
+					"rowPage" : rowPage,
+					"pageCount" : pageCount
+				},
+				dataType : "json",
+				success : function(msg) {
+					var arr = $(".tr");
+					for (var i = arr.length - 1; i >= 0; i--) {
+						$(arr[i]).remove();
+					}
+					// 添加数据
+					var serList = msg.list;
+					var num = msg.count;
+					for (var i = 0; i < serList.length; i++) {
+						var $tr = $("<tr class = 'tr' ></tr>");
+						var $td1 = $("<td></td>").html(serList[i].carServiceId);
+						var $td2 = $("<td></td>").html(serList[i].monthProduct);
+						if (serList[i].carServiceState == 1) {
+							var $td3 = $("<td></td>").html("正在使用中");
+						} else if (serList[i].carServiceState == 2) {
+							var $td3 = $("<td></td>").html("未使用");
+						} else if (serList[i].carServiceState == 3) {
+							var $td3 = $("<td></td>").html("已退费");
+						} else {
+							var $td3 = $("<td></td>").html("已过期");
+						}
+						var $td4 = $("<td></td>").html(
+								formatUnixtimestamp(new Date(
+										serList[i].carServiceCreateTime)));
+						var $td5 = $("<td></td>");
+						$refbtn = $("<input class = 'btn' value = '退费'   type = 'button' />");
+						$modbtn = $("<input class = 'btn' value = '到期'   type = 'button' />");
+						$refbtn.attr("ser_id", serList[i].carServiceId);
+						$modbtn.attr("ser_id", serList[i].carServiceId);
+						$td5.append($refbtn);
+						$td5.append($modbtn);
+						$tr.append($td1);
+						$tr.append($td2);
+						$tr.append($td3);
+						$tr.append($td4);
+						$tr.append($td5);
+						$("#table").append($tr);
+					}
+					count = num;
+					$('#myPager').data('zui.pager').set(pageCount, count,
+							rowPage);
+					/*
+					 * if(count > 0) { page = count % rowPage == 0 ? count /
+					 * rowPage : parseInt(count / rowPage + 1);
+					 * $("#page").html(pageCount + "/" + page); } else {
+					 * $("#page").html(1 + "/" + 1); }
+					 */
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+}
+
+// 打印当前页记录数目
+$('#myPager').on('onPageChange', function(e, state, oldState) {
+	if (state.page !== oldState.page) {
+		// 获取变化后的页数和变化前的页数
+		// console.log('页码从', oldState.page, '变更为', state.page);
+		pageCount = state.page;
+		init();
+		/* $('#myPager').data('zui.pager').set(pageCount, count, rowPage); */
+	}
+});
+
+init();
+
+// 查询按钮监听
+$("#selectBtn").click(function() {
+	searchName = $("#carNum").val();
+	count = 0;
+	pageCount = 1;
+	page = 0;
+	rowPage = 5;
+	init();
+});
+function formatUnixtimestamp(unixtimestamp) {
+	var unixtimestamp = new Date(unixtimestamp);
+	var year = 1900 + unixtimestamp.getYear();
+	var month = "0" + (unixtimestamp.getMonth() + 1);
+	var date = "0" + unixtimestamp.getDate();
+	var hour = "0" + unixtimestamp.getHours();
+	var minute = "0" + unixtimestamp.getMinutes();
+	var second = "0" + unixtimestamp.getSeconds();
+	return year + "-" + month.substring(month.length - 2, month.length) + "-"
+			+ date.substring(date.length - 2, date.length) + " "
+			+ hour.substring(hour.length - 2, hour.length) + ":"
+			+ minute.substring(minute.length - 2, minute.length) + ":"
+			+ second.substring(second.length - 2, second.length);
+}
+
+// 退费弹窗中的返回按钮监听
+$("#addcancel").click(function() {
+	$("#adddialog").css("display", "none");
+});
+
+// 表里面的按钮监听
+$("#table").click(function(event) {
+	var $tar = $(event.target);
+	var arr = $tar.parent().parent().children();
+	if ($tar.val() == "退费") {
+		var b = window.confirm("您确定要退费么？");
+		if (b == true) {
+			var $ser_id = $tar.attr("ser_id");
+			$.ajax({
+				type : "POST",
+				url : "refundMonthProduct.action",
+				data : {
+					"ser_id" : $ser_id
+				},
+				dataType : "json",
+				success : function(msg) {
+					if (msg.type == 1) {
+						$("#adddialog").css("display", "block");
+						$("#money").html(msg.money);
+						pageCount = 1;
+						page = 0;
+						rowPage = 5;
+						count = 0;
+						init();
+					} else {
+						alert(msg.message);
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+		}
+	}
+	if ($tar.val() == "到期") {
+		var $ser_id = $tar.attr("ser_id");
+		$.ajax({
+			type : "POST",
+			url : "expireMonthProduct.action",
+			data : {
+				"ser_id" : $ser_id
+			},
+			dataType : "json",
+			success : function(msg) {
+				if (msg.type == 1) {
+					alert(msg.message);
+					pageCount = 1;
+					page = 0;
+					rowPage = 5;
+					count = 0;
+					init();
+				} else {
+					alert(msg.message);
+				}
+			},
+			error : function(msg) {
+				alert("请联系管理员。。。");
+			}
+		});
+	}
+});

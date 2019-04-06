@@ -1,0 +1,79 @@
+package com.example.controller;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.dto.CarnumDto;
+import com.example.service.CarnumService;
+import com.example.utils.MenoyUtils;
+
+@Controller
+public class CarnumController {
+	
+	@Autowired
+	private CarnumService service;
+	
+	/**
+	 * 获取车辆所有信息，刷新到表格
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listcarOutByPage.action")
+	@ResponseBody
+	public JSONObject listcarOutByPage(String name,Integer start,Integer end,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		if(name.equals("") || name == null) {
+			data.put("message", "不可为空，请重新输入");
+			data.put("id", 1);
+		}else {
+			List<CarnumDto> listCarnumByPage = service.listCarnumByPage(name, start, end);
+			Integer countCarnum = service.countCarnum(name);
+			data.put("admins", listCarnumByPage);
+			data.put("count", countCarnum);
+			data.put("id", 0);
+			Date startTime = listCarnumByPage.get(0).getCarnumCreateTime();
+			Date endTime = new Date();
+			Integer sumOfMoney = MenoyUtils.sumOfMoney(startTime, endTime);
+			if(sumOfMoney > 0) {
+			data.put("message", "需要收您" + sumOfMoney + "元");
+			data.put("blance",sumOfMoney);
+			data.put("id", 0);
+			}
+		}
+		return data;
+	}
+	
+	/**
+	 * 插入流水出入场信息
+	 * @param carNum
+	 * @param money
+	 * @param startTime
+	 * @param carNumId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/addCarnum.action")
+	@ResponseBody
+	public JSONObject addCarnum(String carNum,String money,String startTime,String carNumId,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer addAmountLog = service.addAmountLog(carNum, money);
+		Integer addcarRecord = service.addcarRecord(carNumId, startTime);
+		if(addAmountLog > 0 && addcarRecord >0) {
+			data.put("message", "结算成功,祝您一路顺风");
+			data.put("id", 0);
+		}
+		return data;
+	}
+
+}

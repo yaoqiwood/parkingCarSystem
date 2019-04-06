@@ -1,0 +1,130 @@
+function init() {
+    $
+            .ajax({
+                type : "POST",
+                url : "showSellMonthProduct.action",
+                dataType : "json",
+                success : function (msg) {
+                    var arr = $(".tr");
+                    for (var i = arr.length - 1; i >= 0; i--) {
+                        $(arr[i]).remove();
+                    }
+                    if (msg.type == 1) {
+                        // 添加数据
+                        var proList = msg.list;
+                        var num = msg.count;
+                        for (var i = 0; i < proList.length; i++) {
+                            var $tr = $("<tr class = 'tr' ></tr>");
+                            var $td1 = $("<td></td>");
+                            var $radio = $("<input type='radio' name='monthProduct'>");
+                            $radio.val(proList[i].monthProductMoney);
+                            $radio.attr("monthProductId",
+                                    proList[i].monthProductId);
+                            $radio.attr("monthProductName",
+                                    proList[i].monthProductName);
+                            $td1.append($radio);
+                            var $td2 = $("<td></td>").html(
+                                    proList[i].monthProductId);
+                            var $td3 = $("<td></td>").html(
+                                    proList[i].monthProductName);
+                            var $td4 = $("<td></td>").html(
+                                    proList[i].monthProductMoney);
+                            $tr.append($td1);
+                            $tr.append($td2);
+                            $tr.append($td3);
+                            $tr.append($td4);
+                            $("#table").append($tr);
+                        }
+                    } else {
+                        alert(msg.message);
+                    }
+                },
+                error : function (msg) {
+                    alert("请联系管理员。。。");
+                }
+            });
+}
+
+init();
+
+// 购买按钮的监听
+$("#buyBtn")
+        .click(
+                function () {
+                    if ($("#carNum").val() == "") {
+                        alert("请输入车牌号");
+                    } else {
+                        if($('input:radio[name="monthProduct"]:checked').attr(
+                        'monthProductId')!=null){
+                        $
+                                .ajax({
+                                    type : "POST",
+                                    url : "checkCarNum.action",
+                                    data : {
+                                        "carNum" : $("#carNum").val()
+                                    },
+                                    dataType : "json",
+                                    success : function (msg) {
+                                        if (msg.type == 1) {
+                                            $("#adddialog").css("display",
+                                                    "block");
+                                            $("#money")
+                                                    .val(
+                                                            $(
+                                                                    'input:radio[name="monthProduct"]:checked')
+                                                                    .val());
+                                        } else {
+                                            alert(msg.message);
+
+                                        }
+                                    },
+                                    error : function (msg) {
+                                        alert("请联系管理员。。。");
+                                    }
+                                });
+                        }else{
+                            alert("请选择产品");
+                        }
+                    }
+                    
+                });
+
+// 购买弹窗中的返回按钮监听
+$("#addcancel").click(function () {
+    $("#adddialog").css("display", "none");
+});
+// 购买弹窗中的支付按钮监听
+$("#addcommit").click(
+        function () {
+            if($('input:radio[name="monthProduct"]:checked').attr(
+            'monthProductId')!=null){
+                $.ajax({
+                    type : "POST",
+                    url : "addMonthProductService.action",
+                    data : {
+                        "addId" : $('input:radio[name="monthProduct"]:checked')
+                                .attr('monthProductId'),
+                        "addName" : $('input:radio[name="monthProduct"]:checked')
+                                .attr('monthProductName'),
+                        "addMoney" : $('input:radio[name="monthProduct"]:checked')
+                                .val()
+                    },
+                    dataType : "json",
+                    success : function (msg) {
+                        if (msg.type == 1) {
+                            alert(msg.message);
+                            $("#adddialog").css("display", "none");
+                        } else {
+                            alert(msg.message);
+                        }
+                    },
+                    error : function (msg) {
+                        alert("请联系管理员。。。");
+                    }
+                });
+            }else{
+                alert("请选择产品");
+            }
+            
+            
+        });

@@ -1,0 +1,439 @@
+function formatUnixtimestamp (unixtimestamp){
+	        var unixtimestamp = new Date(unixtimestamp);
+	        var year = 1900 + unixtimestamp.getYear();
+	        var month = "0" + (unixtimestamp.getMonth() + 1);
+	        var date = "0" + unixtimestamp.getDate();
+	        var hour = "0" + unixtimestamp.getHours();
+	        var minute = "0" + unixtimestamp.getMinutes();
+	        var second = "0" + unixtimestamp.getSeconds();
+	        return year + "-" + month.substring(month.length-2, month.length)  + "-" + date.substring(date.length-2, date.length)
+	            + " " + hour.substring(hour.length-2, hour.length) + ":"
+	            + minute.substring(minute.length-2, minute.length) + ":"
+	            + second.substring(second.length-2, second.length);
+	    }
+
+function initSelectrole(){
+  	   $.ajax({
+  		  url:"listrole.action",
+  		  type:"POST",
+  		  dataType:"json",
+  		  data:{},
+  		  success:function(data){
+  		  	  var msg = JSON.stringify(data);
+  			  var obj = eval("(" + msg +")");
+  			  var arr = obj.types;
+  			  for(var i = 0 ; i< arr.length ; i++){
+  				  var $opt=$("<option>" +arr[i].adminRoleName+"</option>");
+  				  $opt.val(arr[i].adminRoleId);
+  				  $("#role").append($opt);
+  			  }
+  		  },
+  		  error:function(msg){
+  			  alert("请联系管理员");
+  		  }
+  	    });
+       };
+       
+       
+       initSelectrole();
+       
+      
+     // 定义搜索变量
+	   var searchName="";
+	   var searchStime ="";
+	   var searchEtime ="";
+	   var searchrole ="-1";
+	   var searchstate ="-1";
+	   // 定义分页变量
+	   var start = 1;
+	   var end = 5;
+	   var count = 0 ;
+	   var currPage = 1;
+	   var allPage = 0;
+	   var limit = 5;
+	   
+	  function init(){
+		   $.ajax({
+			   url:"listAdminByPage.action",
+			   type:"POST",
+			   dataType:"json",
+			   data:{"name" : searchName , "startTime" : searchStime ,"endTime" : searchEtime ,
+				     "role" :searchrole ,"state" : searchstate ,"start" : start, "end" : end},
+			   success:function(data){
+			   	   var msg = JSON.stringify(data);
+				   var obj = eval("(" + msg + ")");
+				   // 首先清空数据
+				   var arr = $(".tr")
+				   for(var i = arr.length -1 ; i>= 0 ; i--){
+					   $(arr[i]).remove();
+				   }
+				   // 添加数据
+				   var admins = obj.admins;
+				   var c = obj.count;
+				   if(c == 0){
+					   $("#page").html("1/1");
+		  				alert("没有数据可搜索！！"); 
+		  			   }else{
+						   for(var i = 0; i< admins.length;i ++){
+							   var $tr = $("<tr class='tr' align='center'></tr>");
+							   $tr.append($("<td>"+ admins[i].adminId +"</td>"));
+							   $tr.append($("<td>"+ admins[i].adminName +"</td>"));
+							   $tr.append($("<td>"+ admins[i].adminRoleName +"</td>"));
+							   $tr.append($("<td>"+ admins[i].adminPassword +"</td>"));
+							   $tr.append($("<td>"+ formatUnixtimestamp(new Date(admins[i].adminCreateTime)) +"</td>"));
+							   $tr.append($("<td>"+ (admins[i].adminState =="1"?"启用":admins[i].adminState =="2"?"注销":"禁用")+"</td>"));
+							   $tr.append($("<td><input adminId='"+admins[i].adminId+ "'  type='button' value='修改' />" + 
+									   	"<input adminId='"+admins[i].adminId+ "' type='button' value='删除' />" +
+									   	"<input adminId='"+admins[i].adminId+ "' adminstate='"+admins[i].adminState+"' type='button' value='"+(admins[i].adminState == "1"?"禁用":"启用")+"' />" +
+									   	"<input adminId='"+admins[i].adminId+ "' type='button' value='重置密码' />"+
+									   	"<input adminId='"+admins[i].adminId+ "' type='button' value='注销' />" + "</td>"));
+							   $("#tb").append($tr);
+   };
+						   
+						   count = c;
+						   allPage = c%5 == 0 ? c/5 : parseInt(c/5 +1);
+						   $("#page").html(currPage + "/" +allPage);
+		  		 }
+			   },
+			   error:function(msg){
+				   alert("请联系管理员");
+			   }
+		   });
+	   }
+	  init();
+	  $("#pre").click(function(){
+		  if(start <= 1){
+				alert("已经是第一页了");
+			}else{
+				start = start - limit ;
+				end = end - limit;
+				currPage = currPage - 1;
+				init();
+			}
+	  });
+	  $("#next").click(function(){
+		  if(end >= count){
+				alert("已经是尾页了");
+			}else{
+				start = start + limit ;
+				end = end + limit;
+				currPage = currPage + 1;
+				init();
+			}
+	  });
+	  $("#selectBtn").click(function(){
+		searchName =$("#name").val();
+		searchStime =$("#startTime").val();
+		searchEtime =$("#endtime").val();
+		searchrole =$("#role").val();
+		searchstate =$("#state").val();
+      	start = 1;
+      	end =5 ;
+      	currPage =1;
+      	count = 0 ;
+      	allPage = 0;
+      	init();
+	  });
+	  
+	  $("#tb").click(function(event){
+		  var $tar = $(event.target);
+		  if($tar.val() == "删除"){
+			  if(confirm("确定要删除吗")){
+				  var adminId = $tar.attr("adminId");
+				  $.ajax({
+						url:"del.action",
+						type:"POST",
+						dataType:"json",
+						data:{"adminId" : adminId},
+						success:function(data){
+							var msg = JSON.stringify(data);
+							var obj = eval("(" + msg +")");
+							if(obj.id==0){
+								alert(obj.message);
+								start = 1;
+					        	end =5 ;
+					        	currPage =1;
+					        	count = 0 ;
+					        	allPage = 0;
+					        	init();	
+							}else{
+								alert(obj.message);
+							}  
+						},
+						error:function(msg){
+							alert("请联系管理员");
+						}
+					});
+			  }
+		  }
+		  if($tar.val() =="启用"){
+			  if(confirm("确定要启用吗")){
+				  var adminId = $tar.attr("adminId");
+				  $.ajax({
+						url:"updateState.action",
+						type:"POST",
+						dataType:"json",
+						data:{"adminId" : adminId ,"state" : 1},
+						success:function(data){
+							var msg = JSON.stringify(data);
+							var obj = eval("(" + msg +")");
+							if(obj.id==0){
+								alert(obj.message);
+								start = 1;
+					        	end =5 ;
+					        	currPage =1;
+					        	count = 0 ;
+					        	allPage = 0;
+					        	init();	
+							}else{
+								alert(obj.message);
+							}
+							  
+						},
+						error:function(msg){
+							alert("请联系管理员");
+						}
+					});
+			  }
+		  }
+		  if($tar.val() == "禁用"){
+				if(confirm("确定要禁用吗")){
+					var adminId = $tar.attr("adminId");
+					$.ajax({
+						url:"updateState.action",
+						type:"POST",
+						dataType:"json",
+						data:{"adminId" : adminId ,"state" : 0},
+						success:function(data){
+							var msg = JSON.stringify(data);
+							var obj = eval("(" + msg +")");
+							if(obj.id==0){
+								alert(obj.message);
+								start = 1;
+					        	end =5 ;
+					        	currPage =1;
+					        	count = 0 ;
+					        	allPage = 0;
+					        	init();	
+							}else{
+								alert(obj.message);
+							}
+							  
+						},
+						error:function(msg){
+							alert("请联系管理员");
+						}
+					});
+				}
+			}
+		  if($tar.val() == "注销"){
+			  if(confirm("确定要注销吗")){
+				  var adminId = $tar.attr("adminId");
+				  $.ajax({
+						url:"canceladmin.action",
+						type:"POST",
+						dataType:"json",
+						data:{"adminId" : adminId},
+						success:function(data){
+							var msg = JSON.stringify(data);
+							var obj = eval("(" + msg +")");
+							if(obj.id==0){
+								alert(obj.message);
+								start = 1;
+					        	end =5 ;
+					        	currPage =1;
+					        	count = 0 ;
+					        	allPage = 0;
+					        	init();	
+							}else{
+								alert(obj.message);
+							}  
+						},
+						error:function(msg){
+							alert("请联系管理员");
+						}
+					});
+			  }
+		  }
+			if($tar.val() == "修改"){
+				var arr= $tar.parent().parent().children();
+				var $dname = $("#dname");
+				var $dpassword = $("#dpassword");
+				var $dstate= $("#dstate");
+				var $drole= $("#drole");
+				var $did= $("#did");
+				
+			    $dname.val($(arr[1]).html());
+			    $drole.val($(arr[2]).html());
+			    if($(arr[2]).html() == "管理员"){
+			    	$drole.val(2);
+			    }else if($(arr[2]).html() == "收费人员"){
+			    	$drole.val(1);
+			    }
+			    $dpassword.val($(arr[3]).html());
+			    $dstate.val($(arr[5]).html());
+			    if($(arr[5]).html() == "启用"){
+			    	$dstate.val(1);
+			    }else if($(arr[5]).html() == "禁用"){
+			    	$dstate.val(0);
+			    }
+			    $did.val($tar.attr("adminId"));
+				var $dialog = $("#dialog");
+			     $dialog.css("display","block");
+			     var $diving2 = $("#diving2");
+			     $diving2.css("display","block");
+			}
+			if($tar.val() == "重置密码"){
+				var adminId = $tar.attr("adminId");
+				$.ajax({
+					type:"POST",
+					url:"resette.action",
+					dataType:"json",
+					data:{"adminId" : adminId},
+					success:function(data){
+						var msg = JSON.stringify(data);
+						var obj = eval("(" +msg+ ")");
+						if(obj.id == 0){
+						alert(obj.message);
+						start = 1;
+			        	end =5 ;
+			        	currPage =1;
+			        	count = 0 ;
+			        	allPage = 0;
+			        	init();
+						}else{
+							alert(obj.message);
+						}
+					},
+					error:function(msg){
+						alert("请联系管理员");
+					}
+				});
+			}
+	  });
+	  var $cancel = $("#cancel").click(function(){
+		  var $dialog = $("#dialog");
+		     $dialog.css("display","none");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","none");
+	  });
+	  var $commit = $("#commit").click(function(){
+		    var $dname = $("#dname");
+			var $dpassword = $("#dpassword");
+			var $dstate= $("#dstate");
+			var $drole= $("#drole");
+			var $did= $("#did");
+			if($dname.val() == "" || $dstate.val() == "-1" || $drole.val() =="-1" || $dpassword.val() ==""){
+				alert("不能为空，请输入正确！！");
+			}else{
+			$.ajax({
+				type: "POST",
+				url: "motifyAdmin.action",
+				dataType:"json",
+				data:{"adminId" : $did.val() , "dname" :$dname.val() ,
+					"dpassword" : $dpassword.val() ,"dstate" :$dstate.val(),
+					"drole":$drole.val()},
+				success:function(data){
+					var msg = JSON.stringify(data);
+					var obj = eval("(" +msg+ ")");
+					if(obj.id == 0){
+						alert(obj.message);
+						start = 1;
+			        	end =5 ;
+			        	currPage =1;
+			        	count = 0 ;
+			        	allPage = 0;
+			        	init();	
+					}else{
+						alert(obj.message);
+					}
+				},
+				error:function(msg){
+					alert("请联系管理员 ");
+				}
+			});
+			var $dialog = $("#dialog");
+		     $dialog.css("display","none");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","none");
+			}
+	  });
+	  
+	// 添加操作
+	  $("#addBtn").click(function(){
+		  emlty();
+		  var $adddialog = $("#adddialog");
+		     $adddialog.css("display","block");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","block");
+	  });
+		function emlty(){
+			var $dname= $("#dname");
+			var $dpassword= $("#dpassword");
+			var $drole= $("#drole");
+			var $dstate= $("#dstate");
+			var $addname= $("#addname");
+			var $addpassword= $("#addpassword");
+			var $addpasswordagain= $("#addpasswordagain");
+			var $addrole= $("#addrole");
+			$dname.val(""); 
+			$dpassword.val(""); 
+			$drole.val("-1"); 
+			$dstate.val("-1"); 
+			$addname.val(""); 
+			$addpassword.val(""); 
+			$addpasswordagain.val(""); 
+			$addrole.val("-1"); 
+		}
+		// 设置添加弹框的添加按钮监听
+		var addcommit = document.getElementById("addcommit");
+		addcommit.onclick = function(){
+			var $addname= $("#addname");
+			var $addpassword= $("#addpassword");
+			var $addpasswordagain= $("#addpasswordagain");
+			var $addrole= $("#addrole");
+			if($addname.val()== "" || $addpassword.val() == "" || $addpasswordagain.val() == "" || 
+					$addrole.val() =="-1"){
+				alert("不可为空，请输入正确！！");
+			}else{
+				if($addpassword.val() != $addpasswordagain.val()){
+					alert("两次密码要输入相同！ ");
+				}else{
+					$.ajax({
+						 type: "POST",
+						 url: "addAdmin.action" ,
+						 dataType:"json",
+						 data:{"addname" : $addname.val() ,"addpassword" : $addpassword.val() ,
+							 "addrole" :$addrole.val()},
+						 success:function(data){
+							 var msg = JSON.stringify(data);
+							 var obj = eval("(" + msg + ")");
+							 if(obj.id == 0 ){
+								 alert(obj.message);
+								 start = 1;
+						         end =5 ;
+						         currPage =1;
+						         count = 0 ;
+						         allPage = 0;
+						         init();	
+							 }else{
+								 alert(obj.message);
+							 }
+						 },
+						 error:function(msg){
+							 alert("请联系管理员");
+						 }
+					  });
+				}
+				var $adddialog = $("#adddialog");
+			     $adddialog.css("display","none");
+			     var $diving2 = $("#diving2");
+			     $diving2.css("display","none");
+		}	
+		};
+		$("#addcancel").click(function(){
+			var $adddialog = $("#adddialog");
+		     $adddialog.css("display","none");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","none");
+		});

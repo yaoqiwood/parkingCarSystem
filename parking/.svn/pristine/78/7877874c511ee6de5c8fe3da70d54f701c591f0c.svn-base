@@ -1,0 +1,64 @@
+package com.example.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.service.PaymentService;
+/**
+ * 
+  * <p>Title : PaymentController</p>
+  * <p>Description : 自助缴费信息控制类</p>
+  * <p>DevelopTools : Eclipse_x64_v4.7.1</p>
+  * <p>DevelopSystem : Windows 10</p>
+  * <p>Company : org.chenmian</p>
+  * @author : ChenMian
+  * @date : 2019年2月27日 上午9:00:02
+  * @version : 12.0.0
+ */
+@Controller
+public class PaymentController {
+	
+	@Autowired
+	private PaymentService paymentService;
+	/*
+	 * 自助缴费信息
+	 */
+	@RequestMapping("/do-payment.ajax")
+	@ResponseBody
+	public JSONObject payment(String name ,HttpServletRequest request) {
+		return null;
+	}
+	
+
+	/*
+	 * 缴费
+	 */
+	@RequestMapping("/do-alipay.ajax")
+	@ResponseBody
+	public JSONObject alipay(Integer id, String carNo,Integer mechineId,String out_trade_no ,String subject , String total_amount , String body, HttpServletRequest request) {
+		return null;
+	}
+	
+	@RequestMapping("/search.action")
+	@ResponseBody
+	public JSONObject searchCar(String name) {
+		return null;
+	}
+	
+	/*
+	 * 支付成功
+	 */
+	@RequestMapping("/returnUrl")
+	@ResponseBody
+	public ModelAndView  returnUrl(HttpServletRequest request, HttpServletResponse response) {
+		return null;
+	}
+	
+}

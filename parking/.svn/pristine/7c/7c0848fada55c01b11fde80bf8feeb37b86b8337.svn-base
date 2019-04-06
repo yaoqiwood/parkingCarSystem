@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.FeeRuleMapper">
+    <select id="refFeeRuleView" resultMap = "feeRuleMap">
+        SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_FEE_RULE
+        <where>
+            <if test = "ruleMoney != null and ruleMoney != '' ">
+                PFR_MONEY = #{ruleMoney}
+            </if>
+            <if test = "time != null and time != '' ">
+                PFR_TIME = #{time}
+            </if>
+        </where>
+        ) A) A WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+
+
+    <select id="cntFeeRuleView" resultType = "Integer">
+        SELECT COUNT(0) Count FROM PARK_FEE_RULE
+        <where>
+            <if test = "ruleMoney != null and ruleMoney != '' ">
+                PFR_MONEY = #{ruleMoney}
+            </if>
+            <if test = "time != null and time != '' ">
+                PFR_TIME = #{time}
+            </if>
+        </where>
+    </select>
+
+    <!--___________________________ ResultMap_________________________________________ -->
+    <resultMap id = "feeRuleMap" type = "com.example.bean.FeeRule">
+        <result property = "feeRuleId" column = "PFR_ID" />
+        <result property = "feeRuleTime" column = "PFR_TIME" />
+        <result property = "feeRuleMoney" column = "PFR_MONEY" />
+        <result property = "feeRuleState" column = "PFR_STATE" />
+        <result property = "feeRuleMemo" column = "PFR_MEMO" />
+        <result property = "feeRuleCreateTime" column = "PFR_CREATE_TIME" />
+        <result property = "feeRuleUpdateTime" column = "PFR_UPDATE_TIME" />
+    </resultMap>
+</mapper>

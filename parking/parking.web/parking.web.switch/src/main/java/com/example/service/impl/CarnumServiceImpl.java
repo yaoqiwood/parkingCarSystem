@@ -1,0 +1,61 @@
+package com.example.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.dao.CarnumMapper;
+import com.example.dto.CarnumDto;
+import com.example.service.CarnumService;
+
+@Service
+public class CarnumServiceImpl implements CarnumService{
+
+	@Autowired
+	private CarnumMapper mapper;
+
+	/**
+	 * 刷新车辆出入场表格
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public List<CarnumDto> listCarnumByPage(String name, Integer start, Integer end) {
+		// TODO Auto-generated method stub
+		List<CarnumDto> listCarnumByPage = mapper.listCarnumByPage("%"+name.trim()+"%", start, end);
+		return listCarnumByPage;
+	}
+
+	/**
+	 * 查询车辆个数
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer countCarnum(String name) {
+		// TODO Auto-generated method stub
+		Integer countCarnum = mapper.countCarnum("%"+name.trim()+"%");
+		return countCarnum;
+	}
+
+	@Override
+	public Integer addAmountLog(String carNum, String money) {
+		// TODO Auto-generated method stub
+		Integer addAmountLog = mapper.addAmountLog(carNum, money);
+		return addAmountLog;
+	}
+
+	@Override
+	public Integer addcarRecord(String carNumId, String startTime) {
+		// TODO Auto-generated method stub
+		Integer addcarRecord = mapper.addcarRecord(carNumId, startTime);
+		return addcarRecord;
+	}
+
+	@Override
+	public Integer updateCarState(String number) {
+		// TODO Auto-generated method stub
+		Integer updateCarState = mapper.updateCarState(number);
+		return updateCarState;
+	}
+}

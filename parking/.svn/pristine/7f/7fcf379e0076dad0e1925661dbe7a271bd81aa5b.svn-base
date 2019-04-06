@@ -1,0 +1,98 @@
+package com.example.controller;
+
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baidu.aip.util.Base64Util;
+import com.example.dto.CarnumDto;
+import com.example.service.AuthService;
+import com.example.service.CarInService;
+import com.example.utils.HttpUtil;
+import com.example.utils.ImageUtils;
+
+@Controller
+public class CarInController {
+
+	@Autowired
+	private CarInService service;
+
+	/**
+	 * 获取车辆所有信息，刷新到表格
+	 * 
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listcarInByPage.action")
+	@ResponseBody
+	public JSONObject listcarInByPage(String data, Integer start, Integer end, HttpServletRequest request) {
+		String otherHost = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate";
+        JSONObject model = new JSONObject();
+        try {
+        	byte[] baseToByte = ImageUtils.baseToByte(data);
+            String imgStr = Base64Util.encode(baseToByte);
+            String params = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(imgStr, "UTF-8");
+            /**
+             * 线上环境access_token有过期时间， 客户端可自行缓存，过期后重新获取。
+             */
+            String accessToken = AuthService.getAuth();
+            String result = HttpUtil.post(otherHost, accessToken, params);
+            String number = null;
+            Map<String, Object> map = JSON.parseObject(result.toString(), Map.class);
+            if(map != null) {
+    			Map<String, Object> resultMap = (Map)map.get("words_result");
+    				if(resultMap != null) {
+    						for (Map.Entry<String, Object> entry:resultMap.entrySet()) {
+    							if(entry.getKey().equals("number")) {
+    								number = entry.getValue().toString();
+    								break;
+    							}
+    					}
+    				}
+    		}
+            List<CarnumDto> listCarnumByPage = service.listCarnumByPage(number, start, end);
+    		Integer countCarnum = service.countCarnum(number);
+    		Integer ppId = new Random().nextInt(78)+141;
+    		String carNum = service.carNum(ppId);
+            Integer updatePlaceState = service.updatePlaceState(carNum,number);    		
+    			if (listCarnumByPage.size() == 0) {
+    				Integer addCarnum = service.addCarnum(number);
+    				if (addCarnum > 0) {
+    					if (carNum != null && updatePlaceState > 0) {
+    						model.put("carnum", carNum);
+    					}
+    					model.put("message", "欢迎" + number + "用户");
+    					model.put("id", 0);
+    				}
+    				model.put("admins", listCarnumByPage);
+    				model.put("count", countCarnum);
+    			} else {
+    				model.put("admins", listCarnumByPage);
+    				model.put("count", countCarnum);
+    				model.put("id", 0);
+    				model.put("message", "欢迎" + number + "用户");
+    				if (carNum != null && updatePlaceState > 0) {
+    					model.put("carnum", carNum);
+    				}
+    			}
+		  
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+	}
+
+}

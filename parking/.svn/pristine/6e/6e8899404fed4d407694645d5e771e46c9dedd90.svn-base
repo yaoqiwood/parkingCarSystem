@@ -1,0 +1,76 @@
+package com.example.bean;
+
+import java.util.Date;
+
+public class FeeRule {
+	private Integer FeeRuleId;
+	private String FeeRuleTime;
+	private Integer FeeRuleMoney;
+	private Integer FeeRuleState;
+	private String FeeRuleMemo;
+	private Date FeeRuleCreateTime;
+	private Date FeeRuleUpdateTime;
+	public FeeRule() {
+		super();
+	}
+	public FeeRule(Integer feeRuleId, String feeRuleTime, Integer feeRuleMoney, Integer feeRuleState,
+			String feeRuleMemo, Date feeRuleCreateTime, Date feeRuleUpdateTime) {
+		super();
+		FeeRuleId = feeRuleId;
+		FeeRuleTime = feeRuleTime;
+		FeeRuleMoney = feeRuleMoney;
+		FeeRuleState = feeRuleState;
+		FeeRuleMemo = feeRuleMemo;
+		FeeRuleCreateTime = feeRuleCreateTime;
+		FeeRuleUpdateTime = feeRuleUpdateTime;
+	}
+	public Integer getFeeRuleId() {
+		return FeeRuleId;
+	}
+	public void setFeeRuleId(Integer feeRuleId) {
+		FeeRuleId = feeRuleId;
+	}
+	public String getFeeRuleTime() {
+		return FeeRuleTime;
+	}
+	public void setFeeRuleTime(String feeRuleTime) {
+		FeeRuleTime = feeRuleTime;
+	}
+	public Integer getFeeRuleMoney() {
+		return FeeRuleMoney;
+	}
+	public void setFeeRuleMoney(Integer feeRuleMoney) {
+		FeeRuleMoney = feeRuleMoney;
+	}
+	public Integer getFeeRuleState() {
+		return FeeRuleState;
+	}
+	public void setFeeRuleState(Integer feeRuleState) {
+		FeeRuleState = feeRuleState;
+	}
+	public String getFeeRuleMemo() {
+		return FeeRuleMemo;
+	}
+	public void setFeeRuleMemo(String feeRuleMemo) {
+		FeeRuleMemo = feeRuleMemo;
+	}
+	public Date getFeeRuleCreateTime() {
+		return FeeRuleCreateTime;
+	}
+	public void setFeeRuleCreateTime(Date feeRuleCreateTime) {
+		FeeRuleCreateTime = feeRuleCreateTime;
+	}
+	public Date getFeeRuleUpdateTime() {
+		return FeeRuleUpdateTime;
+	}
+	public void setFeeRuleUpdateTime(Date feeRuleUpdateTime) {
+		FeeRuleUpdateTime = feeRuleUpdateTime;
+	}
+	@Override
+	public String toString() {
+		return "FeeRule [FeeRuleId=" + FeeRuleId + ", FeeRuleTime=" + FeeRuleTime + ", FeeRuleMoney=" + FeeRuleMoney
+				+ ", FeeRuleState=" + FeeRuleState + ", FeeRuleMemo=" + FeeRuleMemo + ", FeeRuleCreateTime="
+				+ FeeRuleCreateTime + ", FeeRuleUpdateTime=" + FeeRuleUpdateTime + "]";
+	}
+	
+}

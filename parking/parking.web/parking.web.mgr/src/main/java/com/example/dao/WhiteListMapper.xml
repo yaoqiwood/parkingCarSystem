@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.WhiteListMapper">
+<resultMap type="com.example.bean.WhiteList" id="whiteListMapper">
+	<result property="whiteListId" column="PWL_ID"/>
+	<result property="whiteListCarNum" column="PWL_CARNUM"/>
+	<result property="whiteListState" column="PWL_STATE"/>
+	<result property="whiteListMemo" column="PWL_MEMO"/>
+	<result property="whiteListCreateTime" column="PWL_CREATE_TIME"/>
+	<result property="whiteListUpdateTime" column="PWL_UPDATE_TIME"/>
+</resultMap>
+
+<select id="listwhiteListByPage" resultMap="whiteListMapper" >
+   SELECT * FROM (SELECT PWL_ID,PWL_CARNUM,PWL_CREATE_TIME,ROWNUM RN FROM PARK_WHITE_LIST
+<where>
+   (PWL_STATE = 1)
+   <if test="startTime != null and startTime !='' and endTime != null and endTime != ''">
+    AND PWL_CREATE_TIME BETWEEN(TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss')) AND (TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss'))
+   </if>
+   <if test="name != null and name != '%%'">
+      AND PWL_CARNUM LIKE #{name}
+   </if>
+</where>
+  ) WHERE RN BETWEEN #{start} AND #{end} 
+</select>
+
+<select id="whiteList" resultType="java.lang.Integer">
+    SELECT COUNT(0) FROM PARK_WHITE_LIST
+   <where>
+    (PWL_STATE = 1)
+   <if test="startTime != null and startTime !='' and endTime != null and endTime != ''">
+    AND PWL_CREATE_TIME BETWEEN(TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss')) AND (TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss'))
+   </if>
+   <if test="name != null and name != '%%'">
+      AND PWL_CARNUM LIKE #{name}
+   </if>
+</where>
+</select>
+
+<update id="delwhiteList">
+    DELETE FROM PARK_WHITE_LIST WHERE PWL_ID = #{whiteListId}
+</update>
+
+<insert id="addWhiteList">
+  INSERT INTO PARK_WHITE_LIST VALUES(SEQ_PARK_WHITE_LIST.NEXTVAL,#{addname},1,'',SYSDATE,SYSDATE) 
+</insert>
+</mapper>

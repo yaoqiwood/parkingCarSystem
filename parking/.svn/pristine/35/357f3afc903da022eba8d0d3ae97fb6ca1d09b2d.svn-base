@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package com.example.service;
+
+import java.util.List;
+
+import com.example.bean.Menu;
+
+/**用于后台管理及菜单栏初始化
+ * <p>Title : ManagerFrontMenuService</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64</p>
+ * <p>DevelopSystem : Win10</p>
+ * <p>Company : org.NorwegianWoods</p>
+ * @author : CatWood
+ * @date : Feb 21, 2019 11:21:16 PM
+ * @version : 12.0.0
+ */
+public interface ManagerBackMenuService {
+	
+	/**
+	 * 初始化菜单
+	 * @param menuParent
+	 * @return
+	 */
+	List<Menu> initLeftMenu(String menuParent);
+}

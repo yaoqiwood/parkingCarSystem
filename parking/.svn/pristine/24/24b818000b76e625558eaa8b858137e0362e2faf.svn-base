@@ -1,0 +1,54 @@
+package com.example.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.bean.Admin;
+import com.example.dao.AdminMapper;
+import com.example.service.AdminService;
+
+@Service
+public class AdminServiceImpl implements AdminService {
+	
+	@Autowired
+	private AdminMapper mapper;
+
+	@Override
+	public Admin adminLogin(String name, String password) {
+		// TODO Auto-generated method stub
+		Admin adminLogin = mapper.adminLogin(name, password);
+		return adminLogin;
+	}
+
+	/**
+	 * 刷新用户表格
+	 */
+	@Override
+	public List<Admin> listAdminByPage(String startTime, String endTime,String name, Integer roleId, Integer state, Integer start,
+			Integer end) {
+		// TODO Auto-generated method stub
+		List<Admin> listAdminByPage = mapper.listAdminByPage(startTime, endTime,"%"+name.trim()+"%", roleId, state, start, end);
+
+		return listAdminByPage;
+	}
+
+	/**
+	 * 查询用户个数
+	 */
+	@Override
+	public Integer countAdmin(String startTime, String tiendTimeme, String name, Integer roleId, Integer state) {
+		// TODO Auto-generated method stub
+		Integer countAdmin = mapper.countAdmin(startTime, tiendTimeme, "%"+name.trim()+"%", roleId, state);
+		return countAdmin;
+	}
+
+	@Override
+	public Integer delAdmin(String adminId) {
+		// TODO Auto-generated method stub
+		Integer delAdmin = mapper.delAdmin(adminId);
+		return delAdmin;
+	}
+
+}

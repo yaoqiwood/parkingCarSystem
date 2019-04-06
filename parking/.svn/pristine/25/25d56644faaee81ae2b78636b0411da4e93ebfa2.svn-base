@@ -1,0 +1,265 @@
+function formatUnixtimestamp(unixtimestamp) {
+	var unixtimestamp = new Date(unixtimestamp);
+	var year = 1900 + unixtimestamp.getYear();
+	var month = "0" + (unixtimestamp.getMonth() + 1);
+	var date = "0" + unixtimestamp.getDate();
+	var hour = "0" + unixtimestamp.getHours();
+	var minute = "0" + unixtimestamp.getMinutes();
+	var second = "0" + unixtimestamp.getSeconds();
+	return year + "-" + month.substring(month.length - 2, month.length) + "-"
+			+ date.substring(date.length - 2, date.length) + " "
+			+ hour.substring(hour.length - 2, hour.length) + ":"
+			+ minute.substring(minute.length - 2, minute.length) + ":"
+			+ second.substring(second.length - 2, second.length);
+}
+
+function initSelectrole() {
+	$.ajax({
+		url : "listrole.action",
+		type : "POST",
+		data : {},
+		success : function(msg) {
+			var obj = eval("(" + msg + ")");
+			var arr = obj.types;
+			for (var i = 0; i < arr.length; i++) {
+				$("#role").append($("<option>" + arr[i].adminRoleName + "</option>").val(arr[i].adminRoleId));
+				$("#addRole").append($("<option>" + arr[i].adminRoleName + "</option>").val(arr[i].adminRoleId));
+				$("#updateRole").append($("<option>" + arr[i].adminRoleName + "</option>").val(arr[i].adminRoleId));
+			}
+		},
+		error : function(msg) {
+			alert("请联系管理员");
+		}
+	});
+};
+
+initSelectrole();
+
+// 定义搜索变量
+var searchName = "";
+var searchStime = "";
+var searchEtime = "";
+var searchrole = "-1";
+var searchstate = "-1";
+// 定义分页变量
+var currPage = 1;
+var limit = 5;
+//ajax推送信息（用于表格的状态修改操作）
+function postAjax(url,data){
+	var result = false;
+	 $.ajax({
+		url : url,
+		async: false,
+		type : "POST",
+		data : data,
+		success : function(msg) { 
+			var obj = eval("(" + msg + ")"); 
+			alert(obj.message);
+			if (obj.id == 0) {
+				currPage = 1;
+				init();
+				result = true;
+			}
+		},
+		error : function(msg) {
+			alert("请联系管理员");
+		}
+	});
+	return result;
+}
+//查询方法
+function init() {
+	var start = (currPage - 1)*limit + 1;
+	var end = currPage*limit;
+	$.ajax({
+		url : "listAdminByPage.action",
+		type : "POST",
+		data : {
+			"name" : searchName,
+			"startTime" : searchStime,
+			"endTime" : searchEtime,
+			"role" : searchrole,
+			"state" : searchstate,
+			"start" : start,
+			"end" : end
+			},
+		success : function(msg) {
+			var obj = eval("(" + msg + ")");
+			// 首先清空数据
+			var arr = $(".tr")
+			for (var i = arr.length - 1; i >= 0; i--){
+				$(arr[i]).remove()
+			};
+			// 添加数据
+			var admins = obj.admins; var c = obj.count;
+			if (c == 0) {
+				$('#myPager').data('zui.pager').set(1, 1,limit);
+				$("#tb").append($("<tr class='tr' align='center'><td colspan='7'>未搜索到相关数据</td></tr>"));
+			} else {
+				for (var i = 0; i < admins.length; i++) {
+					var $tr = $("<tr class='tr'></tr>");
+					$tr.append($("<td>" + admins[i].adminId + "</td>"));
+					$tr.append($("<td>" + admins[i].adminName + "</td>"));
+					$tr.append($("<td>" + admins[i].adminRoleName + "</td>"));
+					$tr.append($("<td>" + admins[i].adminPassword + "</td>"));
+					$tr.append($("<td>" + formatUnixtimestamp(new Date(admins[i].adminCreateTime)) + "</td>"));
+					$tr.append($("<td>" + (admins[i].adminState == "1" ? "启用" : admins[i].adminState == "2" ? "注销":"禁用") + "</td>"));
+					$tr.append($("<td>" +
+							"<button adminId='" + admins[i].adminId + "' class='btn btn-sm btn-info' type='button'><i class='icon icon-cog'></i>&nbsp;修改</button>" + 
+							"<button adminId='" + admins[i].adminId + "' class='btn btn-sm btn-danger' type='button'><i class='icon icon-trash'></i>&nbsp;删除</button>" + 
+							"<button adminId='" + admins[i].adminId + "' class='btn btn-sm btn-warning' type='button'>" + (admins[i].adminState == "1" ? "<i class='icon icon-remove-circle'></i></i>&nbsp;禁用":"<i class='icon icon-check-circle-o'></i></i>&nbsp;启用") + "</button>"+ 
+							"<button adminId='" + admins[i].adminId + "' class='btn btn-sm btn-primary' type='button'><i class='icon icon-repeat'></i>&nbsp;重置密码</button>" + 
+							"<button adminId='" + admins[i].adminId + "' class='btn btn-sm btn-danger' type='button'><i class='icon icon-times'></i>&nbsp;注销</button>"));
+							$("#tb").append($tr);
+						};
+					}
+					$('#myPager').data('zui.pager').set(currPage,c,limit);
+				},
+		error : function(msg) {
+			alert("请联系管理员");
+		}
+});
+}
+init();
+//页码监听
+$('#myPager').on('onPageChange', function (e, state, oldState) {
+	if (state.page !== oldState.page) {
+		currPage = state.page;
+		init();
+	}
+});
+//搜索
+$("#selectBtn").click(function() {
+	searchName = $("#name").val();
+	searchStime = $("#startTime").val();
+	searchEtime = $("#endtime").val();
+	searchrole = $("#role").val();
+	searchstate = $("#state").val();
+	currPage = 1;
+	init();
+});
+//表格监听
+$("#tb").click(function(event) {
+	var adminId = $(event.target).attr("adminId");
+	switch ($(event.target).text().trim()) {
+    	case ("删除"):
+    		if (confirm("确定要删除吗")) {
+    			postAjax("del.action", { "adminId" : adminId });
+    		}
+        	break;
+    	case ("启用"):
+    		if (confirm("确定要启用吗")) {
+    			postAjax("updateState.action", { "adminId" : adminId, "state" : 1 })
+    		}
+    		break;
+    	case ("禁用"):
+    		if (confirm("确定要禁用吗")) {
+    			postAjax("updateState.action", { "adminId" : adminId, "state" : 0 });
+    		}
+        	break;
+    	case ("注销"):
+    		if (confirm("确定要注销吗")) {
+    			postAjax("canceladmin.action", { "adminId" : adminId });
+    		}
+        	break;
+    	case ("修改"):
+    		 $.ajax({
+    			url : "singleAdmin.action",
+    			type : "POST",
+    			data : {"adminId":adminId},
+    			success : function(msg) { 
+    				var obj = eval("(" + msg + ")"); 
+    				if (obj.id == 0) {
+    					$("#updatename").val(obj.admin.adminName);
+    					$("#updateState").val(obj.admin.adminState);
+    					$("#updateRole").val(obj.admin.adminRoleId);
+    					$("#updateid").val(obj.admin.adminId);
+    					$("#updatepassword").val("");
+    					$("#updatepasswordagain").val("");
+    					$("#updatedialog").css("display", "block");
+    				}else{
+    					alert(obj.message);
+    				}
+    			},
+    			error : function(msg) {
+    				alert("请联系管理员");
+    			}
+    		});
+        	break;
+    	case ("重置密码"):
+    		if(confirm("确定要重置吗")){
+    			postAjax("resette.action", { "adminId" : adminId });
+    		}
+        	break;
+    	default:
+    		break;
+	 }
+});
+
+$("#updateCanel").click(function() {
+	$("#updatedialog").css("display", "none");
+});
+$("#updateCommit").click(function() {
+			var $dname = $("#updatename");
+			var $dpassword = $("#updatepassword");
+			var $updatepasswordagain = $("#updatepasswordagain");
+			var $dstate = $("#updateState");
+			var $drole = $("#updateRole");
+			var $did = $("#updateid");
+			if ($dname.val() == "" || $dstate.val() == "-1" || $drole.val() == "-1" || $dpassword.val() == "") {
+				alert("不能为空，请输入正确！！");
+				return;
+			}
+			var result = postAjax("motifyAdmin.action", {
+							"adminId" : $did.val(),
+							"dname" : $dname.val(),
+							"dpassword" : $dpassword.val(),
+							"dstate" : $dstate.val(),
+							"drole" : $drole.val()
+						});
+			if(result){
+				$("#updatedialog").css("display", "none");
+			}
+			
+		});
+
+// 添加操作
+$("#addBtn").click(function() {
+	$("#addname").val("");
+	$("#addpassword").val("");
+	$("#addpasswordagain").val("");
+	$("#addrole").val("-1");
+	$("#adddialog").css("display", "block");
+});
+function emlty() {
+	$("#dname").val("");;
+	$("#dpassword").val("");
+	$("#drole").val("-1");
+	$("#dstate").val("-1");
+}
+// 设置添加弹框的添加按钮监听
+$("#addcommit").click(function() {
+	var $addname = $("#addname");
+	var $addpassword = $("#addpassword");
+	var $addpasswordagain = $("#addpasswordagain");
+	var $addrole = $("#addRole");
+	if ($addname.val() == "" || $addpassword.val() == "" || $addpasswordagain.val() == "" || $addrole.val() == "-1") {
+		alert("不可为空，请输入正确！！");return;
+	}
+	if ($addpassword.val() != $addpasswordagain.val()) {
+		alert("两次密码要输入相同！ ");return;
+	}
+	var result = postAjax("addAdmin.action", {
+		"addname" : $addname.val(),
+		"addpassword" : $addpassword.val(),
+		"addrole" : $addrole.val()
+	});
+	if(result){
+		var $adddialog = $("#adddialog");
+		$adddialog.css("display", "none");
+	}
+});
+$("#addcancel").click(function() {
+	var $adddialog = $("#adddialog");
+	$adddialog.css("display", "none");
+});

@@ -1,0 +1,231 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.FeeRule;
+import com.example.service.FeeRuleService;
+import com.example.utils.CheckInfoUtils;
+
+/**
+ * 计费规则控制层
+ * Title : FeeRuleController Description : DevelopTools : Eclipse_x64
+ * DevelopSystem : Win10 Company : org.NorwegianWoods
+ * 
+ * @author : CatWood
+ * @date : Feb 22, 2019 7:34:27 PM
+ * @version : 12.0.0
+ */
+
+@Controller
+public class FeeRuleController {
+
+	@Autowired
+	private FeeRuleService feeRuleService;
+
+	/**
+	 * 查看计费规则表格
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/ref-feeRuleView.action")
+	@ResponseBody
+	public JSONArray refFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String ruleMoney = req.getParameter("ruleMoney");
+		String ruleBeginTime = req.getParameter("ruleBeginTime");
+		String ruleEndTime = req.getParameter("ruleEndTime");
+		String CurrentPage = req.getParameter("CurrentPage");
+		String Limit = req.getParameter("Limit");
+
+		String time = null;
+		if (!(CheckInfoUtils.isEmpty(ruleBeginTime) || CheckInfoUtils.isEmpty(ruleEndTime)))
+			time = ruleBeginTime + "-" + ruleEndTime;
+		List<FeeRule> feeRules = feeRuleService.refFeeRuleView(ruleMoney, time, BeginPage(CurrentPage, Limit),
+				EndPage(CurrentPage, Limit));
+		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(feeRules);
+		return jsonArray;
+	}
+
+	/**
+	 * 查看计费规则行数量
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/cnt-feeRuleView.action")
+	@ResponseBody
+	public JSONObject cntFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String ruleMoney = req.getParameter("ruleMoney");
+		String ruleBeginTime = req.getParameter("ruleBeginTime");
+		String ruleEndTime = req.getParameter("ruleEndTime");
+
+		String time = null;
+		if (!(CheckInfoUtils.isEmpty(ruleBeginTime) || CheckInfoUtils.isEmpty(ruleEndTime)))
+			time = ruleBeginTime + "-" + ruleEndTime;
+
+		Integer Count = feeRuleService.cntFeeRuleView(ruleMoney, time);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("count", Count);
+		return jsonObject;
+	}
+
+	@RequestMapping("/add-feeRuleView.action")
+	@ResponseBody
+	public JSONObject addFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String ruleBeginTime = req.getParameter("ruleBeginTime");
+		String ruleEndTime = req.getParameter("ruleEndTime");
+		String ruleHourMoney = req.getParameter("ruleHourMoney");
+		String time = null;
+		JSONObject jsonObject = new JSONObject();
+		if (!(CheckInfoUtils.isEmpty(ruleBeginTime) || CheckInfoUtils.isEmpty(ruleEndTime)
+				|| CheckInfoUtils.isEmpty(ruleHourMoney))) {
+			time = ruleBeginTime + "-" + ruleEndTime;
+			Integer ret = feeRuleService.insertFeeRuleView(time, Integer.parseInt(ruleHourMoney));
+			if (ret > 0) {
+				jsonObject.put("id", "1"); // 插入成功
+				jsonObject.put("message", "插入成功");
+			} else {
+				jsonObject.put("id", "0"); // 插入失败
+				jsonObject.put("message", "插入失败"); // 插入失败
+			}
+		} else {
+			jsonObject.put("id", "3"); // 不可为空
+			jsonObject.put("message", "不可为空"); // 不可为空
+		}
+		return jsonObject;
+	}
+
+	@RequestMapping("/up-feeRuleView.action")
+	@ResponseBody
+	public JSONObject upFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		JSONObject jsonObject = new JSONObject();
+		String upRuleID = req.getParameter("upRuleID");
+		String upRuleStartTime = req.getParameter("upRuleStartTime");
+		String upRuleEndTime = req.getParameter("upRuleEndTime");
+		String upRuleMoney = req.getParameter("upRuleMoney");
+		if (!(isEmpty(upRuleID) || isEmpty(upRuleStartTime) || isEmpty(upRuleEndTime) || isEmpty(upRuleMoney))) {
+			String time = upRuleStartTime + "-" + upRuleEndTime;
+			Integer ret = feeRuleService.upFeeRuleView(Integer.parseInt(upRuleID), time, Integer.parseInt(upRuleMoney));
+			if (ret > 0) {
+				jsonObject.put("id", "1");
+				jsonObject.put("message", "修改成功");
+			} else {
+				jsonObject.put("id", "0");
+				jsonObject.put("message", "修改失败");
+			}
+		} else {
+			jsonObject.put("id", "3");
+			jsonObject.put("message", "数据异常，可能为空");
+		}
+		return jsonObject;
+	}
+
+	@RequestMapping("/upState-feeRuleView.action")
+	@ResponseBody
+	public JSONObject upStateFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String upState = req.getParameter("upState");
+		String Fid = req.getParameter("Fid");
+		JSONObject jsonObject = new JSONObject();
+		if (isEmpAnIsNum(Fid) && isEmpAnIsNum(upState)) {
+			Integer ret = feeRuleService.upStateFeeRuleView(Integer.parseInt(upState), Integer.parseInt(Fid));
+			if (ret > 0) {
+				jsonObject.put("id", "1");
+				jsonObject.put("message", Integer.parseInt(upState) == 1 ? "启用成功" : "禁用成功");
+			} else {
+				jsonObject.put("id", "0");
+				jsonObject.put("message", Integer.parseInt(upState) == 1 ? "启用失败" : "禁用失败");
+			}
+		} else {
+			jsonObject.put("id", "3");
+			jsonObject.put("message", "参数错误");
+		}
+
+		return jsonObject;
+	}
+
+	@RequestMapping("/del-feeRuleView.action")
+	@ResponseBody
+	public JSONObject delFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String Fid = req.getParameter("Fid");
+		JSONObject jsonObject = new JSONObject();
+
+		if (isEmpAnIsNum(Fid)) {
+			Integer ret = feeRuleService.delFeeRuleView(Integer.parseInt(Fid));
+			if (ret > 0) {
+				jsonObject.put("id", "1");
+				jsonObject.put("message", "删除成功");
+			} else {
+				jsonObject.put("id", "0");
+				jsonObject.put("message", "删除失败");
+			}
+		} else {
+			jsonObject.put("id", "3");
+			jsonObject.put("message", "参数有误");
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * 计算分页开始
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String BeginPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim - (Lim - 1));
+	}
+
+	/**
+	 * 计算分页结束
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String EndPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim);
+	}
+
+	/**
+	 * 是否为空
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public boolean isEmpty(String str) {
+		return CheckInfoUtils.isEmpty(str);
+	}
+
+	/**
+	 * 检查不为空且检查是否为为数字
+	 * 
+	 * @param str
+	 * @return boolean
+	 */
+	public boolean isEmpAnIsNum(String str) {
+		boolean ret = false;
+		if (!CheckInfoUtils.isEmpty(str)) {
+			if (CheckInfoUtils.IsInteger(str)) {
+				ret = true;
+			}
+		}
+		return ret;
+	}
+}

@@ -1,0 +1,89 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>收费日结算</title>
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+<link rel="stylesheet" href="css/mycss.min.css" />
+</head>
+
+<body>
+	<div class="col-xs-12 no-padding panel panel-primary">
+		<div class="panel-heading">收费日结算</div>
+
+		<div class="panel-body ">
+			<div class="scan-div">
+				<button id="morningBtn" class="btn btn-primary" type="button">早班</button>
+			</div>
+			<div class="scan-div">
+				<button id="middleBtn" class="btn btn-primary" type="button">中班</button>
+			</div>
+			<div class="scan-div">
+				<button id="eveningBtn" class="btn btn-primary" type="button">晚班</button>
+			</div>
+			<div class="scan-div">
+				<button id="initBtn" class="btn btn-primary" type="button">返回</button>
+			</div>
+			<table class="table table-bordered" id="table">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>结算班次</th>
+						<th>结算金额</th>
+						<th>结算时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="tr">
+						<td>1</td>
+						<td>1</td>
+						<td>zhangsan</td>
+						<td>zhangsan</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4" align="center">
+							<ul id="myPager" class="pager" data-ride="pager"
+								data-elements="prev_icon,page_of_total_text,next_icon"></ul>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="3rd/zui/js/jquery.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="js/dailyAccount.js"></script>
+<script>
+	//初始化分页器
+	$('#myPager').pager({
+		page : 1,
+		recPerPage : 5,
+		recTotal : 10
+	});
+
+	//初始化时间选择器组件
+	// 仅选择日期
+	$(".form-date").datetimepicker({
+		language : "zh-CN",
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+		format : "yyyy-mm-dd"
+	});
+</script>
+
+</html>

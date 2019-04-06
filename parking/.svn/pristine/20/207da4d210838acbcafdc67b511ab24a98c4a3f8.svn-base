@@ -1,0 +1,12 @@
+package com.example.service;
+
+import java.util.List;
+
+import com.example.bean.Log;
+
+public interface AmountLogService {
+
+	public Integer sumAmount();
+	public Integer countAmount();
+
+}

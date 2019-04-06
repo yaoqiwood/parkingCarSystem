@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>收费系统</title>
+    <!-- zui css -->
+    <link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+    <link rel="stylesheet" href="3rd/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="3rd/zui/theme/blue.css">
+    <!-- app css -->
+    <link rel="stylesheet" href="css/frameApp-mgr.css">
+    <link rel="stylesheet" href="css/frame.css">
+	<style type="text/css">
+		.main-header{
+			height: 50px;
+		}
+	</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="main-header">
+            <nav class="navbar navbar-fixed-top bg-primary">
+                <div class="navbar-header">
+                    <a class="navbar-toggle" href="javascript:;" data-toggle="collapse"
+                        data-target=".navbar-collapse"><i class="icon icon-th-large"></i></a>
+                    <a class="sidebar-toggle" href="javascript:;" data-toggle="push-menu"><i
+                            class="icon icon-bars"></i></a>
+                    <a class="navbar-brand" href="#">
+                        <span class="logo">收费系统</span>
+                        <span class="logo-mini">收费</span>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <div class="container-fluid">
+                        <ul class="nav navbar-nav">
+                            <li><a href="javascript:;" data-toggle="push-menu"><i class="icon icon-bars"></i></a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="javascript:;">
+                                    <span>
+                                        <i class="icon icon-bell-alt"></i>
+                                        <span class="label label-danger label-pill up">5</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">
+                                    <span>
+                                        <i class="icon icon-envelope-alt"></i>
+                                        <span class="label label-success label-pill up">2</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="javascript:;" data-toggle="dropdown"><i class="icon icon-user"></i> 欢迎管理员：${admin.adminName} <span
+                                        class="caret"></span></a>
+                                <ul class="dropdown-menu xy-down">
+                                    <li><a id="out">注销</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar" id = "z-sideBar">
+            <section class="sidebar">
+                <ul id="tree" class="sidebar-menu" data-widget="tree">
+                </ul>
+            </section>
+        </aside>
+        <iframe class="content-wrapper"  frameborder=0  id ="p-iframe" src="hello">
+           
+        </iframe>
+    </div>
+
+    <!-- jquery js -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <!-- zui js -->
+    <script src="3rd/zui/js/zui.min.js"></script>
+    <!-- app js -->
+<<<<<<< .mine
+||||||| .r249
+
+=======
+<script src="js/table_funs.js"></script>
+<script src="3rd/layer/layer.js"></script>
+>>>>>>> .r257
+    <script src="js/frameApp-mgr.js"></script>
+    <script src="js/frame.js"></script>
+</body>
+
+</html>

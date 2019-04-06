@@ -1,0 +1,32 @@
+package com.example.utils;
+
+import java.util.Date;
+
+public class MenoyUtils {
+	
+	public static Integer sumOfMoney(Date startDate, Date endDate) {
+		long time = endDate.getTime() - startDate.getTime();
+		if(time <= 30*60*1000) {
+			return 0;
+		}else if( time <= 3*60*60*1000 ){
+			return 10;
+		}else if( time <= 5*60*60*1000){
+			time -= 3*60*60*1000;
+			double hour = (double)time/((double)3600*1000);
+			if( hour - (int)hour > 0) {
+				hour += 1; 
+			}
+			return 10+(int)hour*5;
+		}else if( time <= 8*60*60*1000){
+			time -= 5*60*60*1000;
+			double hour = (double)time/((double)3600*1000);
+			if( hour - (int)hour > 0) {
+				hour += 1; 
+			}
+			return 10+2*5+(int)hour*10;
+		}else {
+			return 80;
+		}
+	}
+
+}

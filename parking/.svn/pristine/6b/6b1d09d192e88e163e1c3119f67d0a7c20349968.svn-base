@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.CarnumMapper">
+<resultMap type="com.example.bean.Carnum" id="carnumMapper">
+	<result property="carnumId" column="PC_ID"/>
+	<result property="carRoleId" column="PC_PCR_ID"/>
+	<result property="carNumber" column="PC_NUM"/>
+	<result property="photoUrl" column="PC_PHOTO_URL"/>
+	<result property="carnumState" column="PC_STATE"/>
+	<result property="carnumMemo" column="PC_MEMO"/>
+	<result property="carnumCreateTime" column="PC_CREATE_TIME"/>
+	<result property="carnumUpdateTime" column="PC_UPDATE_TIME"/>
+</resultMap>
+<resultMap type="com.example.dto.CarnumDto" id="carnumDtoMapper" extends="carnumMapper">
+    <result property="carRoleName" column="PCR_NAME"/>
+</resultMap>
+
+<select id="listCarnumByPage" resultMap="carnumDtoMapper" >
+   SELECT * FROM (SELECT A.PC_ID,PCR_NAME,A.PC_NUM,A.PC_CREATE_TIME,A.PC_UPDATE_TIME,ROWNUM RN FROM PARK_CARNUM A 
+   LEFT JOIN PARK_CAR_ROLE B ON A.PC_PCR_ID=B.PCR_ID
+<where>
+   (A.PC_STATE = 1 OR A.PC_STATE = 0 )
+   <if test="name != null and name != '%%'">
+      AND A.PC_NUM LIKE #{name}
+   </if>
+</where>
+  ) WHERE RN BETWEEN #{start} AND #{end} 
+</select>
+
+<select id="countCarnum" resultType="java.lang.Integer">
+    SELECT COUNT(0) FROM PARK_CARNUM A LEFT JOIN PARK_CAR_ROLE B ON A.PC_PCR_ID=B.PCR_ID
+   <where>
+   (A.PC_STATE = 1 OR A.PC_STATE = 0)
+   <if test="name != null and name != '%%'">
+      AND A.PC_NUM LIKE #{name}
+   </if>
+</where>
+</select>
+
+<insert id="addCarnum">
+  INSERT INTO PARK_CARNUM VALUES(SEQ_PARK_CARNUM.NEXTVAL,1,#{name},'CCCC',1,'',SYSDATE,SYSDATE) 
+</insert>
+
+<select id="carNum" resultType="java.lang.String">
+     SELECT PP_NUMBER FROM PARK_PLACE WHERE PP_ID=#{ppId} AND PP_STATE = 1
+</select>
+
+<update id="updatePlaceState">
+    UPDATE PARK_PLACE SET PP_STATE = 0 WHERE PP_NUMBER = #{carNum}
+</update>
+
+<select id="checkCarnum" resultMap="carnumMapper">
+	SELECT * FROM PARK_CARNUM WHERE PC_NUM = #{carNum}
+</select>
+
+</mapper>

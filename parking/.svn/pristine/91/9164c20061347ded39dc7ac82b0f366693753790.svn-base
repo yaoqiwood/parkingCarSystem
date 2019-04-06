@@ -1,0 +1,227 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>收入统计</title>
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+<link rel="stylesheet" href="css/mycss.min.css" />
+</head>
+
+<body>
+	<div class="col-xs-12 no-padding panel panel-primary">
+		<div class="panel-heading">收入统计</div>
+
+		<div class="panel-body ">
+			<table class="table table-bordered" id="tb1">
+				<thead>
+					<tr>
+						<th>停车场总收入</th>
+						<th>总停车数</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="tr1">
+						<td>892.4</td>
+						<td>8</td>
+					</tr>
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+			<table class="table table-bordered" id="tb">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>车牌号</th>
+						<th>消费</th>
+						<th>操作记录</th>
+						<th>操作时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="tr">
+						<td>1</td>
+						<td>京A22222</td>
+						<td>10</td>
+						<td>1小时</td>
+						<td>2019-01-22</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6" align="center">
+							<ul id="myPager" class="pager" data-ride="pager"
+								data-elements="prev_icon,page_of_total_text,next_icon"></ul>
+						</td>
+					</tr>
+					
+				</tfoot>
+			</table>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script>
+	//初始化分页器
+	$('#myPager').pager({
+		page : 1,
+		recPerPage : 5,
+		recTotal : 10
+	});
+
+	//初始化时间选择器组件
+	// 仅选择日期
+	$(".form-date").datetimepicker({
+		language : "zh-CN",
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+		format : "yyyy-mm-dd"
+	});
+	
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length) + "-"
+				+ date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	//定义搜索变量
+	var searchTimeSt = "";
+	var searchTimeEn = "";
+	var searchName = "";
+	//定义分页变量
+	var start = 1;//开始
+	var end = 5;//结束
+	var count = 0;//一共多少条
+	var currPage = 1;//当前第几页
+	var allPage = 0;//一共多少页
+	var limit = 5;//每页显示多少条
+	
+	//初始化
+	function init() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-income.ajax",
+			type : "POST",
+			data : {
+				"offset" : start,
+				"limit" : limit
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				//首先清空
+				var arr = $(".tr");
+				var arr1 = $(".tr1");
+				for (var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove();
+				}
+				for (var i = arr1.length - 1; i >= 0; i--) {
+					$(arr1[i]).remove();
+				}
+				var sumAmount = data.sumAmount;
+				var countAmount = data.countAmount;
+				var $tb1 = $("#tb1");
+				var $tr1 = $("<tr class='tr' align='left'></tr>");
+				var $td8 = $("<td></td>");
+				$td8.html(sumAmount);
+				var $td9 = $("<td></td>");
+				$td9.html(countAmount);
+				$tr1.append($td8);
+				$tr1.append($td9);
+				$("#tb1").append($tr1);
+				
+				var incomeList = data.incomeList;
+				var c = data.count;
+				var $tb = $("#tb");
+				for (var i = 0; i < incomeList.length; i++) {
+					var $tr = $("<tr class='tr' align='left'></tr>");
+					var $td1 = $("<td></td>");
+					$td1.html(incomeList[i].amountLogId);
+					var $td2 = $("<td></td>");
+					$td2.html(incomeList[i].amountLogCarnum);
+					var $td3 = $("<td></td>");
+					$td3.html(incomeList[i].amountLogMoney);
+					var $td4 = $("<td></td>");
+					$td4.html(incomeList[i].amountLogDesc);
+					var $td5 = $("<td></td>");
+					$td5.html(formatUnixtimestamp(new Date(
+							incomeList[i].amountLogDescCreateTime)));
+					$tr.append($td1);
+					$tr.append($td2);
+					$tr.append($td3);
+					$tr.append($td4);
+					$tr.append($td5);
+					$("#tb").append($tr);
+				}
+				//显示page
+				count = c;
+				$('#myPager').data('zui.pager').set(currPage, count, limit);
+				if (incomeList.length == 0) {
+					alert("暂无数据");
+				} 
+			},
+			error : function(msg) {
+				alert("请联系管理员...");
+			}
+		});
+	}
+
+	// 当分液器被点击的时候 会走的方法
+	$('#myPager').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			//获取变化后的页数和变化前的页数
+			//				console.log('页码从', oldState.page, '变更为', state.page);
+			currPage = state.page;
+			init();
+			//当前页 总数  Limit 
+		}
+	});
+
+	//初始化
+	init();
+
+	//搜索
+	$("#selectBtn").click(function() {
+		searchTimeSt = $("#timeSt").val();
+		searchTimeEn = $("#timeEn").val();
+		searchName = $("#name").val();
+		//alert(searchTimeSt+":"+searchTimeEn+":"+searchDocType+":"+searchDocState);
+		if(searchTimeSt>searchTimeEn){
+			alert("截止时间不能小于开始时间！");
+		}else{
+			start = 1;
+			end = 5;
+			currPage = 1;
+			count = 0;
+			allPage = 0;
+			init();
+		}
+		
+	});
+	
+</script>
+<!-- <script type="text/javascript" src="js/log.js"></script> -->
+
+</html>

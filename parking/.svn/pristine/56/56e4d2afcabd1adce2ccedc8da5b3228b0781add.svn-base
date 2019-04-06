@@ -1,0 +1,246 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/tableDemo.css">
+    <link rel="stylesheet" href="3rd/zui/lib/datetimepicker/datetimepicker.min.css">
+    <title>日志信息</title>
+</head>
+
+<body>
+    <div class="col-xs-12 no-padding panel panel-primary container-fluid">
+        <div class="panel-heading center">
+           	日志查看
+        </div>
+
+        <div class="panel-body container-fluid ">
+            <div class="row">
+                
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">日期选择</span>
+                        <input type="text" id="timeSt" class="form-control form-date"
+                            placeholder="选择或者输入一个日期：yyyy-MM-dd">
+                        <span class="input-group-addon">至</span>
+                        <input type="text" id="timeEn" class="form-control form-date"
+                            placeholder="选择或者输入一个日期：yyyy-MM-dd">
+                    </div>
+                    <br>
+                </div>
+                 <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">操作人</span>
+                        <input type="text" id="name" class="form-control" placeholder="输入操作人名">
+                    </div>
+                    <br>
+                </div>
+                <div class="center">
+                    <button id="selectBtn" class="btn btn-primary " type="button">搜索</button>
+                </div>
+                <br>
+            </div>
+
+            <table class="table table-bordered  table-hover" id="tb">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">序号</th>
+                        <th style="text-align:center">操作时间</th>
+                        <th style="text-align:center">操作人</th>
+                        <th style="text-align:center">操作事项</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody align="center">
+                   <tr class="tr">
+						<td>1</td>
+						<td>2019-01-19</td>
+						<td>xiaofeng</td>
+						<td>登录</td>
+					</tr>
+                </tbody>
+            </table>
+            <div class="floatRight">
+                <ul id="myPager" class="pager" data-ride="pager" data-elements="prev_icon,page_of_total_text,next_icon">
+                    <li class="pager-item-left pager-item-right"><a id="lastPageBtn" class="pager-item" data-page="0"><i
+                                class="icon icon-double-angle-left"></i></a></li>
+                    <li>
+                        <div class="pager-label">第 <strong id="CurPageView">1</strong>/<strong
+                                id="TotalPageView">1</strong>
+                            页</div>
+                    </li>
+                    <li class="pager-item-left"><a id="nextPageBtn" class="pager-item" data-page="1"><i
+                                class="icon icon-double-angle-right"></i></a></li>
+                </ul>
+            </div>
+
+        </div>
+
+
+
+
+        <div class="addPanelBox" id="addPanelBox">
+            <div class="panel panel-primary">
+                <div class="panel-heading">添加demo</div>
+                <div class="panel-body input-group">
+                    <span class="input-group-addon">demo名</span>
+                    <input type="text" class="form-control" id="addConfigureName" placeholder="配置名">
+                </div>
+                <div class="panel-body input-group">
+                    <span class="input-group-addon">demo参数</span>
+                    <input type="text" class="form-control" id="addConfigureValue" placeholder="配置参数">
+                </div>
+                <div class="center bottomSpace">
+                    <button class="btn btn-primary" type="button" id="btnConfirm">确定</button>
+                    <button class="btn btn-info" type="button" id="btnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="updatePanelBox" id="updatePanelBox">
+            <div class="panel panel-primary">
+                <div class="panel-heading">修改demo</div>
+                <div class="panel-body input-group">
+                    <span class="input-group-addon">demoID</span>
+                    <input type="text" disabled id="upConfigID" class="form-control" placeholder="配置名">
+                </div>
+                <div class="panel-body input-group">
+                    <span class="input-group-addon">demo名:</span>
+                    <input type="text" id=upConfigName class="form-control" placeholder="配置名">
+                </div>
+                <div class="panel-body input-group">
+                    <span class="input-group-addon">demo参数</span>
+                    <input type="text" class="form-control" id="upConfigParamter" placeholder="配置参数">
+                </div>
+                <div class = "center bottomSpace">
+                    <button class="btn btn-primary" type="button" id="upBtnConfirm">确定</button>
+                    <button class="btn btn-info" type="button" id="upBtnCancel">取消</button>
+                </div>
+            </div>
+        </div>
+        <div class="backWhite" id="backWhite"></div>
+</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="3rd/zui/js/zui.min.js"></script>
+<script src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script src="js/table_funs.js"></script>
+<script src="js/tableDemo.js"></script>
+<!-- <script src="js/common.js"></script> -->
+<!-- <script src="js/configure.js"></script> -->
+<script>
+function formatUnixtimestamp(unixtimestamp) {
+	var unixtimestamp = new Date(unixtimestamp);
+	var year = 1900 + unixtimestamp.getYear();
+	var month = "0" + (unixtimestamp.getMonth() + 1);
+	var date = "0" + unixtimestamp.getDate();
+	var hour = "0" + unixtimestamp.getHours();
+	var minute = "0" + unixtimestamp.getMinutes();
+	var second = "0" + unixtimestamp.getSeconds();
+	return year + "-" + month.substring(month.length - 2, month.length) + "-"
+			+ date.substring(date.length - 2, date.length) + " "
+			+ hour.substring(hour.length - 2, hour.length) + ":"
+			+ minute.substring(minute.length - 2, minute.length) + ":"
+			+ second.substring(second.length - 2, second.length);
+}
+//定义搜索变量
+var searchTimeSt = "";
+var searchTimeEn = "";
+var searchName = "";
+//定义分页变量
+var start = 1;//开始
+var end = 5;//结束
+var count = 0;//一共多少条
+var currPage = 1;//当前第几页
+var allPage = 0;//一共多少页
+var limit = 5;//每页显示多少条
+//初始化
+function init() {
+	start = (currPage - 1) * limit + 1;
+	end = currPage * limit;
+	$.ajax({
+		url : "do-log.ajax",
+		type : "POST",
+		data : {
+			"timeSt" : searchTimeSt,
+			"timeEn" : searchTimeEn,
+			"name" : searchName,
+			"start" : start,
+			"end" : limit
+		},
+		dataType : "json",
+		success : function(data) {
+			console.log(data);
+			//首先清空
+			var arr = $(".tr");
+			for (var i = arr.length - 1; i >= 0; i--) {
+				$(arr[i]).remove();
+			}
+			console.log(data.logList);
+			var logList = data.logList;
+			var c = data.count;
+			var $tb = $("#tb");
+			for (var i = 0; i < logList.length; i++) {
+				var $tr = $("<tr class='tr' align='left'></tr>");
+				var $td1 = $("<td></td>");
+				$td1.html(logList[i].logId);
+				var $td2 = $("<td></td>");
+				$td2.html(formatUnixtimestamp(new Date(
+						logList[i].logCreateTime)));
+				var $td3 = $("<td></td>");
+				$td3.html(logList[i].adminName);
+				var $td4 = $("<td></td>");
+				$td4.html(logList[i].logDesc);
+				$tr.append($td1);
+				$tr.append($td2);
+				$tr.append($td3);
+				$tr.append($td4);
+				$("#tb").append($tr);
+			}
+			//显示page
+			count = c;
+			$('#myPager').data('zui.pager').set(currPage, count, limit);
+			if (logList.length == 0) {
+				alert("暂无数据");
+			}
+		},
+		error : function(msg) {
+			alert("请联系管理员...");
+		}
+	});
+}
+init();
+//页码监听
+$('#myPager').on('onPageChange', function (e, state, oldState) {
+	if (state.page !== oldState.page) {
+		console.log('页码从', oldState.page, '变更为', state.page);
+		//tempData.CurrentPage = state.page;
+		currPage = state.page;
+		init();
+	}
+});
+//搜索
+$("#selectBtn").click(function() {
+	searchTimeSt = $("#timeSt").val();
+	searchTimeEn = $("#timeEn").val();
+	searchName = $("#name").val();
+	//alert(searchTimeSt+":"+searchTimeEn+":"+searchDocType+":"+searchDocState);
+	if(searchTimeSt>searchTimeEn){
+		alert("截止时间不能小于开始时间！");
+	}else{
+		start = 1;
+		end = 5;
+		currPage = 1;
+		count = 0;
+		allPage = 0;
+		init();
+	}	
+});
+</script>
+
+</html>

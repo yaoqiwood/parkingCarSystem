@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AmountLogMapper">
+	
+	<!-- 总收入 -->
+	<select id="sumAmount" resultType="Integer">
+		SELECT SUM(PAL_MONEY) FROM PARK_AMOUNT_LOG
+	</select>
+	
+	<!-- 总数 -->
+	<select id="countAmount" resultType="Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG
+	</select>
+	
+</mapper>

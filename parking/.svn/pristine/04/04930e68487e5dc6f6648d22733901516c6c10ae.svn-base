@@ -1,0 +1,59 @@
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example.bean.FeeRule;
+
+
+public interface FeeRuleService {
+	
+	/**
+	 * 查看停车费用配置表
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	List<FeeRule> refFeeRuleView(String ruleMoney, String time ,String begin, String end);
+	
+	/**
+	 * 统计停车费用配置表数量
+	 * @param ruleMoney
+	 * @param time
+	 * @return
+	 */
+	Integer cntFeeRuleView(String ruleMoney, String time);
+	
+	/**
+	 * 添加停车费用规则条目
+	 * @param time
+	 * @param ruleHourMoney
+	 * @return
+	 */
+	Integer insertFeeRuleView(String time, Integer ruleHourMoney);
+	
+	/**
+	 * 修改停车费用规则条目
+	 * @param upRuleID
+	 * @param time
+	 * @param upRuleMoney
+	 * @return
+	 */
+	Integer upFeeRuleView(Integer upRuleID,String time,Integer upRuleMoney);
+	
+	/**
+	 * 修改停车费用规则状态
+	 * @param upState
+	 * @param Fid
+	 * @return
+	 */
+	Integer upStateFeeRuleView(Integer upState,Integer Fid);
+	
+	/**
+	 * 删除（假删除）
+	 * @param Fid
+	 * @return
+	 */
+	Integer delFeeRuleView(Integer Fid);
+}

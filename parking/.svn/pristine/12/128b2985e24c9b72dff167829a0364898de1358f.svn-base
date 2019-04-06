@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>月缴产品管理</title>
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+<link rel="stylesheet" href="css/mycss.min.css" />
+<link rel="stylesheet" href="css/monthProduct.css" />
+</head>
+
+<body>
+	<div class="col-xs-12 no-padding panel panel-primary">
+		<div class="panel-heading">月缴产品管理</div>
+
+		<div class="panel-body ">
+
+			<div class="input-group scan-div">
+				<input id="startTime" type="text" class="form-control form-date"
+					placeholder="选择或者输入开始日期：yyyy-MM-dd" /> <span
+					class="input-group-addon fix-border fix-padding ">&nbsp;至&nbsp;</span>
+				<input id="endTime" type="text" class="form-control form-date"
+					placeholder="选择或者输入结束日期：yyyy-MM-dd" />
+			</div>
+
+			<div class="scan-div">
+				<input id="proName" type="text" class="form-control"
+					placeholder="输入搜索产品名">
+			</div>
+
+			<div class="scan-div">
+				<select id="proSel" class="form-control scan-text">
+					<option value="-1">请选择</option>
+				</select>
+			</div>
+
+			<div class="scan-div">
+				<button id="selectBtn" class="btn btn-primary" type="button">搜索</button>
+			</div>
+
+			<div class="scan-div">
+				<button id="addBtn" class="btn btn-primary" type="button">添加</button>
+			</div>
+
+			<table class="table table-bordered" id="table">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>产品名</th>
+						<th>创建时间</th>
+						<th>配置月份</th>
+						<th>收费标准</th>
+						<th>产品状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody id="body">
+					<tr class="tr">
+						<td>1</td>
+						<td>1</td>
+						<td>zhangsan</td>
+						<td>男</td>
+						<td>2018-10-22</td>
+						<td>启用</td>
+						<td>启用</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="7" align="center">
+							<ul id="myPager" class="pager" data-ride="pager"
+								data-elements="prev_icon,page_of_total_text,next_icon"></ul>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<div id="adddialog" class="adddialog">
+			<div class="title">添加产品</div>
+			<div class="content">
+				<br /> <br />
+				<table align="center">
+					<tr align="right">
+						<td><span class="font">产品名：</span></td>
+						<td><input id="addName" class="field" type="text" /></td>
+					</tr>
+					<tr align="right">
+						<td><span class="font">配置月份：</span></td>
+						<td><input id="addmonth" class="field" type="text" /></td>
+					</tr>
+					<tr align="right">
+						<td><span class="font">收费标准：</span></td>
+						<td><input id="addMoney" class="field" type="text" /></td>
+					</tr>
+
+					<tr>
+						<td colspan="2" align="center"><input id="addcommit"
+							class="btn" type="button" value="添加" /> <input id="addcancel"
+							class="btn" type="button" value="返回" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="dialog" class="dialog">
+			<div class="title">修改产品</div>
+			<div class="content">
+				<br /> <br />
+				<table align="center">
+					<input id="did" type="hidden" />
+					<tr>
+						<td><span class="font">产品名：</span></td>
+						<td><input id="modName" class="field" type="text" /></td>
+					</tr>
+					<tr>
+						<td><span class="font">配置月份：</span></td>
+						<td><input id="modMonth" class="field" type="text" /></td>
+					</tr>
+					<tr>
+						<td><span class="font">收费标准：</span></td>
+						<td><input id="modMoney" class="field" type="text" /></td>
+					</tr>
+				</table>
+				<br /> <br /> <br />
+				<table align="center">
+					<tr>
+						<td colspan="2" align="center"><input id="commit" class="btn"
+							type="button" value="提交" /> <input id="cancel" class="btn"
+							type="button" value="返回" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="3rd/zui/js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="js/monthProduct.js"></script>
+<script>
+	//初始化分页器
+	$('#myPager').pager({
+		page : 1,
+		recPerPage : 5,
+		recTotal : 10
+	});
+
+	//初始化时间选择器组件
+	// 仅选择日期
+	$(".form-date").datetimepicker({
+		language : "zh-CN",
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+		format : "yyyy-mm-dd"
+	});
+
+	
+</script>
+
+</html>

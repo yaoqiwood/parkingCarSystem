@@ -1,0 +1,123 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/roleManager.css">
+    <title>roleManager</title>
+</head>
+
+<body>
+    <div class="col-xs-12 no-padding panel panel-primary">
+        <div class="panel-heading center">
+            角色管理
+        </div>
+
+        <div class="panel-body container-fluid ">
+            <!-- <div class="input-group scan-div">
+                    <input id="" type="text" class="form-control form-date" placeholder="选择或者输入开始日期：yyyy-MM-dd">
+                    <span class="input-group-addon fix-border fix-padding ">&nbsp;至&nbsp;</span>
+                    <input id="" type="text" class="form-control form-date" placeholder="选择或者输入结束日期：yyyy-MM-dd">
+                </div> -->
+
+
+
+            <div class="row">
+                <div class="col-xs-10">
+                    <div class="input-group">
+                        <span class="input-group-addon">角色名</span>
+                        <input type="text" id="roleName" class="form-control" placeholder="角色名">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group col-md-4 col-xs-4">
+                <span class="input-group-addon">状态</span>
+                <select id="roleState" class="form-control scan-text">
+                    <option value="">请选择</option>
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+            <br>
+            <div>
+                <button id="addBtn" class="btn btn-primary" type="button">添加角色</button>
+            </div>
+            <div class="scan-div">
+                <button id="Search_Btn" class="btn btn-primary" type="button">搜索</button>
+            </div>
+            <br>
+            <table class="table table-bordered" id="table">
+                <thead>
+                    <tr class="center" align="center">
+                        <th>角色ID</th>
+                        <th>角色名</th>
+                        <th>角色状态</th>
+                        <th>角色创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" align="center">
+                            <ul id="myPager" class="pager" data-ride="pager"
+                                data-elements="prev_icon,page_of_total_text,next_icon">
+                                <li class="pager-item-left pager-item-right"><a id="lastPageBtn" class="pager-item"
+                                        data-page="0"><i class="icon icon-double-angle-left"></i></a></li>
+                                <li>
+                                    <div class="pager-label">第 <strong id="CurPageView">1</strong>/<strong
+                                            id="TotalPageView">1</strong> 页</div>
+                                </li>
+                                <li class="pager-item-left"><a id="nextPageBtn" class="pager-item" data-page="1"><i
+                                            class="icon icon-double-angle-right"></i></a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="addPanelBox" id="addPanelBox">
+        <div class="panel panel-primary">
+            <div class="panel-heading">添加规则</div>
+            <div class="panel-body input-group">
+                <span class="input-group-addon">角色名</span>
+                <input type="text" class="form-control" id="roleName" placeholder="角色名">
+            </div>
+            <button class="btn btn-primary" type="button" id="btnConfirm">确定</button>
+            <button class="btn btn-info" type="button" id="btnCancel">取消</button>
+        </div>
+    </div>
+
+    <div class="updatePanelBox" id="updatePanelBox">
+        <div class="panel panel-primary">
+            <div class="panel-heading">修改规则 </div>
+            <div class="panel-body input-group">
+                <span class="input-group-addon">角色名</span>
+                <input type="text" class="form-control" id="upRoleName" placeholder="角色名">
+            </div>
+            <button class="btn btn-primary" type="button" id="upBtnConfirm">确定</button>
+            <button class="btn btn-info" type="button" id="upBtnCancel">取消</button>
+        </div>
+    </div>
+
+</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="js/table_funs.js"></script>
+<script src="js/common.js"></script>
+<script src="js/roleManager.js"></script>
+
+
+</html>

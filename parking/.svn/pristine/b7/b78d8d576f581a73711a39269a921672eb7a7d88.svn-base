@@ -1,0 +1,20 @@
+package com.example.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.dto.MenuRoleDto;
+
+
+
+public interface MenuInfMapper {
+	
+	
+	List<MenuRoleDto> getMenu(@Param("roleId")String roleId);
+	
+	Integer updatemenu(@Param("roleId")String roleId);
+	
+	Integer updatemenuroleId(@Param("roleId")String roleId);
+
+}

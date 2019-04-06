@@ -1,0 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>登录界面</title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.css" />
+		<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+		<link rel="stylesheet" href="css/mycss.min.css" />
+	</head>
+
+	<body>
+		<div class="frame">
+			<div class="scan no-padding">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						用户登录
+					</div>
+					<div class="panel-body">
+						<form>
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">账号</span>
+									<input id="name" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">密码</span>
+									<input id="password" type="text" class="form-control">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon">验证码</span>
+									<input id="code" type="text" class="form-control">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<img  src="code.jpg" title="点击刷新" />
+							</div>
+
+							<div class="form-group" align="center">
+								<button id="login" class="btn btn-block btn-primary" type="button">用户登录</button>
+							</div>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+
+</html>

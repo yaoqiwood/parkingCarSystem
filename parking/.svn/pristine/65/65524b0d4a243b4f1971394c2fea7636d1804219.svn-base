@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AdminMapper">
+<resultMap type="com.example.bean.Admin" id="adminMapper">
+	<result property="adminId" column="PA_ID"/>
+	<result property="adminRoleId" column="PA_PR_ID"/>
+	<result property="adminName" column="PA_NAME"/>
+	<result property="adminPassword" column="PA_PASSWORD"/>
+	<result property="adminState" column="PA_STATE"/>
+	<result property="adminMemo" column="PA_MEMO"/>
+	<result property="adminCreateTime" column="PA_CREATE_TIME"/>
+	<result property="adminUpdateTime" column="PA_UPDATE_TIME"/>
+</resultMap>
+
+<select id="adminLogin" resultMap="adminMapper">
+	SELECT * FROM PARK_ADMIN WHERE PA_NAME = #{name} AND PA_PASSWORD = #{password}
+</select>
+
+<select id="adminLoginById" resultMap="adminMapper">
+	SELECT * FROM PARK_ADMIN WHERE PA_ID = #{id}
+</select>
+
+</mapper>

@@ -1,0 +1,248 @@
+//定义搜索变量
+var searchName="";
+var searchPlace ="";
+var searchFloor ="";
+// 定义分页变量
+var start = 1;
+var end = 5;
+var count = 0 ;
+var currPage = 1;
+var allPage = 0;
+var limit = 5;
+var admins = null;
+
+function init(){
+	   $.ajax({
+		   url:"listPlaceByPage.action",
+		   type:"POST",
+		   dataType:"json",
+		   data:{"name" : searchName , "place" : searchPlace ,"floor" : searchFloor
+			     ,"start" : start, "end" : end},
+		   success:function(data){
+		   	   var msg = JSON.stringify(data);
+			   var obj = eval("(" + msg + ")");
+			   // 首先清空数据
+			   var arr = $(".tr")
+			   for(var i = arr.length -1 ; i>= 0 ; i--){
+				   $(arr[i]).remove();
+			   }
+			   // 添加数据
+			   admins = obj.admins;
+			   var c = obj.count;
+			   if(c == 0){
+				   $("#page").html("1/1");
+	  				alert("没有数据可搜索！！"); 
+	  			   }else{
+					   for(var i = 0; i< admins.length;i ++){
+						   var $tr = $("<tr class='tr' align='center'></tr>");
+$tr.append($("<td>"+ admins[i].placeId +"</td>"));
+$tr.append($("<td>"+ admins[i].subareaName +"</td>"));
+$tr.append($("<td>"+ admins[i].placeNumber +"</td>"));
+$tr.append($("<td>"+ admins[i].subareaFloor +"</td>"));
+$tr.append($("<td>"+"<input placeId='"+admins[i].placeId+ "' type='button' value='删除' />" +
+		"<input placePsId='"+admins[i].placePsId+ "' type='button' value='修改' />" +"</td>"));
+$("#tb").append($tr);
+};
+					   
+					   count = c;
+					   allPage = c%5 == 0 ? c/5 : parseInt(c/5 +1);
+					   $("#page").html(currPage + "/" +allPage);
+	  		 }
+		   },
+		   error:function(msg){
+			   alert("请联系管理员");
+		   }
+	   });
+}
+init();
+$("#pre").click(function(){
+	  if(start <= 1){
+			alert("已经是第一页了");
+		}else{
+			start = start - limit ;
+			end = end - limit;
+			currPage = currPage - 1;
+			init();
+		}
+});
+$("#next").click(function(){
+	  if(end >= count){
+			alert("已经是尾页了");
+		}else{
+			start = start + limit ;
+			end = end + limit;
+			currPage = currPage + 1;
+			init();
+		}
+});
+$("#selectBtn").click(function(){
+	searchName =$("#name").val();
+	searchPlace =$("#place").val();
+	searchFloor =$("#floor").val();
+	start = 1;
+	end =5 ;
+	currPage =1;
+	count = 0 ;
+	allPage = 0;
+	init();
+});
+
+
+$("#tb").click(function(event){
+	  var $tar = $(event.target);
+	  if($tar.val() == "删除"){
+		  if(confirm("确定要删除吗")){
+			  var placeId = $tar.attr("placeId");
+			  $.ajax({
+					url:"delCarplace.action",
+					type:"POST",
+					dataType:"json",
+					data:{"placeId" : placeId},
+					success:function(data){
+						var msg = JSON.stringify(data);
+						var obj = eval("(" + msg +")");
+						if(obj.id==0){
+							alert(obj.message);
+							start = 1;
+				        	end =5 ;
+				        	currPage =1;
+				        	count = 0 ;
+				        	allPage = 0;
+				        	init();	
+						}else{
+							alert(obj.message);
+						}  
+					},
+					error:function(msg){
+						alert("请联系管理员");
+					}
+				});
+		  }
+	  }
+	  if($tar.val() == "修改"){
+			var arr= $tar.parent().parent().children();
+			var $dname = $("#dname");
+			var $dplace = $("#dplace");
+			var $dfloor= $("#dfloor");
+			var $did= $("#did");
+			
+		    $dname.val($(arr[2]).html());
+		    $dplace.val($(arr[1]).html());
+		    $dfloor.val($(arr[3]).html());
+		    $did.val($tar.attr("placePsId"));
+		    
+		    
+			var $dialog = $("#dialog");
+		     $dialog.css("display","block");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","block");
+		}
+});
+
+var $cancel = $("#cancel").click(function(){
+	  var $dialog = $("#dialog");
+	     $dialog.css("display","none");
+	     var $diving2 = $("#diving2");
+	     $diving2.css("display","none");
+});
+var $commit = $("#commit").click(function(){
+		var $dplace = $("#dplace");
+		var $dfloor= $("#dfloor");
+		var $did= $("#did");
+		if($dplace.val() == "" || $dfloor.val() ==""){
+			alert("不能为空，请输入正确！！");
+		}else{
+		$.ajax({
+			type: "POST",
+			url: "motifyCarplace.action",
+			dataType:"json",
+			data:{"placePsId" : $did.val(),
+				"dplace" : $dplace.val() ,"dfloor" :$dfloor.val()},
+			success:function(data){
+				var msg = JSON.stringify(data);
+				var obj = eval("(" +msg+ ")");
+				if(obj.id == 0){
+					alert(obj.message);
+					start = 1;
+		        	end =5 ;
+		        	currPage =1;
+		        	count = 0 ;
+		        	allPage = 0;
+		        	init();	
+				}else{
+					alert(obj.message);
+				}
+			},
+			error:function(msg){
+				alert("请联系管理员 ");
+			}
+		});
+		var $dialog = $("#dialog");
+	     $dialog.css("display","none");
+	     var $diving2 = $("#diving2");
+	     $diving2.css("display","none");
+		}
+});
+
+//添加操作
+$("#addBtn").click(function(){
+	  emlty();
+	  var $adddialog = $("#adddialog");
+	     $adddialog.css("display","block");
+	     var $diving2 = $("#diving2");
+	     $diving2.css("display","block");
+});
+	function emlty(){
+		var $addname= $("#addname");
+		var $addplace= $("#addplace");
+		var $addfloor= $("#addfloor");
+		$addplace.val("");
+		$addfloor.val("");
+		$addname.val(""); 
+	}
+	// 设置添加弹框的添加按钮监听
+	var addcommit = document.getElementById("addcommit");
+	addcommit.onclick = function(){
+		var $addname= $("#addname");
+		var $addplace= $("#addplace");
+		var $addfloor= $("#addfloor");
+		if($addname.val()== "" || $addplace.val()=="" || $addfloor.val() == ""){
+			alert("不可为空，请输入正确！！");
+		}else{
+				$.ajax({
+					 type: "POST",
+					 url: "addPlace.action" ,
+					 dataType:"json",
+					 data:{"addname" : $addname.val(),"addplace":$addplace.val(),
+						 "addfloor" : $addfloor.val()},
+					 success:function(data){
+						 var msg = JSON.stringify(data);
+						 var obj = eval("(" + msg + ")");
+						 if(obj.id == 0 ){
+							 alert(obj.message);
+							 start = 1;
+					         end =5 ;
+					         currPage =1;
+					         count = 0 ;
+					         allPage = 0;
+					         init();	
+						 }else{
+							 alert(obj.message);
+						 }
+					 },
+					 error:function(msg){
+						 alert("请联系管理员");
+					 }
+				  });
+			}
+			var $adddialog = $("#adddialog");
+		     $adddialog.css("display","none");
+		     var $diving2 = $("#diving2");
+		     $diving2.css("display","none");
+	};
+	$("#addcancel").click(function(){
+		var $adddialog = $("#adddialog");
+	     $adddialog.css("display","none");
+	     var $diving2 = $("#diving2");
+	     $diving2.css("display","none");
+	});

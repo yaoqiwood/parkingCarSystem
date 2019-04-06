@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dao.DayCountMapper">
+
+	<resultMap type="com.example.bean.DayCount" id="dayCountMapper">
+		<result property="dayCountId" column="PDS_ID" />
+		<result property="dayCountTime" column="PDS_TIME" />
+		<result property="dayCountMoney" column="PDS_MONEY" />
+		<result property="dayCountState" column="PDS_STATE" />
+		<result property="dayCountMemo" column="PDS_MEMO" />
+		<result property="dayCountCreateTime" column="PDS_CREATE_TIME" />
+	</resultMap>
+
+	<select id="dayCountPage" resultMap="dayCountMapper">
+		SELECT * FROM PARK_DAY_SUM
+		<where>
+			<if test="startTime !=null and startTime != ''">
+				<if test="endTime != null and endTime != ''">
+					PDS_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND
+					TO_DATE(#{endTime},'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</if>
+		</where>
+		ORDER BY PDS_CREATE_TIME DESC
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_DAY_SUM
+		<where>
+			<if test="startTime !=null and startTime != ''">
+				<if test="endTime != null and endTime != ''">
+					PDS_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND
+					TO_DATE(#{endTime},'yyyy-mm-dd
+					hh24:mi:ss')
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<insert id="addDayCount">
+		INSERT INTO PARK_DAY_SUM
+		VALUES(SEQ_PARK_DAY_SUM.NEXTVAL,#{dayCount.dayCountTime},#{dayCount.dayCountMoney},1,NULL,SYSDATE)
+	</insert>
+
+	<select id="checkDayCount" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_DAY_SUM WHERE PDS_TIME =
+		#{time}
+	</select>
+
+</mapper>

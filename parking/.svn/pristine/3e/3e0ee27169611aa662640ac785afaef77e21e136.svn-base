@@ -1,0 +1,13 @@
+$("#login").click(function() {
+	var name = $("#name").val();
+	var password = $("#password").val();
+	var code = $("#code").val();
+	$.ajax({
+		type : "POST",
+		url : "login.action",
+		data : {"name" :name,"password" :password,"code" :code},
+		error : function(msg) {
+			alert("请联系管理员！");
+		}
+	});
+});

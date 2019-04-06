@@ -1,0 +1,104 @@
+/**
+ * 
+ */
+package com.example.bean;
+
+import java.util.Date;
+
+/**
+ * Title : Configure Description : DevelopTools : Eclipse_x64 DevelopSystem :
+ * Win10 Company : org.NorwegianWoods
+ * 
+ * @author : CatWood
+ * @date : Feb 24, 2019 12:00:50 PM
+ * @version : 12.0.0
+ */
+public class Configure {
+	private Integer pcId;
+	private String pcName;
+	private String pcParameter;
+	private Integer pcState;
+	private String pcMemo;
+	private Date pcCreateTime;
+	private Date pcUpdateTime;
+
+	public Configure(Integer pcId, String pcName, String pcParameter, Integer pcState, String pcMemo, Date pcCreateTime,
+			Date pcUpdateTime) {
+		super();
+		this.pcId = pcId;
+		this.pcName = pcName;
+		this.pcParameter = pcParameter;
+		this.pcState = pcState;
+		this.pcMemo = pcMemo;
+		this.pcCreateTime = pcCreateTime;
+		this.pcUpdateTime = pcUpdateTime;
+	}
+
+	public Configure() {
+		super();
+	}
+
+	@Override
+	public String toString() {
+		return "Configure [pcId=" + pcId + ", pcName=" + pcName + ", pcParameter=" + pcParameter + ", pcState="
+				+ pcState + ", pcMemo=" + pcMemo + ", pcCreateTime=" + pcCreateTime + ", pcUpdateTime=" + pcUpdateTime
+				+ "]";
+	}
+
+	public Integer getPcId() {
+		return pcId;
+	}
+
+	public void setPcId(Integer pcId) {
+		this.pcId = pcId;
+	}
+
+	public String getPcName() {
+		return pcName;
+	}
+
+	public void setPcName(String pcName) {
+		this.pcName = pcName;
+	}
+
+	public String getPcParameter() {
+		return pcParameter;
+	}
+
+	public void setPcParameter(String pcParameter) {
+		this.pcParameter = pcParameter;
+	}
+
+	public Integer getPcState() {
+		return pcState;
+	}
+
+	public void setPcState(Integer pcState) {
+		this.pcState = pcState;
+	}
+
+	public String getPcMemo() {
+		return pcMemo;
+	}
+
+	public void setPcMemo(String pcMemo) {
+		this.pcMemo = pcMemo;
+	}
+
+	public Date getPcCreateTime() {
+		return pcCreateTime;
+	}
+
+	public void setPcCreateTime(Date pcCreateTime) {
+		this.pcCreateTime = pcCreateTime;
+	}
+
+	public Date getPcUpdateTime() {
+		return pcUpdateTime;
+	}
+
+	public void setPcUpdateTime(Date pcUpdateTime) {
+		this.pcUpdateTime = pcUpdateTime;
+	}
+
+}

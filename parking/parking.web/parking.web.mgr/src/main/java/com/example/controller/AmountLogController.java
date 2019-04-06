@@ -1,0 +1,193 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.AmountLog;
+import com.example.bean.CarService;
+import com.example.bean.MechineLog;
+import com.example.bean.SumManual;
+import com.example.service.AmountLogService;
+/**
+ * 
+  * <p>Title : AmountLogController</p>
+  * <p>Description :收支明细控制类 </p>
+  * <p>DevelopTools : Eclipse_x64_v4.7.1</p>
+  * <p>DevelopSystem : Windows 10</p>
+  * <p>Company : org.chenmian</p>
+  * @author : ChenMian
+  * @date : 2019年2月23日 上午8:38:14
+  * @version : 12.0.0
+ */
+@Controller
+public class AmountLogController {
+	
+	@Autowired
+	private AmountLogService amountLogService;
+	/**
+	 * 收支明细
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-amountLog.ajax")
+	@ResponseBody
+	public JSONObject accountLog(HttpServletRequest request) {
+		System.out.println("获取accountLog");
+		Integer sumAmount = amountLogService.sumAmount();//总数
+		Integer countAmount = amountLogService.countAmount();//总停车
+		Integer sumCasual = amountLogService.sumCasual();//临时用户
+		Integer sumMonth = amountLogService.sumMonth();//月缴用户
+		Integer sumTerminal = amountLogService.sumTerminal();//终端用户	
+		Integer sumManual = amountLogService.sumManual();//人工缴费
+		JSONObject model = new JSONObject();
+		model.put("sumAmount", sumAmount);
+		model.put("countAmount", countAmount);
+		model.put("sumCasual", sumCasual);
+		model.put("sumMonth", sumMonth);
+		model.put("sumTerminal", sumTerminal);
+		model.put("sumManual", sumManual);
+		return model;
+	}
+	/**
+	 * 总收入、总停车数
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-income.ajax")
+	@ResponseBody
+	public JSONObject income(String offset, String limit,HttpServletRequest request) {
+		System.out.println("获取 income "+ offset + " : " + limit);
+		Integer sumAmount = amountLogService.sumAmount();//总数
+		Integer countAmount = amountLogService.countAmount();//总停车
+		List<AmountLog> incomeList = amountLogService.queryIncome(offset,limit);
+		Integer count = amountLogService.countIncome();
+		JSONObject model = new JSONObject();
+		model.put("sumAmount", sumAmount);
+		model.put("countAmount", countAmount);
+		model.put("incomeList", incomeList);
+		model.put("count", count);
+		return model;
+	}
+	/**
+	 * 月缴用户临时用户收入
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-incomeMonth.ajax")
+	@ResponseBody
+	public JSONObject incomeMonth(String offset, String limit, HttpServletRequest request) {
+		System.out.println("获取 incomeMonth "+ offset + " : " + limit);
+		List<AmountLog> incomeMonthList = amountLogService.queryIncomeMonth(offset, limit);
+		Integer count = amountLogService.countIncomeMonth();
+		Integer sumCasual = amountLogService.sumCasual();//临时用户
+		Integer sumMonth = amountLogService.sumMonth();//月缴用户
+		JSONObject model = new JSONObject();
+		model.put("incomeMonthList", incomeMonthList);
+		model.put("count", count);
+		model.put("sumCasual", sumCasual);
+		model.put("sumMonth", sumMonth);
+		return model;
+	}
+	/**
+	 * 月缴产品收入
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-incomeProduct.ajax")
+	@ResponseBody
+	public JSONObject incomeProduct(String offset, String limit, HttpServletRequest request) {
+		System.out.println("获取 incomeProduct "+ offset + " : " + limit);
+		List<CarService> incomeProductList = amountLogService.queryIncomeProduct(offset, limit);
+		Integer count = amountLogService.countIncomeProduct();
+		Integer monthProduct = amountLogService.sumProduct("包月产品");
+		Integer seasonProduct = amountLogService.sumProduct("季度产品");
+		Integer halfyearProduct = amountLogService.sumProduct("半年产品");
+		Integer yearProduct = amountLogService.sumProduct("包年产品");
+		JSONObject model = new JSONObject();
+		model.put("monthProduct", monthProduct);
+		model.put("seasonProduct", seasonProduct);
+		model.put("halfyearProduct", halfyearProduct);
+		model.put("yearProduct", yearProduct);
+		model.put("incomeProductList", incomeProductList);
+		model.put("count", count);
+		return model;
+	}
+	/**
+	 * 自助终端收入明细
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-incomeMechine.ajax")
+	@ResponseBody
+	public JSONObject incomeMechine(String offset, String limit, HttpServletRequest request) {
+		System.out.println("获取 incomeMechine "+ offset + " : " + limit);
+		Integer sumMechineA = amountLogService.sumMechine(1);//A出口统计
+		Integer sumMechineB = amountLogService.sumMechine(2);//B出口统计
+		Integer sumMechineC = amountLogService.sumMechine(3);//C出口统计
+		Integer sumMechineD = amountLogService.sumMechine(4);//D出口统计
+		List<MechineLog> incomeMechineList = amountLogService.queryIncomeMechine(offset, limit);
+		Integer count = amountLogService.countIncomeMechine();
+		JSONObject model = new JSONObject();
+		model.put("incomeMechineList", incomeMechineList);
+		model.put("count", count);
+		model.put("sumMechineA", sumMechineA);
+		model.put("sumMechineB", sumMechineB);
+		model.put("sumMechineC", sumMechineC);
+		model.put("sumMechineD", sumMechineD);
+		return model;
+	}
+	/**
+	 *人工缴费收入
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-incomeManual.ajax")
+	@ResponseBody
+	public JSONObject incomeManual(String offset, String limit, HttpServletRequest request) {
+		System.out.println("获取 incomeManual "+ offset + " : " + limit);
+		List<SumManual> incomeManualList = amountLogService.sumIncomeManual();
+		List<AmountLog> queryIncomeManual = amountLogService.queryIncomeManual(offset, limit);
+		Integer count = amountLogService.countIncomeManual();
+		JSONObject model = new JSONObject();
+		model.put("incomeManualList", incomeManualList);
+		model.put("queryIncomeManual", queryIncomeManual);
+		model.put("count", count);
+		return model;
+	}
+	/**
+	 * 收费渠道收入
+	 * @param offset 当前页
+	 * @param limit 每页显示数
+	 * @param request 返回值
+	 * @return
+	 */
+	@RequestMapping("/do-incomeChannel.ajax")
+	@ResponseBody
+	public JSONObject incomeChannel(String offset, String limit, HttpServletRequest request) {
+		System.out.println("获取 incomeChannel "+ offset + " : " + limit);
+		Integer sumTerminal = amountLogService.sumTerminal();
+		Integer sumManual = amountLogService.sumManual();
+		JSONObject model = new JSONObject();
+		model.put("sumTerminal", sumTerminal);
+		model.put("sumManual", sumManual);
+		return model;
+	}
+	
+}

@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package com.example.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.CarService;
+
+/**
+ * <p>Title:CarServiceMapper</p>
+ * <p>Description:车辆缴交业务</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月25日 上午2:32:28
+ * @version:12.0.0
+ */
+public interface CarServiceMapper {
+	/**
+	 * 插入数据
+	 * @param carService 车服务对象
+	 * @return 0 1
+	 */
+	Integer addCarService(@Param("carService") CarService carService);
+}

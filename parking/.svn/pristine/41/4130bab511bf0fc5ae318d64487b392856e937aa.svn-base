@@ -1,0 +1,64 @@
+/**
+ * 
+ */
+package com.example.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.example.bean.Menu;
+import com.example.dto.MenuDto;
+import com.example.service.ManagerBackMenuService;
+
+/**
+ * <p>Title : ManagerFrontMenuController</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64</p>
+ * <p>DevelopSystem : Win10</p>
+ * <p>Company : org.NorwegianWoods</p>
+ * @author : CatWood
+ * @date : Feb 21, 2019 10:59:31 PM
+ * @version : 12.0.0
+ */
+
+@Controller
+public class ManagerBackMenuController {
+	
+	@Autowired
+	private ManagerBackMenuService managerBackMenuService;
+	
+	/**
+	 * 菜单栏页面
+	 * @return
+	 */
+	@RequestMapping("menuDemo")
+	public ModelAndView getMenuAndView() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("menuDemo");
+		return modelAndView;
+	}
+	
+	
+	@RequestMapping("/init-leftMenu.action")
+	@ResponseBody
+	public JSONArray initLeftMenu() {
+		
+		List<MenuDto> menus = managerBackMenuService.initLeftMenu("0");
+		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(menus);
+		return jsonArray;
+	}
+	
+	
+	
+}
+
+
+
+
+

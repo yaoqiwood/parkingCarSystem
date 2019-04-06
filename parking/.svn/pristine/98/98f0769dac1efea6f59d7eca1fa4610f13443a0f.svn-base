@@ -1,0 +1,87 @@
+package com.example.bean;
+
+import java.util.Date;
+
+public class Menu {
+	
+	private Integer menuId;
+	private Integer menuParent;
+	private String menuName;
+	private String menuUrl;
+	private Integer menuState;
+	private String menuMemo;
+	private Date menuCreateTime;
+	private Date menuUpdateTime;
+	
+	public Menu(Integer menuId, Integer menuParent, String menuName, String menuUrl, Integer menuState, String menuMemo,
+			Date menuCreateTime, Date menuUpdateTime) {
+		super();
+		this.menuId = menuId;
+		this.menuParent = menuParent;
+		this.menuName = menuName;
+		this.menuUrl = menuUrl;
+		this.menuState = menuState;
+		this.menuMemo = menuMemo;
+		this.menuCreateTime = menuCreateTime;
+		this.menuUpdateTime = menuUpdateTime;
+	}
+	public Menu() {
+		super();
+	}
+	public Integer getMenuId() {
+		return menuId;
+	}
+	public void setMenuId(Integer menuId) {
+		this.menuId = menuId;
+	}
+	public Integer getMenuParent() {
+		return menuParent;
+	}
+	public void setMenuParent(Integer menuParent) {
+		this.menuParent = menuParent;
+	}
+	public String getMenuName() {
+		return menuName;
+	}
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
+	public String getMenuUrl() {
+		return menuUrl;
+	}
+	public void setMenuUrl(String menuUrl) {
+		this.menuUrl = menuUrl;
+	}
+	public Integer getMenuState() {
+		return menuState;
+	}
+	public void setMenuState(Integer menuState) {
+		this.menuState = menuState;
+	}
+	public String getMenuMemo() {
+		return menuMemo;
+	}
+	public void setMenuMemo(String menuMemo) {
+		this.menuMemo = menuMemo;
+	}
+	public Date getMenuCreateTime() {
+		return menuCreateTime;
+	}
+	public void setMenuCreateTime(Date menuCreateTime) {
+		this.menuCreateTime = menuCreateTime;
+	}
+	public Date getMenuUpdateTime() {
+		return menuUpdateTime;
+	}
+	public void setMenuUpdateTime(Date menuUpdateTime) {
+		this.menuUpdateTime = menuUpdateTime;
+	}
+	@Override
+	public String toString() {
+		return "Menu [menuId=" + menuId + ", menuParent=" + menuParent + ", menuName=" + menuName + ", menuUrl="
+				+ menuUrl + ", menuState=" + menuState + ", menuMemo=" + menuMemo + ", menuCreateTime=" + menuCreateTime
+				+ ", menuUpdateTime=" + menuUpdateTime + "]";
+	}
+	
+
+}

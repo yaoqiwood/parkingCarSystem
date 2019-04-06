@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.MenuInfMapper">
+<resultMap type="com.example.bean.MenuInf" id="menuInfMapper">
+	<result property="menuId" column="PM_ID"/>
+	<result property="menuParent" column="PM_PARENT"/>
+	<result property="menuName" column="PM_NAME"/>
+	<result property="menuUrl" column="PM_URL"/>
+	<result property="menuState" column="PM_STATE"/>
+	<result property="menuMemo" column="PM_MEMO"/>
+	<result property="menuCreateTime" column="PM_CREATE_TIME"/>
+	<result property="menuUpdateTime" column="PM_UPDATE_TIME"/>
+</resultMap>
+<resultMap type="com.example.dto.MenuRoleDto" id="menuRoleDtoMapper" extends="menuInfMapper">
+    <result property="adminRoleId" column="PARM_ID"/>
+    <result property="adminRoleState" column="PARM_STATE"/>
+</resultMap>
+
+<select id="getMenu" resultMap="menuRoleDtoMapper">
+ SELECT PARK_MENU.*,PARM_STATE,PARM_ID FROM PARK_MENU INNER JOIN PARK_ADMIN_ROLE_MENU ON 
+ PARK_MENU.PM_ID =PARK_ADMIN_ROLE_MENU.PARM_MENU_ID AND PARK_ADMIN_ROLE_MENU.PARM_PAR_ID=#{roleId}
+</select>
+
+<update id="updatemenu">
+  UPDATE PARK_ADMIN_ROLE_MENU SET PARM_STATE = 0  WHERE PARM_PAR_ID = #{roleId}
+</update>
+
+<update id="updatemenuroleId">
+  UPDATE PARK_ADMIN_ROLE_MENU SET PARM_STATE = 1  WHERE PARM_ID = #{roleId}
+</update>
+</mapper>

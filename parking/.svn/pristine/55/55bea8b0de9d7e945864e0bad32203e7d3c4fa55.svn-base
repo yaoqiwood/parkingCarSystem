@@ -1,0 +1,85 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.Admin;
+import com.example.service.AdminService;
+
+@Controller
+public class AdminController {
+	
+	@Autowired
+	private AdminService service;
+	
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public JSONObject login(String name,String password,String code,HttpServletRequest request) {
+		String nowCode = (String)request.getSession().getAttribute("code");
+		Admin adminLogin = service.adminLogin(name, password);
+		JSONObject model = new JSONObject();
+		if(adminLogin != null && code.equals(nowCode)) {
+			model.put("message", "登录成功");
+			model.put("location", "frame");
+		}else {
+			model.put("message", "登录失败");
+		}
+		return model;
+	}
+	
+	/**
+	 * 获取用户所有信息，刷新到表格
+	 * @param startTime
+	 * @param endTime
+	 * @param name
+	 * @param role
+	 * @param state
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listAdminByPage")
+	@ResponseBody
+	public JSONObject listAdminByPage(String startTime ,String endTime,String name,Integer role
+			,Integer state,Integer start,Integer end,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		List<Admin> listAdminByPage = service.listAdminByPage(startTime, endTime, name, role, state, start, end);
+		Integer countAdmin = service.countAdmin(startTime, endTime, name, role, state);
+		
+		data.put("admins", listAdminByPage);
+		data.put("count", countAdmin);
+		data.put("id", 0);
+		
+		return data;
+		}
+
+	/**
+	 * 删除用户
+	 * @param adminId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/del.action")
+	@ResponseBody
+	public JSONObject delAdmin(String adminId,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer delAdmin = service.delAdmin(adminId); 
+		if(delAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "删除成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "删除失败");
+		}
+		
+		return data;
+	}
+}

@@ -1,0 +1,34 @@
+package com.example.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.dao.AmountLogMapper;
+import com.example.service.AmountLogService;
+@Service
+public class AmountLogServiceImp implements AmountLogService{
+	
+	@Autowired
+	private AmountLogMapper dailyMapper;
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumAmount() {
+		// TODO Auto-generated method stub
+		Integer sumAmount = dailyMapper.sumAmount();
+		System.out.println("sumAmount= "+sumAmount);
+		return sumAmount;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer countAmount() {
+		// TODO Auto-generated method stub
+		Integer countAmount = dailyMapper.countAmount();
+		System.out.println("countAmount= "+countAmount);
+		return countAmount;
+	}
+	
+	
+
+}

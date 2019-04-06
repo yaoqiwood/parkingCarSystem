@@ -1,0 +1,8 @@
+$(document).resize(function () { 
+    $("#p-iframe").width($(document).width() - $("#z-sideBar").width());
+});
+
+$("#z-sideBar").resize(function () {  
+    $("#p-iframe").width($(document).width() - $("#z-sideBar").width());
+})
+

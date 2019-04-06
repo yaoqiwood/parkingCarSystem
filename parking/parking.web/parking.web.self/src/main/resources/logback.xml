@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 基本信息配置 -->
+	<property name="localAppName" 	value="com.example"/>
+	<property name="logHomeDir" 	value="${user.dir}/logs/logback"/>
+	<property name="logbackLevel" 	value="ERROR"/>
+	<contextName>default</contextName>
+
+	<!-- 控制台输出配置 -->
+	<appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 针对本项目配置的日志 Start -->
+	<appender name="LOCALAPP_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<Prudent>false</Prudent>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logHomeDir}/${localAppName}/debug/debug-%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>10</MaxHistory> <!-- 日志保留的个数 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="LOCALAPP_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<Prudent>false</Prudent>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logHomeDir}/${localAppName}/warn/warn-%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>10</MaxHistory> <!-- 日志保留的个数 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="LOCALAPP_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<Prudent>false</Prudent>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logHomeDir}/${localAppName}/info/info-%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>10</MaxHistory> <!-- 日志保留的个数 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="LOCALAPP_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<Prudent>false</Prudent>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logHomeDir}/${localAppName}/error/error-%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>10</MaxHistory> <!-- 日志保留的个数 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<!-- 针对本项目配置的日志 Ends -->
+
+	<!-- 针对第三方配置的日志 Start -->
+	<appender name="THIRDPART_DEFAULT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<Prudent>false</Prudent>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logHomeDir}/${localAppName}/thirdpart/thirdpart-%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>10</MaxHistory> <!-- 日志保留的个数 -->
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<!-- 针对第三方配置的日志 Ends -->
+
+	<!-- 针对指定包配置的日志 Start -->
+	<logger name="test" addtivity="false" level="${logbackLevel}">
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<logger name="org" addtivity="false" level="${logbackLevel}">
+		<appender-ref ref="ConsoleAppender"/>
+		<appender-ref ref="THIRDPART_DEFAULT"/>
+	</logger>
+
+	<logger name="com" addtivity="false" level="${logbackLevel}">
+		<appender-ref ref="ConsoleAppender"/>
+		<appender-ref ref="THIRDPART_DEFAULT"/>
+	</logger>
+
+	<!-- log4jdbc 专用配置 -->
+	<logger name="jdbc.sqltiming" addtivity="false" level="${logbackLevel}">
+		<appender-ref ref="ConsoleAppender"/>
+	</logger>
+
+	<logger name="jdbc.resultsettable" level="INFO"></logger>
+	<logger name="jdbc.sqlonly" level="OFF"></logger>
+	<logger name="jdbc.audit" level="OFF"></logger>
+	<logger name="jdbc.resultset" level="OFF"></logger>
+	<logger name="jdbc.connection" level="OFF"></logger>
+	<!-- 针对指定包配置的日志 Ends -->
+
+	<!-- 根logger<root>此标签必须设置在最后面方可正常读取,否则系统将识别为无输出控制. 
+		 只有一个level属性,用来设置打印级别,大小写无关:TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF, 
+		 不能设置为INHERITED或者同义词NULL. 默认是DEBUG. <root>可以包含零个或多个<appender-ref>元素,标识这个appender将会添加到这个loger. -->
+	<root level="WARN">
+		<!-- <appender-ref ref="ConsoleAppender"/> -->
+	</root>
+
+</configuration>

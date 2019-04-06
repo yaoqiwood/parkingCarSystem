@@ -1,0 +1,13 @@
+*{
+    overflow: hidden;
+}
+
+#p-iframe{
+  /*   margin-left: 232px; */
+    margin-top: 2px;
+    left:3px;
+    box-shadow: 0 0 2px black ;
+    position: relative;
+    top: 51px;
+    padding: 1px;
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.CarServiceMapper">
+
+	<resultMap type="com.example.bean.CarService" id="carServiceMapper">
+		<result property="carServiceId" column="PCS_ID" />
+		<result property="carServiceCarnumId" column="PCS_PC_ID" />
+		<result property="carServicePmpId" column="PCS_PMP_ID" />
+		<result property="carServiceState" column="PCS_STATE" />
+		<result property="carServiceMemo" column="PCS_MEMO" />
+		<result property="carServiceCreateTime" column="PCS_CTIME" />
+		<result property="carServiceUpdateTime" column="PCS_UTIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.CarServiceDto" id="carServiceDtoMapper" extends="carServiceMapper">
+		<result property="carNum" column="PC_NUM" />
+		<result property="monthProduct" column="PMP_NAME" />
+		<result property="monthProductMonth" column="PMP_MONTH" />
+		<result property="monthProductMoney" column="PMP_MONEY" />
+	</resultMap>
+
+	<insert id="addCarService">
+		INSERT INTO PARK_CAR_SERVICE
+		VALUES(SEQ_PARK_CAR_SERVICE.NEXTVAL,#{carService.carServiceCarnumId},#{carService.carServicePmpId},#{carService.carServiceState},NULL,SYSDATE,SYSDATE)
+	</insert>
+
+	<select id="carServicePage" resultMap="carServiceDtoMapper">
+		SELECT A.*,B.PC_NUM PC_NUM,C.PMP_NAME PMP_NAME,C.PMP_MONTH
+		PMP_MONTH,C.PMP_MONEY PMP_MONEY FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID INNER JOIN
+		PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID WHERE PC_NUM = #{carNum}
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON
+		A.PCS_PC_ID = B.PC_ID INNER JOIN
+		PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID WHERE PC_NUM = #{carNum}
+	</select>
+
+	<update id="modCarService">
+		UPDATE PARK_CAR_SERVICE SET PCS_STATE = #{state} WHERE PCS_ID = #{serId}
+	</update>
+
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_CAR_SERVICE WHERE PCS_PC_ID = #{carId}
+		AND PCS_STATE = 1
+	</select>
+
+	<select id="selectCarServiceDto" resultMap="carServiceDtoMapper">
+		SELECT A.*,B.PC_NUM PC_NUM,C.PMP_NAME PMP_NAME,C.PMP_MONTH
+		PMP_MONTH,C.PMP_MONEY PMP_MONEY FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID INNER JOIN
+		PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID WHERE A.PCS_ID = #{ser_id}
+	</select>
+
+	<select id="selectCarServiceUsing" resultMap="carServiceDtoMapper">
+		SELECT A.*,B.PC_NUM PC_NUM,C.PMP_NAME PMP_NAME,C.PMP_MONTH
+		PMP_MONTH,C.PMP_MONEY PMP_MONEY FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID INNER JOIN
+		PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID WHERE A.PCS_ID = (SELECT MIN(X.PCS_ID) FROM PARK_CAR_SERVICE X INNER
+		JOIN PARK_CARNUM Y ON X.PCS_PC_ID = Y.PC_ID WHERE PC_NUM = #{carNum} AND X.PCS_STATE=2)
+	</select>
+
+	<select id="expireCarService" resultMap="carServiceDtoMapper">
+		SELECT A.*,B.PC_NUM PC_NUM,C.PMP_NAME PMP_NAME,C.PMP_MONTH
+		PMP_MONTH,C.PMP_MONEY PMP_MONEY FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID INNER JOIN
+		PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID WHERE A.PCS_ID = (SELECT MIN(X.PCS_ID) FROM PARK_CAR_SERVICE X INNER
+		JOIN PARK_CARNUM Y ON X.PCS_PC_ID = Y.PC_ID WHERE X.PCS_STATE=1)
+	</select>
+</mapper>	

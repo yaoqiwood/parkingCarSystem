@@ -1,0 +1,9 @@
+package com.example.service;
+
+import com.example.bean.Admin;
+
+public interface AdminService {
+	
+	Admin adminLogin(String name,String password);
+
+}

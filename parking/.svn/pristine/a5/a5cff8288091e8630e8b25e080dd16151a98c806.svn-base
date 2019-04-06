@@ -1,0 +1,93 @@
+function formatUnixtimestamp (unixtimestamp){
+    var unixtimestamp = new Date(unixtimestamp);
+    var year = 1900 + unixtimestamp.getYear();
+    var month = "0" + (unixtimestamp.getMonth() + 1);
+    var date = "0" + unixtimestamp.getDate();
+    var hour = "0" + unixtimestamp.getHours();
+    var minute = "0" + unixtimestamp.getMinutes();
+    var second = "0" + unixtimestamp.getSeconds();
+    return year + "-" + month.substring(month.length-2, month.length)  + "-" + date.substring(date.length-2, date.length)
+        + " " + hour.substring(hour.length-2, hour.length) + ":"
+        + minute.substring(minute.length-2, minute.length) + ":"
+        + second.substring(second.length-2, second.length);
+}
+//定义搜索变量
+var searchName="";
+//定义分页变量
+var start = 1;
+var end = 5;
+var count = 0 ;
+var currPage = 1;
+var allPage = 0;
+var limit = 5;
+
+function init(){
+	   $.ajax({
+		   url:"listcarInByPage.action",
+		   type:"POST",
+		   dataType:"json",
+		   data:{"name" : searchName,"start" : start, "end" : end},
+		   success:function(data){
+		   	   var msg = JSON.stringify(data);
+			   var obj = eval("(" + msg + ")");
+			   // 首先清空数据
+			   var arr = $(".tr")
+			   for(var i = arr.length -1 ; i>= 0 ; i--){
+				   $(arr[i]).remove();
+			   }
+			   // 添加数据
+			   var admins = obj.admins;
+			   var c = obj.count;
+			   if(c == 0 && obj.id == 0){
+				   init();
+			   }else if(obj.id == 0){
+	  				   alert(obj.message);
+					   for(var i = 0; i< admins.length;i ++){
+						   var $tr = $("<tr class='tr' align='center'></tr>");
+$tr.append($("<td>"+ admins[i].carnumId +"</td>"));
+$tr.append($("<td>"+ admins[i].carNumber +"</td>"));
+$tr.append($("<td>"+ admins[i].carRoleName +"</td>"));
+$tr.append($("<td>"+ formatUnixtimestamp(new Date(admins[i].carnumCreateTime)) +"</td>"));
+$tr.append($("<td>"+ formatUnixtimestamp(new Date(admins[i].carnumUpdateTime)) +"</td>"));
+$("#tb").append($tr);
+};
+					   
+					   count = c;
+					   allPage = c%5 == 0 ? c/5 : parseInt(c/5 +1);
+					   $("#page").html(currPage + "/" +allPage);
+	  		 }
+		   },
+		   error:function(msg){
+			   alert("请联系管理员");
+		   }
+	   });
+}
+$("#pre").click(function(){
+	  if(start <= 1){
+			alert("已经是第一页了");
+		}else{
+			start = start - limit ;
+			end = end - limit;
+			currPage = currPage - 1;
+			init();
+		}
+});
+$("#next").click(function(){
+	  if(end >= count){
+			alert("已经是尾页了");
+		}else{
+			start = start + limit ;
+			end = end + limit;
+			currPage = currPage + 1;
+			init();
+		}
+});
+$("#selectBtn").click(function(){
+	searchName =$("#name").val();
+	start = 1;
+	end =5 ;
+	currPage =1;
+	count = 0 ;
+	allPage = 0;
+	init();
+});

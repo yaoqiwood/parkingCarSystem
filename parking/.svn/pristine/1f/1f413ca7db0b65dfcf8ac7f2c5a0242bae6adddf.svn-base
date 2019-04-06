@@ -1,0 +1,409 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>缴费信息</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/selfPayment.css">
+    <link rel="stylesheet" href="3rd/CarNumPlugin/css/CarNumPlugin.css">
+    <style type="text/css">
+    	.iframe{
+    /* border:2px solid black; */
+    position: relative;
+    /* left: 25%; */
+    width: 300px;
+    height:300px;
+    margin-top:100px;
+    margin-left:100px;
+}
+
+.carnum-plugin{
+    margin-top: 100px;
+    margin-left: 100px;
+    height:330px;
+}
+
+.btn-center{
+    text-align: center;
+}
+
+.text-heading{
+    text-align: center;
+}
+
+body{
+    /* background-color: #f3f3f3; */
+}
+
+.table_btn{
+    height: 175px;
+}
+
+.right-btn-box{
+    margin-top: 168px;
+    margin-left:100px;
+}
+
+.iframe_in{
+    margin-top:22px;
+    position: relative;
+    left: -70px;
+}
+
+.field{
+    margin-right:18px;
+}
+
+.btn_Click{
+    width: 186px;
+    position: relative;
+    left: 60%;
+    margin-top:20px;
+}
+
+
+.col-black{
+    color:black;
+}
+
+#main{
+    height: 500px;
+}
+body .layui-layer-setmybg .layui-layer-content{background-color:  #2A2F4A; color: #fff;}
+.back{
+	
+    float:left;
+}
+    </style>
+</head>
+<body>
+	<div id="body">
+    <!-- Wrapper -->
+	    <div id="wrapper">
+	
+	        <!-- Header -->
+	        <!-- Note: The "styleN" class below should match that of the banner element. -->
+	        <header id="header" class="alt style2">
+	            <a href="index.html" class="logo"><strong>智能停车系统</strong> <span></span></a>
+	        </header>
+	
+	        <!-- Main -->
+	        <div id="main">
+	            <section id="two" class="spotlights flex_col flex_col_2 color_fff box_1">
+	                <div class="input-plugin">
+	                    <div class="panel-heading text-heading">车牌输入</div>
+	                    <div class="panel-body">
+	                        <div>
+	                            <div class="che_tit">输入车牌</div>
+	                            <div class="car_input">
+	                                <ul class="clearfix ul_input col-black">
+	                                    <li class="input_pro"><span id="name1"></span></li>
+	                                    <li class="input_pp input_zim"><span id="name2"></span></li>
+	                                    <li class="input_pp"><span id="name3"></span></li>
+	                                    <li class="input_pp"><span id="name4"></span></li>
+	                                    <li class="input_pp"><span id="name5"></span></li>
+	                                    <li class="input_pp"><span id="name6"></span></li>
+	                                    <li class="input_pp"><span id="name7"></span></li>
+	                                </ul>
+	                            </div>
+	                        </div>
+	                        <div class="btn-center">
+	                            <button class="btn btn-primary" type="button" id="selectBtn">显示车牌</button>
+	                        </div>
+	                    </div>
+	                </div>
+	
+	                <div class="content">
+	                    <div class="iframe_in flex_col flex_col_3 flex_wrap">
+	                        <div class="field half first">
+	                            <label for="name">序号：</label>
+	                            <input type="text" name="carId" id="carId" disabled="disabled">
+	                        </div>
+	                        <div class="field half">
+	                            <label for="email">车牌号：</label>
+	                            <input type="text" name="carNo" id="carNo" disabled="disabled">
+	                        </div>
+	                        <div class="field half first">
+	                            <label for="name">进入时间</label>
+	                            <input type="text" name="carIn" id="carIn" disabled="disabled">
+	                        </div>
+	                        <div class="field half">
+	                            <label for="email">离开时间：</label>
+	                            <input type="text" name="carOut" id="carOut" disabled="disabled">
+	                        </div>
+	                        <div class="field half first">
+	                            <label for="name">商户订单号：</label>
+	                            <input type="text" name="WIDout_trade_no" id="WIDout_trade_no" disabled="disabled">
+	                        </div>
+	                        <div class="field half">
+	                            <label for="email">订单名称：</label>
+	                            <input type="text" name="WIDsubject" id="WIDsubject" disabled="disabled">
+	                        </div>
+	                        <div class="field half first">
+	                            <label for="name">付款金额：</label>
+	                            <input type="text" name="WIDtotal_amount" id="WIDtotal_amount" disabled="disabled">
+	                        </div>
+	                        <div class="field half">
+	                            <label for="email">商品描述：</label>
+	                            <input type="text" name="WIDbody" id="WIDbody" disabled="disabled">
+	                        </div>
+	                        <div>
+	                            <input type="button" value="立即付款" class="button special btn_Click" id="btn">
+	                            <input id="payState" value="${message}" type="hidden" />
+	                        </div>
+	                        
+	                    </div>
+	                </div>
+	            </section>
+	        </div>
+		</div>
+		<div class="btn-center">
+                <button class="btn btn-primary back" type="button" id="backBtn">返回首页</button>
+           </div>
+        
+</body>
+<!-- Scripts -->
+<!-- <script src="js/jquery.min.js"></script> -->
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="3rd/CarNumPlugin/js/layer.js" type="text/javascript"></script>
+<!-- <script src="3rd/layer/layer.js" type="text/javascript"></script> -->
+
+<script src="3rd/CarNumPlugin/js/index.js" type="text/javascript"></script>
+<script src="js/jquery.scrolly.min.js"></script>
+<script src="js/jquery.scrollex.min.js"></script>
+<script src="js/skel.min.js"></script>
+<script src="js/util.js"></script>
+<script src="js/main.js"></script>
+<script src="3rd/CarNumPlugin/js/layer.js" type="text/javascript"></script>
+<script src="3rd/CarNumPlugin/js/index.js" type="text/javascript"></script>
+<!-- <script src="js/jquery-2.2.4.min.js"></script> -->
+<!-- <script src="3rd/zui/js/zui.min.js"></script>
+<script src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script> -->
+<script src="js/table_funs.js"></script>
+<script type="text/javascript">
+//获取终端ID
+var mechineId = 1;
+//支付页面js
+var $payState = $("#payState");
+	//alert($("#payState").val());
+	if ($("#payState").val() == null || $("#payState").val() == '') {
+		/* setTimeout(function(){
+			zuiAlert("支付失败！", 'danger');
+		},2000); */
+	} else {
+		setTimeout(function() {
+			layer.open({
+				  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+				  content: "支付成功！",
+				  btn: '确定',
+				  shadeClose: false
+				});
+			/* 
+			zuiAlert("支付成功！"); */
+			//zuiAlert("支付成功！", 'success');
+		}, 1000);
+	}
+
+	
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length)
+				+ "-" + date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	//初始化
+	function init() {
+		$.ajax({
+			url : "do-payment.ajax",
+			type : "POST",
+			data : {
+				"name" : searchName
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				
+				var id = data.id;
+				var queryRecord = data.queryRecord;
+				var money = data.money;
+				if (id == 0) {
+					var $carId = $("#carId");
+					var $carNo = $("#carNo");
+					var $carIn = $("#carIn");
+					var $carOut = $("#carOut");
+					var $WIDout_trade_no = $("#WIDout_trade_no");
+					var $WIDsubject = $("#WIDsubject");
+					var $WIDtotal_amount = $("#WIDtotal_amount");
+					var $WIDbody = $("#WIDbody");
+					$carId.val(queryRecord.carRecordId);
+					$carNo.val(queryRecord.carNum);
+					$carIn.val(formatUnixtimestamp(new Date(queryRecord.carRecordComeTime)));
+					$carOut.val(formatUnixtimestamp(new Date(
+							queryRecord.carRecordOutTime)));
+					$WIDout_trade_no.val(GetDateNow());
+					$WIDsubject.val("停车订单");
+					$WIDtotal_amount.val(money);
+					$WIDbody.val("无");
+					
+				} else if(id == 4){
+					layer.open({
+						  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+						  content: data.message,
+						  btn: '确定',
+						  shadeClose: false
+						});
+					/* alert(data.message); */
+					//zuiAlert("此车辆无停车记录", 'danger');
+				}else {
+					layer.open({
+						  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+						  content: "暂无数据",
+						  btn: '确定',
+						  shadeClose: false
+						});
+					/* alert("暂无数据"); */
+					//zuiAlert("暂无数据", 'danger');
+				}
+			},
+			error : function(msg) {
+				layer.open({
+					  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+					  content: "请联系管理员...",
+					  btn: '确定',
+					  shadeClose: false
+					});
+				/* alert("请联系管理员..."); */
+				//zuiAlert("请联系管理员...", 'danger');
+			}
+		});
+	}
+	//init();
+	//页码监听
+	$('#myPager').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			currPage = state.page;
+			init();
+		}
+	});
+	//搜索
+	$("#selectBtn").click(function() {
+		var $name1 = $("#name1");
+		var $name2 = $("#name2");
+		var $name3 = $("#name3");
+		var $name4 = $("#name4");
+		var $name5 = $("#name5");
+		var $name6 = $("#name6");
+		var $name7 = $("#name7");
+		//alert($name2.html());
+		searchName = $name1.html()+$name2.html()+$name3.html()+$name4.html()+$name5.html()+$name6.html()+$name7.html();
+		//alert(searchName);
+		if ($name1.html()==""||$name2.html()==""||$name3.html()==""||$name4.html()==""||$name5.html()==""||$name6.html()==""||$name7.html()=="") {
+			layer.open({
+				  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+				  content:'请输入完整车牌！',
+				  btn: '确定',
+				  shadeClose: false
+				});
+		/* 	alert('请输入完整车牌！');  */
+			//layer.alert("请输入完整车牌！");
+		}else {
+			init();
+		}
+	});
+	//缴费
+	$("#btn").click(function() {
+		var $name1 = $("#name1");
+		var $name2 = $("#name2");
+		var $name3 = $("#name3");
+		var $name4 = $("#name4");
+		var $name5 = $("#name5");
+		var $name6 = $("#name6");
+		var $name7 = $("#name7");
+		//searchName = $("#name").val();
+		var $carId = $("#carId");
+		var $carNo = $("#carNo");
+		var $carIn = $("#carIn");
+		var $carOut = $("#carOut");
+		var $WIDout_trade_no = $("#WIDout_trade_no");
+		var $WIDsubject = $("#WIDsubject");
+		var $WIDtotal_amount = $("#WIDtotal_amount");
+		var $WIDbody = $("#WIDbody");
+		//alert($carIn.html());
+		if ($name1.html()==""||$name2.html()==""||$name3.html()==""||$name4.html()==""||$name5.html()==""||$name6.html()==""||$name7.html()=="") {
+			layer.open({
+				  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+				  content:"请输入完整车牌！",
+				  btn: '确定',
+				  shadeClose: false
+				});
+		/* 	alert("请输入完整车牌！"); */
+			//zuiAlert("车牌不能为空！", 'danger');
+		} else {
+
+			$.ajax({
+				url : "do-alipay.ajax",
+				type : "POST",
+				data : {
+					"id" : $carId.val(),
+					"carNo" : $carNo.val(),
+					"mechineId" : mechineId,
+					"out_trade_no" : $WIDout_trade_no.val(),
+					"subject" : $WIDsubject.val(),
+					"total_amount" : $WIDtotal_amount.val(),
+					"body" : $WIDbody.val()
+				},
+				dataType : "json",
+				success : function(data) {
+					var result = data.result;
+					//var win = window.open();  
+					//win.document.write(result);
+					var $body = $("#body");
+					$body.html(result);
+				},
+				error : function(msg) {
+					layer.open({
+						  style: 'border:none; background-color:#2A2F4A; color:#fff;',
+						  content:"请联系管理员...",
+						  btn: '确定',
+						  shadeClose: false
+						});
+					/* alert("请联系管理员..."); */
+					//zuiAlert("请联系管理员..", 'danger');
+				}
+			});
+
+		}
+
+	});
+
+	function GetDateNow() {
+		var vNow = new Date();
+		var sNow = "";
+		sNow += String(vNow.getFullYear());
+		sNow += String(vNow.getMonth() + 1);
+		sNow += String(vNow.getDate());
+		sNow += String(vNow.getHours());
+		sNow += String(vNow.getMinutes());
+		sNow += String(vNow.getSeconds());
+		sNow += String(vNow.getMilliseconds());
+		return sNow;
+	}
+	$("#backBtn").click(function() {
+		window.location.replace("http://localhost:8080/parking.web.self");
+	});
+</script>
+</html>

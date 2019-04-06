@@ -1,0 +1,66 @@
+package com.example.bean;
+
+import java.util.Date;
+
+public class Log {
+	private Integer logId;
+	private String logDesc;
+	private String adminId;
+	private Integer logState;
+	private String logMemo;
+	private Date logCreateTime;
+	public Log() {
+		super();
+	}
+	public Log(Integer logId, String logDesc, String adminId, Integer logState, String logMemo, Date logCreateTime) {
+		super();
+		this.logId = logId;
+		this.logDesc = logDesc;
+		this.adminId = adminId;
+		this.logState = logState;
+		this.logMemo = logMemo;
+		this.logCreateTime = logCreateTime;
+	}
+	public Integer getLogId() {
+		return logId;
+	}
+	public void setLogId(Integer logId) {
+		this.logId = logId;
+	}
+	public String getLogDesc() {
+		return logDesc;
+	}
+	public void setLogDesc(String logDesc) {
+		this.logDesc = logDesc;
+	}
+	public String getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+	public Integer getLogState() {
+		return logState;
+	}
+	public void setLogState(Integer logState) {
+		this.logState = logState;
+	}
+	public String getLogMemo() {
+		return logMemo;
+	}
+	public void setLogMemo(String logMemo) {
+		this.logMemo = logMemo;
+	}
+	public Date getLogCreateTime() {
+		return logCreateTime;
+	}
+	public void setLogCreateTime(Date logCreateTime) {
+		this.logCreateTime = logCreateTime;
+	}
+	@Override
+	public String toString() {
+		return "Log [logId=" + logId + ", logDesc=" + logDesc + ", adminId=" + adminId + ", logState=" + logState
+				+ ", logMemo=" + logMemo + ", logCreateTime=" + logCreateTime + "]";
+	}
+	
+}

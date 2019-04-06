@@ -1,0 +1,47 @@
+$(document).resize(function() {
+	$("#p-iframe").width($(document).width() - $("#z-sideBar").width() - 8);
+});
+
+$("#z-sideBar").resize(function() {
+	$("#p-iframe").width($(document).width() - $("#z-sideBar").width() - 8);
+})
+
+//边框加载的方法
+var siderLoad = function(ul, arr) {
+	for (var i = 0; i < arr.length; i++) {
+		var $li = $("<li class='treeview'></li>");
+		if (arr[i].menuParent == 0) {
+			var $a = $("<a href='#'>" +
+					"<i class='icon icon-file'></i>" +
+					"<span>"+ arr[i].menuName+"</span>" +
+					"<span class='pull-right-container'>" +
+					"<i class='icon icon-angle-left'></i>"+"</span>"
+					+ "</a>");
+			$li.append($a);
+		} else {
+			var $a = $("<a href='#' menuId='" + arr[i].id + "' >" +
+					"<i class='icon icon-circle-blank'></i>"
+					+ arr[i].menuName + "</a>");
+			$li.append($a);
+		}
+		if (arr[i].menuBeans != null && arr[i].menuBeans.length > 0) {
+			var $ul = $("<ul class='treeview-menu'></ul>");
+			siderLoad($ul, arr[i].menuBeans);
+			$li.append($ul);
+		}
+		ul.append($li);
+	}
+}
+
+$.ajax({
+	url : "init-leftMenu.action",
+	type : "POST",
+	dataType : "json",
+	data : {},
+	success : function(data) {
+		siderLoad($("#tree"), data)
+	},
+	error : function(msg) {
+		alert("请联系管理员");
+	}
+});

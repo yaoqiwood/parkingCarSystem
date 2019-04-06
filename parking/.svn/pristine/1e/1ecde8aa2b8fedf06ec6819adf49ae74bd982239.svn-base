@@ -1,0 +1,29 @@
+package com.example.utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * 
+ * <p>Title : TimeUtils</p>
+ * <p>Description : 有关世界的工具类</p>
+ * <p>DevelopTools : Eclipse_x64_v4.9.0</p>
+ * <p>DevelopSystem : window 10</p>
+ * @author : Lian
+ * @date : 2019年2月22日 下午7:09:25
+ * @version : 1.0.0
+ */
+public class TimeUtils {
+	
+	/**
+	 * 直接返回当前系统的时间
+	 * @return	返回格式为"YYYY-MM-DD"的字符串
+	 */
+	public static String getYyyyMmDd() {
+		 Date d = new Date();
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		 String dateNowStr = sdf.format(d);
+		 return dateNowStr;
+	}
+
+}

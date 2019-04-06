@@ -1,0 +1,41 @@
+package com.example.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class WelcomeController {
+	
+	/**
+	 * 登录界面
+	 * @return
+	 */
+	@RequestMapping("/")
+	public ModelAndView welcomePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("frame");
+		return mv;
+	}
+	/**
+	 * 出场
+	 * @return
+	 */
+	@RequestMapping("/carOut")
+	public ModelAndView carOutPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("carOut");
+		return mv;
+	}
+	/**
+	 * 车辆出入场
+	 * @return
+	 */
+	@RequestMapping("/carIn")
+	public ModelAndView carNumPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("carIn");
+		return mv;
+	}
+
+}

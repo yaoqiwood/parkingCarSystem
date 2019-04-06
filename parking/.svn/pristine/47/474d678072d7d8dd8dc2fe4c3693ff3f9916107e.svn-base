@@ -1,0 +1,52 @@
+.dialog{
+	width:330px;
+	height:250px;
+	background-color:white;
+	border: 1px solid #0284E6;
+	position: absolute;
+	top:100px;
+	left: 400px;
+	display: none;
+}
+.adddialog{
+	width:330px;
+	height:250px;
+	background-color:white;
+	border: 1px solid #0284E6;
+	position: absolute;
+	top: 100px;
+	left: 400px;
+	display: none;
+}
+.title{
+	width: 100%;
+	height: 50px;
+	text-align: center;
+	padding-top: 20px;
+	background-color: #3F51B5;
+	color: white;
+}
+.diving2 {
+	position: absolute;
+	left: 50px;
+	top: 0px;
+	background-color: rgba(225, 225, 225, 0);
+	width: 100%;
+	height:100%;
+	display: none;
+}
+.font{
+	color: #888888;
+}
+.field{
+	width: 130px;
+	height: 25px;
+}
+.field1{
+	width: 130px;
+	height: 30px;
+}
+.btn{
+	width: 100px;
+	height: 30px;
+}

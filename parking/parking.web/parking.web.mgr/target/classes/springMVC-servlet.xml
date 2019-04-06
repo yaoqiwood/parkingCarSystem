@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<!-- @ResponseBody返回JSON数据中文乱码解决,注意,此配置一定要在<mvc:annotation-driven/>配置前面 -->
+		<property name="messageConverters">
+			<list>
+				<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<bean id="SpringBeanFactoryUtils" class="com.example.thread.SpringBeanFactoryUtils" scope="singleton"></bean>
+	
+	<!-- 静态资源映射(通用) -->
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/img/**" location="/img/" />
+	<mvc:resources mapping="/3rd/**" location="/3rd/" />
+	<mvc:resources mapping="/upload/**" location="/upload/" />
+
+	<!-- 默认的注解映射的支持 -->
+	<mvc:annotation-driven />
+
+	<!-- 开启Controller注解支持 -->
+	<context:component-scan base-package="com.example.controller"></context:component-scan>
+	<context:component-scan base-package="com.example"></context:component-scan>
+	
+	<!-- SpringMVC上传文件时,需配置MultipartResolver处理器 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+	<!-- 视图解析器 -->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean> 
+
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+		<!-- 可配多个拦截器,顺序执行 -->
+		<mvc:interceptor>
+			<!-- [/**]表示所有url包括子url路径 -->
+			<mvc:mapping path="/**"/>
+			<!-- 不拦截静态资源路径下的请求 -->
+			<mvc:exclude-mapping path="/css/**"/>
+			<mvc:exclude-mapping path="/img/**"/>
+			<mvc:exclude-mapping path="/js/**"/>
+			<mvc:exclude-mapping path="/3rd/**"/>
+			<mvc:exclude-mapping path="/upload/**"/>
+			<bean class="com.example.interceptor.BackHandlerInterceptor"/>
+		</mvc:interceptor>
+		
+
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/css/**"/>
+			<mvc:exclude-mapping path="/img/**"/>
+			<mvc:exclude-mapping path="/js/**"/>
+			<mvc:exclude-mapping path="/3rd/**"/>
+			<mvc:exclude-mapping path="/upload/**"/>
+			<bean class="com.example.interceptor.SecurityInterceptor">
+				<!-- 不需要权限验证的地址 -->
+				<property name="excludeUrls">
+					<list>
+						<value>/login</value><!-- 登录 -->
+						<value>/code.jpg</value><!-- 验证码 -->
+						<value>/login.action</value><!-- 验证码 -->
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor>
+		<!-- <mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/css/**"/>
+			<mvc:exclude-mapping path="/img/**"/>
+			<mvc:exclude-mapping path="/js/**"/>
+			<mvc:exclude-mapping path="/3rd/**"/>
+			<mvc:exclude-mapping path="/upload/**"/>
+			<bean class="com.example.interceptor.SecurityInterceptor">
+				不需要权限验证的地址
+				<property name="excludeUrls">
+					<list>
+						<value>/login</value>登录
+						<value>/code.jpg</value>验证码
+						<value>/login.action</value>验证码
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor> -->
+	</mvc:interceptors>
+
+</beans>

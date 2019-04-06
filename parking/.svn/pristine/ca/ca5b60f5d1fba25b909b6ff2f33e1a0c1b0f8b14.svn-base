@@ -1,0 +1,16 @@
+package com.example.service;
+
+import java.util.List;
+
+
+import com.example.dto.MenuRoleDto;
+
+public interface MenuInfService {
+	
+	List<MenuRoleDto> getMenu(String roleId);
+	
+    Integer updatemenu(String roleId);
+	
+	Integer updatemenuroleId(String roleId);
+
+}

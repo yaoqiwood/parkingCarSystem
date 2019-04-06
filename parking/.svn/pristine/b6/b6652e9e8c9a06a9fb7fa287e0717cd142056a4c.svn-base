@@ -1,0 +1,114 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>主界面</title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+		<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+		<link rel="stylesheet" href="css/mycss.min.css" />
+		<style>
+			iframe {
+				margin-top: 3px;
+				padding:3px;
+				padding: 0;
+				border: 0;
+			}
+			/*#frame {
+				margin-top: 5px;
+			}*/
+		</style>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-inverse col-xs-12 no-padding" role="navigation" style="margin-bottom: 0px;">
+			<div class="container-fluid">
+				<!-- 导航头部 -->
+				<div class="navbar-header">
+
+					<!-- 品牌名称或logo -->
+					<a class="navbar-brand" href="your/nice/url">停车场后台管理系统</a>
+				</div>
+
+				<!-- END .navbar-collapse -->
+			</div>
+		</nav>
+
+		<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2 no-padding">
+			<div class="vessel">
+				<ul id="tree" class="tree tree-menu" data-ride="tree">
+					<li>
+						<a href="#"><i class="icon icon-smile"></i>欢迎，用户</a>
+					</li>
+					<li>
+						<!-- <a href="#"><i class="icon icon-user"></i>个人中心</a>
+						<ul>
+							<li>
+								<a id="aaa">个人信息</a>
+							</li>
+							<li>
+								<a>我的文档</a>
+							</li>
+							<li>
+								<a>我的积分</a>
+							</li>
+						</ul> -->
+					</li>
+					<li>
+						<!-- <a href="#"><i class="icon icon-file"></i>文档中心</a>
+						<ul>
+							<li>
+								<a>上传文档</a>
+							</li>
+							<li>
+								<a>搜索文档</a>
+							</li>
+							<li>
+								<a>下载文档</a>
+							</li>
+						</ul> -->
+					</li>
+
+				</ul>
+			</div>
+		</div>
+
+		<iframe id="mainframe" class="col-xs-12 col-sm-8 col-md-9 col-lg-10" src="hello">
+
+		</iframe>
+	</body>
+	<script type="text/javascript" src="3rd/zui/js/jquery.js"></script>
+	<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#mainframe").load(function() {
+				$(this).height(0); //用于每次刷新时控制IFRAME高度初始化 
+				var height = $(this).contents().height() + 10;
+				$(this).height(height < 500 ? 500 : height);
+			});
+		});
+
+		//		$("#frame").href("table.html");
+		//		$("#frame").load("table.html");
+		//		$(function(){
+		//			$.get("table.html",function(data){
+		//				$("#frame").html(data);
+		//			})
+		//		})
+
+				$("#aaa").click(function() {
+					$("#mainframe").attr("src","table1.html");
+				});
+
+		//		$.ajax({
+		//			url:"table.html",
+		//			cache:false,
+		//			success:function(html){
+		//				$("#frame").html(html);
+		//			}
+		//		})
+	</script>
+
+</html>

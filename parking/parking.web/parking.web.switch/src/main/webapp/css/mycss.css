@@ -1,0 +1,29 @@
+.scan-div {
+	float: left;
+	/*margin:15px*/
+	padding: 0px 10px 15px 0px;
+}
+
+.scan-text {
+	width: 175px;
+}
+
+.tree {
+	border-radius: 0;
+}
+
+.tree>li>a {
+	border-bottom: 0;
+	height: 40px;
+}
+
+#frame {
+	margin-top: 5px;
+}
+
+.scan {
+	width: 300px;
+	margin: 8% auto;
+	padding: 0;
+	margin-bottom: 0;
+}

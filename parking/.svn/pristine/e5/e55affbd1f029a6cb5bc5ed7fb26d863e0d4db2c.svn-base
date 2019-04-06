@@ -1,0 +1,302 @@
+/**
+ * 
+ */
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.Menu;
+import com.example.dto.MenuDto;
+import com.example.service.ManagerBackMenuService;
+import com.example.utils.CheckInfoUtils;
+
+/**
+ * Title : ManagerFrontMenuController Description : DevelopTools : Eclipse_x64
+ * DevelopSystem : Win10 Company : org.NorwegianWoods
+ * 
+ * @author : CatWood
+ * @date : Feb 21, 2019 10:59:31 PM
+ * @version : 12.0.0
+ */
+
+@Controller
+public class ManagerBackMenuController {
+
+	@Autowired
+	private ManagerBackMenuService managerBackMenuService;
+
+	/**
+	 * 菜单栏页面
+	 * @return
+	 */
+	@RequestMapping("menuDemo")
+	public ModelAndView getMenuAndView() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("menuDemo");
+		return modelAndView;
+	}
+
+	/**
+	 * 初始化左导航
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/init-leftMenu.action")
+	@ResponseBody
+	public JSONArray initLeftMenu() {
+		List<MenuDto> menus = managerBackMenuService.initLeftMenu("0");
+		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(menus);
+		return jsonArray;
+	}
+
+	/**
+	 * 刷新菜单表
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/ref-menuManager.action")
+	@ResponseBody
+	public JSONArray refMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String menuName = req.getParameter("menuName");
+		String menuState = req.getParameter("menuState");
+		String CurrentPage = req.getParameter("CurrentPage");
+		String Limit = req.getParameter("Limit");
+		JSONArray jsonArray = new JSONArray();
+
+		if (isEmpAnIsNum(CurrentPage) && isEmpAnIsNum(Limit)) {
+			String begin = BeginPage(CurrentPage, Limit);
+			String end = EndPage(CurrentPage, Limit);
+			if (!isEmpAnIsNum(menuState)) {
+				menuState = "";
+			}
+			List<Menu> menus = managerBackMenuService.refMenuManager(menuName, menuState, begin, end);
+			jsonArray = (JSONArray) JSONArray.toJSON(menus);
+		}
+		return jsonArray;
+	}
+
+	/**
+	 * 统计数量
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/cnt-menuManager.action")
+	@ResponseBody
+	public JSONObject cntMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String menuName = req.getParameter("menuName");
+		String menuState = req.getParameter("menuState");
+		JSONObject jsonObject = new JSONObject();
+
+		if (!isEmpAnIsNum(menuState)) {
+			menuState = "";
+		}
+		String cnt = managerBackMenuService.cntMenuManager(menuName, menuState);
+		jsonObject.put("count", cnt);
+		return jsonObject;
+	}
+
+	/**
+	 * 添加菜单
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/add-menuManager.action")
+	@ResponseBody
+	public JSONObject addMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String addMenuName = req.getParameter("addMenuName");
+		String addParentID = req.getParameter("addParentID");
+		String addURL = req.getParameter("addURL");
+		JSONObject jsonObject = new JSONObject();
+
+		if ((!isEmpty(addMenuName)) && isEmpAnIsNum(addParentID) && (!isEmpty(addURL))) {
+			// 检查名称是否重复
+			if (managerBackMenuService.checkReMName(addMenuName) == 0) {
+				Integer out = managerBackMenuService.addMenuManager(addMenuName, Integer.parseInt(addParentID), addURL);
+				if (out > 0) {
+					jsonObject.put("id", "1");
+					jsonObject.put("message", "插入成功");
+				} else {
+					jsonObject.put("id", "0");
+					jsonObject.put("message", "插入失败");
+				}
+			} else {
+				jsonObject.put("id", "3");
+				jsonObject.put("message", "不可插入一个菜单名重复的数据");
+			}
+		} else {
+			jsonObject.put("id", "3");
+			jsonObject.put("message", "数据有误");
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * 修改菜单名
+	 * 
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/up-menuManager.action")
+	@ResponseBody
+	public JSONObject upMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String upMenuId = req.getParameter("upMenuId");
+		String upMenuName = req.getParameter("upMenuName");
+		String upParentID = req.getParameter("upParentID");
+		String upURL = req.getParameter("upURL");
+
+		JSONObject jsonObject = new JSONObject();
+		if (isEmpAnIsNum(upMenuId) && (!isEmpty(upMenuName)) && isEmpAnIsNum(upParentID) && (!isEmpty(upURL))) {
+			if (managerBackMenuService.checkReMName(upMenuName) == 0) {
+				Integer out = managerBackMenuService.upMenuManager(Integer.parseInt(upMenuId), upMenuName,
+						Integer.parseInt(upParentID), upURL);
+				if (out > 0) {
+					jsonObject = jsonMessage("1", "更新成功");
+				} else {
+					jsonObject = jsonMessage("0", "更新成功");
+				}
+			} else {
+				jsonObject.put("id", "3");
+				jsonObject.put("message", "不可插入修改菜单名为重复的数据");
+			}
+		} else {
+			jsonObject = jsonMessage("3", "参数有误");
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * 修改状态
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/upState-menuManager.action")
+	@ResponseBody
+	public JSONObject upStateMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String upState = req.getParameter("upState");
+		String Fid = req.getParameter("Fid");
+		JSONObject jsonObject = new JSONObject();
+
+		if (isEmpAnIsNum(upState) && isEmpAnIsNum(Fid)) {
+			Integer out = managerBackMenuService.upStateMenuManager(Integer.parseInt(upState), Integer.parseInt(Fid));
+			if (out > 0) {
+				jsonObject = jsonMessage("1", upState.equals("0") ? "禁用成功" : "启用成功");
+			} else {
+				jsonObject = jsonMessage("0", upState.equals("0") ? "禁用失败" : "启用失败");
+			}
+		} else {
+			jsonObject = jsonMessage("3", "参数有误");
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * 删除菜单
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/del-menuManager.action")
+	@ResponseBody
+	public JSONObject delMenuManager(HttpServletRequest req, HttpServletResponse res) {
+		String Fid = req.getParameter("Fid");
+		JSONObject jsonObject = new JSONObject();
+		if (isEmpAnIsNum(Fid)) {
+			// 假删除
+			Integer out = managerBackMenuService.upStateMenuManager(9, Integer.parseInt(Fid));
+			if (out > 0) {
+				jsonObject = jsonMessage("1", "删除成功");
+			} else {
+				jsonObject = jsonMessage("0", "删除失败");
+			}
+		} else {
+			jsonObject = jsonMessage("3", "参数有误");
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * 消息封装
+	 * 
+	 * @param id
+	 * @param message
+	 * @return
+	 */
+	public JSONObject jsonMessage(String id, String message) {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("id", id);
+		jsonObject.put("message", message);
+		return jsonObject;
+	}
+
+	/**
+	 * 计算分页开始
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String BeginPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim - (Lim - 1));
+	}
+
+	/**
+	 * 计算分页结束
+	 * 
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String EndPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim);
+	}
+
+	/**
+	 * 是否为空
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public boolean isEmpty(String str) {
+		return CheckInfoUtils.isEmpty(str);
+	}
+
+	/**
+	 * 检查不为空且检查是否为为数字
+	 * 
+	 * @param str
+	 * @return boolean
+	 */
+	public boolean isEmpAnIsNum(String str) {
+		boolean ret = false;
+		if (!CheckInfoUtils.isEmpty(str)) {
+			if (CheckInfoUtils.IsInteger(str)) {
+				ret = true;
+			}
+		}
+		return ret;
+	}
+
+}

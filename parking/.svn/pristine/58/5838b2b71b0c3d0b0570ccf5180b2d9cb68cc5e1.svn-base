@@ -1,0 +1,320 @@
+var tempData = new data();
+// 获取分页器实例对象
+
+// 仅选择日期
+initFormDate(".form-date");
+// 选择时间
+initTime(".form-time");
+// 日期+时间
+initDateTime(".form-datetime");
+// 页码初始化
+initPager("#myPager");
+// 按键监听
+//BtnListener();
+
+// 数据
+function data() {
+	this.CurrentPage = 1;
+	this.TotalPage = 0;
+	this.Limit = 5;
+	this.Count = 10; // 行总数
+	// 定义搜索变量
+	this.searchStartTime = "";
+	this.searchEndTime = "";
+	this.searchName = "";
+};
+
+
+function init() {
+	$
+			.ajax({
+				type : "POST",
+				url : "monthProduct.action",
+				data : {
+					"startTime" : tempData.searchStartTime,
+					"endTime" : tempData.searchEndTime,
+					"proName" : tempData.searchName,
+					"rowPage" : tempData.Limit,
+					"pageCount" : tempData.CurrentPage
+				},
+				dataType : "json",
+				success : function(msg) {
+				    console.log(msg);
+					var arr = $(".tr");
+					for (var i = arr.length - 1; i >= 0; i--) {
+						$(arr[i]).remove();
+					}
+					// 添加数据
+					var proList = msg.list;
+					var num = msg.count;
+					for (var i = 0; i < proList.length; i++) {
+						var $tr = $("<tr class = 'tr' ></tr>");
+						var $td1 = $("<td></td>").html(
+								proList[i].monthProductId);
+						var $td2 = $("<td></td>").html(
+								proList[i].monthProductName);
+						var $td3 = $("<td></td>").html(
+								formatUnixtimestamp(new Date(
+										proList[i].monthProductCreateTime)));
+						var $td4 = $("<td></td>").html(
+								proList[i].monthProductMonth);
+						var $td5 = $("<td></td>").html(
+								proList[i].monthProductMoney);
+						if (proList[i].monthProductState == 1) {
+							var $td6 = $("<td></td>").html("启用");
+						} else {
+							var $td6 = $("<td></td>").html("禁用");
+						}
+						var $td7 = $("<td></td>");
+						$delbtn = $("<input class = 'btn btn-danger rightSpace' value = '删除'    type = 'button' />");
+						$modbtn = $("<input class = 'btn btn-info rightSpace' value = '修改'   type = 'button' />");
+						$delbtn.attr("pro_id", proList[i].monthProductId);
+						$modbtn.attr("pro_id", proList[i].monthProductId);
+						if (proList[i].monthProductState == 1) {
+							$statebtn = $("<input class = 'btn btn-warning rightSpace' value = '禁用'   type = 'button' />");
+							$statebtn.attr("pro_id", proList[i].monthProductId);
+							$td7.append($statebtn);
+						} else {
+							$statebtn = $("<input class = 'btn btn-warning rightSpace' value = '启用'   type = 'button' />");
+							$statebtn.attr("pro_id", proList[i].monthProductId);
+							$td7.append($statebtn);
+						}
+						$td7.append($delbtn);
+						$td7.append($modbtn);
+						$tr.append($td1);
+						$tr.append($td2);
+						$tr.append($td3);
+						$tr.append($td4);
+						$tr.append($td5);
+						$tr.append($td6);
+						$tr.append($td7);
+						$("#table").append($tr);
+					}
+					tempData.Count = parseInt(num);
+					refPager('#myPager');
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+}
+
+//页码监听
+$('#myPager').on('onPageChange', function (e, state, oldState) {
+    if (state.page !== oldState.page) {
+        console.log('页码从', oldState.page, '变更为', state.page);
+        tempData.CurrentPage = state.page;
+        init();
+    }
+});
+
+init();
+
+// 查询按钮监听
+$("#selectBtn").click(function() {
+	tempData.searchStartTime = $("#startTime").val();
+	tempData.searchEndTime = $("#endTime").val();
+	tempData.searchName = $("#proName").val();
+	tempData.CurrentPage = 1;
+	init();
+});
+function formatUnixtimestamp(unixtimestamp) {
+	var unixtimestamp = new Date(unixtimestamp);
+	var year = 1900 + unixtimestamp.getYear();
+	var month = "0" + (unixtimestamp.getMonth() + 1);
+	var date = "0" + unixtimestamp.getDate();
+	var hour = "0" + unixtimestamp.getHours();
+	var minute = "0" + unixtimestamp.getMinutes();
+	var second = "0" + unixtimestamp.getSeconds();
+	return year + "-" + month.substring(month.length - 2, month.length) + "-"
+			+ date.substring(date.length - 2, date.length) + " "
+			+ hour.substring(hour.length - 2, hour.length) + ":"
+			+ minute.substring(minute.length - 2, minute.length) + ":"
+			+ second.substring(second.length - 2, second.length);
+}
+
+// 添加按钮的监听
+$("#addBtn").click(function() {
+
+	$("#adddialog").css("display", "block");
+});
+// 添加弹窗中的返回按钮监听
+$("#addcancel").click(function() {
+	$("#adddialog").css("display", "none");
+});
+// 添加弹窗中的提交按钮监听
+$("#addcommit").click(
+		function() {
+			if ($("#addName").val() == "" || $("#addmonth").val() == ""
+					|| $("#addMoney").val() == "") {
+				var b = window.confirm("输入的值不能为空！！！");
+			} else {
+				$.ajax({
+					type : "POST",
+					url : "addMonthProduct.action",
+					data : {
+						"addName" : $("#addName").val(),
+						"addmonth" : $("#addmonth").val(),
+						"addMoney" : $("#addMoney").val()
+					},
+					dataType : "json",
+					success : function(msg) {
+						if (msg.type == 1) {
+							alert(msg.message);
+							tempData.CurrentPage = 1;
+							init();
+							$("#adddialog").css("display", "none");
+						} else {
+							alert(msg.message);
+						}
+					},
+					error : function(msg) {
+						alert("请联系管理员。。。");
+					}
+				});
+
+			}
+		});
+
+// 表里面的按钮监听
+$("#table").click(function(event) {
+	var $tar = $(event.target);
+	var arr = $tar.parent().parent().children();
+	if ($tar.val() == "删除") {
+		var b = window.confirm("您确定要删除么？");
+		if (b == true) {
+			var $pro_id = $tar.attr("pro_id");
+			$.ajax({
+				type : "POST",
+				url : "delMonthProduct.action",
+				data : {
+					"pro_id" : $pro_id
+				},
+				dataType : "json",
+				success : function(msg) {
+					if (msg.type == 1) {
+						alert(msg.message);
+						tempData.CurrentPage = 1;
+						init();
+					} else {
+						alert(msg.message);
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+		}
+	}
+	if ($tar.val() == "修改") {
+		$("#dialog").css("display", "block");
+		var $pro_id = $tar.attr("pro_id");
+		$("#did").val($pro_id);
+		$.ajax({
+			type : "POST",
+			url : "showMonthProduct.action",
+			data : {
+				"pro_id" : $pro_id
+			},
+			dataType : "json",
+			success : function(msg) {
+				var monthProduct = msg.monthProduct;
+				$("#modName").val(monthProduct.monthProductName);
+				$("#modMonth").val(monthProduct.monthProductMonth);
+				$("#modMoney").val(monthProduct.monthProductMoney);
+			},
+			error : function(msg) {
+				alert("请联系管理员。。。");
+			}
+		});
+		$("#cancel").click(function() {
+			$("#dialog").css("display", "none");
+		});
+
+	}
+	if ($tar.val() == "禁用") {
+		var b = window.confirm("您确定要禁用么？");
+		if (b == true) {
+			var $pro_id = $tar.attr("pro_id");
+			$.ajax({
+				type : "POST",
+				url : "disableMonthProduct.action",
+				data : {
+					"pro_id" : $pro_id
+				},
+				dataType : "json",
+				success : function(msg) {
+					if (msg.type == 1) {
+						alert(msg.message);
+						tempData.CurrentPage = 1;
+						init();
+					} else {
+						alert(msg.message);
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+		}
+	}
+	if ($tar.val() == "启用") {
+		var b = window.confirm("您确定要启用么？");
+		if (b == true) {
+			var $pro_id = $tar.attr("pro_id");
+			$.ajax({
+				type : "POST",
+				url : "enableMonthProduct.action",
+				data : {
+					"pro_id" : $pro_id
+				},
+				dataType : "json",
+				success : function(msg) {
+					if (msg.type == 1) {
+						alert(msg.message);
+						tempData.CurrentPage = 1;
+						init();
+					} else {
+						alert(msg.message);
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+		}
+	}
+});
+
+$("#commit").click(
+		function() {
+			if ($("#modName").val() == "" || $("#modMonth").val() == ""
+					|| $("#modMoney").val() == "") {
+				var b = window.confirm("修改的值不能为空！！！");
+			} else {
+				$.ajax({
+					type : "POST",
+					url : "modMonthProduct.action",
+					data : {
+						"modName" : $("#modName").val(),
+						"modMonth" : $("#modMonth").val(),
+						"modMoney" : $("#modMoney").val(),
+						"pro_id" : $("#did").val()
+					},
+					dataType : "json",
+					success : function(msg) {
+						if (msg.type == 1) {
+							alert(msg.message);
+							tempData.CurrentPage = 1;
+							init();
+							$("#dialog").css("display", "none");
+						} else {
+							alert(msg.message);
+						}
+					},
+					error : function(msg) {
+						alert("请联系管理员。。。");
+					}
+				});
+			}
+		});

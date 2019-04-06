@@ -1,0 +1,193 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+		<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+		<link rel="stylesheet" href="css/mycss.min.css"/>
+		<link rel="stylesheet" href="css/adminRole.css"/>
+	</head>
+
+	<body>
+		<div class="col-xs-12 no-padding panel panel-primary">
+			<div class="panel-heading">
+				车位查询
+			</div>
+
+			<div class="panel-body ">
+				
+				<div class="input-group scan-div">
+					<input id="name" type="text" class="form-control" placeholder="输入搜索车位">
+				</div>
+
+				<div class="input-group col-xs-3">
+                    <span class="input-group-addon">区域:</span>
+                    <select id="place" class="form-control scan-text">
+						<option value="">请选择</option>
+						<option >A区</option>
+						<option >B区</option>
+						<option >C区</option>
+					</select>
+					<span class="input-group-addon">楼层:</span>
+                    <select id="floor" class="form-control scan-text">
+						<option value="">请选择</option>
+						<option >1楼</option>
+						<option >2楼</option>
+						<option >3楼</option>
+					</select>
+  			    </div>
+  			    
+				<div class="scan-div">
+					<button id="selectBtn" class="btn btn-primary" type="button">搜索</button>
+					<button id="addBtn" class="btn btn-primary" type="button">添加</button>
+				</div>
+				
+				<table class="table table-bordered" id="tb">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>区域</th>
+							<th>车位</th>
+							<th>楼层</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="tr">
+							<td>1</td>
+							<td>zhangsan</td>
+							<td>男</td>
+							<td>2018-10-22</td>
+							<td>启用</td>
+							<td>启用</td>
+						</tr>
+					</tbody>
+						<tr >
+							<td colspan="5" align="center">
+								<input id="pre" type="button" value="上一页" />
+								<span  id="page" >0/0</span> 
+								<input id="next" type="button" value="下一页" />
+							</td>
+						</tr>
+				</table>
+			</div>
+		</div>
+
+		<div id="diving2" class="diving2"></div>
+		
+		<div id="dialog" class="dialog">
+			<div class="title">修改</div>
+			<div class="content">
+				<br />
+				<input type="hidden" id="did">
+				<table align="center" id="tb">
+					<tr>
+						<td><span class="font">车位：</span></td>
+						<td><input id="dname" class="field" type="text" readonly="readonly"/></td>
+					</tr>
+					<tr>
+					    <td><span class="font">区域：</span></td>
+					    <td>
+					        <select id="dplace"  class="font field1">
+					           	<option value="">请选择</option>
+								<option >A区</option>
+								<option >B区</option>
+								<option >C区</option>
+                            </select>
+					    </td>
+					</tr>
+					<tr>
+						<td><span class="font">楼层：</span></td>
+						<td>
+							<select id="dfloor" class="font field1">
+							   	<option value="">请选择</option>
+								<option >1楼</option>
+								<option >2楼</option>
+								<option >3楼</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center">
+							<input id="commit" class="btn" type="button" value="提交" />
+							<input id="cancel" class="btn" type="button" value="返回" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="adddialog" class="adddialog">
+			<div class="title">新增人员</div>
+			<div class="content">
+				<br />
+				<table align="center">
+					<tr>
+						<td><span class="font">车位：</span></td>
+						<td><input id="addname" class="field" type="text" /></td>
+					</tr>
+					<tr>
+						<td><span class="font">区域：</span></td>
+						<td>
+							<select id="addplace" class="font field1">
+							   	<option value="">请选择</option>
+								<option >A区</option>
+								<option >B区</option>
+								<option >C区</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+					    <td><span class="font">楼层：</span></td>
+					    <td>
+					        <select id="addfloor"  class="font field1">
+					            <option value="">请选择</option>
+								<option >1楼</option>
+								<option >2楼</option>
+								<option >3楼</option>
+                            </select>
+					    </td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center">
+							<input id="addcommit" class="btn" type="button" value="提交" />
+							<input id="addcancel" class="btn" type="button" value="返回" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+	<script type="text/javascript" src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+	<script >
+      //初始化分页器
+		$('#myPager').pager({
+			page: 1,
+			recPerPage: 5,
+			recTotal: 10
+		});
+
+		//初始化时间选择器组件
+		// 仅选择日期
+		$(".form-date").datetimepicker({
+			language: "zh-CN",
+			weekStart: 1,
+			todayBtn: 1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0,
+			format: "yyyy-mm-dd"
+		});
+	</script>
+	<script src="js/carPlace.js"></script>
+
+</html>
+    

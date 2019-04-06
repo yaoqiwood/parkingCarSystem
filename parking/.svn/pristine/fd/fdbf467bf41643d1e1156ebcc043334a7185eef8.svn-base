@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.DailyAccountMapper">
+
+	<resultMap type="com.example.bean.DailyAccount" id="dailyAccountMapper">
+		<result property="dailyAccountId" column="PDA_ID" />
+		<result property="dailyAccountTime" column="PDA_TIME" />
+		<result property="dailyAccountMoney" column="PDA_MONEY" />
+		<result property="dailyAccountState" column="PDA_STATE" />
+		<result property="dailyAccountMemo" column="PDA_MEMO" />
+		<result property="dailyAccountCreateTime" column="PDA_CREATE_TIME" />
+	</resultMap>
+
+	<insert id="addDailyAccount">
+		INSERT INTO PARK_DAILY_ACCOUNT
+		VALUES(SEQ_PARK_DAILY_ACCOUNT.NEXTVAL,#{dailyAccount.dailyAccountTime},#{dailyAccount.dailyAccountMoney},1,NULL,SYSDATE)
+	</insert>
+
+	<select id="dailyAccountPage" resultMap="dailyAccountMapper">
+		SELECT * FROM PARK_DAILY_ACCOUNT
+		<where>
+			<if test="time != null  and time != ''">
+				PDA_TIME = #{time}
+			</if>
+		</where>
+		ORDER BY PDA_CREATE_TIME DESC
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_DAILY_ACCOUNT
+		<where>
+			<if test="time != null  and time != ''">
+				PDA_TIME = #{time}
+			</if>
+		</where>
+	</select>
+
+	<select id="checkDailyAccount" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_DAILY_ACCOUNT WHERE PDA_TIME =
+		#{time} AND PDA_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+
+	<select id="sumDailyAccount" resultType="java.lang.Integer">
+		SELECT SUM(PDA_MONEY) AS SUM FROM PARK_DAILY_ACCOUNT WHERE
+		PDA_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+	</select>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.RoleManagerMapper">
+
+    <select id = "refRoleManager" resultMap = "roleAdminMap">
+        SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_ADMIN_ROLE 
+        WHERE PAR_STATE != 9 
+            <if test = "roleName != null and roleName != '' ">
+                AND PAR_NAME LIKE CONCAT(CONCAT('%',#{roleName}),'%')
+            </if>
+            <if test = "roleState != null">
+                AND PAR_STATE = #{roleState}
+            </if>
+        ORDER BY PAR_CREATE_TIME DESC )A) A WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+
+    <select id = "cntRoleManager" resultType = "string">
+        SELECT COUNT(0) Count FROM PARK_ADMIN_ROLE 
+        WHERE PAR_STATE != 9 
+            <if test = "roleName != null and roleName != '' ">
+                AND PAR_NAME LIKE CONCAT(CONCAT('%',#{roleName}),'%')
+            </if>
+            <if test = "roleState != null">
+                AND PAR_STATE = #{roleState}
+            </if>
+        ORDER BY PAR_CREATE_TIME DESC 
+    </select>
+
+	<select id="checkRoleNameR" resultType="integer">
+		SELECT COUNT(0) Count FROM PARK_ADMIN_ROLE WHERE PAR_NAME = #{roleName}
+	</select>
+    
+
+    <insert id = "addRoleManager">
+        INSERT INTO PARK_ADMIN_ROLE VALUES(SEQ_PARK_ADMIN_ROLE.nextval,#{roleName},1,null,SYSDATE)
+    </insert>
+
+    <update id = "upRoleManager">
+        UPDATE PARK_ADMIN_ROLE SET PAR_NAME = #{upRoleName} WHERE PAR_ID = #{upRoleId}
+    </update>
+
+    <update id = "upStateRoleManager">
+        UPDATE PARK_ADMIN_ROLE SET PAR_STATE = #{upState} WHERE PAR_ID = #{Fid}
+    </update>
+    
+    <!-- ================================================================================== -->
+
+    <resultMap id = "roleAdminMap" type = "com.example.bean.AdminRole">
+        <result property = "adminRoleId" column = "PAR_ID" />
+        <result property = "adminRoleName" column = "PAR_NAME" />
+        <result property = "adminRoleState" column = "PAR_STATE" />
+        <result property = "adminRoleMemo" column = "PAR_MEMO" />
+        <result property = "adminRoleCreateTime" column = "PAR_CREATE_TIME" />
+    </resultMap>
+
+</mapper>

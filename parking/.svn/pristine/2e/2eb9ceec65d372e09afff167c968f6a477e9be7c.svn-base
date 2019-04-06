@@ -1,0 +1,57 @@
+function RefreshTable(url, data, bodyClass) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function (response) {
+            // 清空表内容
+            emptyTableBody(bodyClass);
+            response = JSON.parse(response);
+            $.each(response, function (index, value) {
+                fillTableBody(value);
+            })
+        }
+    });
+};
+
+function CountTableData(url, data, totoalPID) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        success: function (response) {
+            response = JSON.parse(response);
+            var Count = response.count;
+            if (Count % 5 == 0) {
+                tempData.TotalPage = parseInt(Count / tempData.Limit);
+            } else if (Count % 5 != 0) {
+                tempData.TotalPage = parseInt(Count / tempData.Limit + 1);
+            }
+            // 页面总数刷新
+            $("#" + totoalPID).html(tempData.TotalPage);
+        }
+    });
+};
+
+function emptyTableBody(U_class) {
+    $("." + U_class).each(function () {
+        $(this).remove();
+    });
+};
+
+function RefreshTableDataAndPage(url, pageUrl) {
+    RefreshTable(url, tempData.RefreshJSON(), "table_content");
+    CountTableData(pageUrl, tempData.RefreshJSON(), "TotalPageView");
+};
+
+// 上一页
+function lastPage(url, pageUrl) {
+    tempData.CurrentPage > 1 ? tempData.CurrentPage -= 1 : true;
+    RefreshTableDataAndPage(url, pageUrl);
+};
+
+// 下一页
+function nextPage(url, pageUrl) {
+    tempData.CurrentPage < tempData.TotalPage ? tempData.CurrentPage += 1 : true;
+    RefreshTableDataAndPage(url, pageUrl);
+};

@@ -1,0 +1,31 @@
+/**
+ * 
+ */
+package com.example.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.Menu;
+import com.example.dto.MenuDto;
+
+/**
+ * <p>Title : ManagerBackMapper</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64</p>
+ * <p>DevelopSystem : Win10</p>
+ * <p>Company : org.NorwegianWoods</p>
+ * @author : CatWood
+ * @date : Feb 22, 2019 12:15:09 AM
+ * @version : 12.0.0
+ */
+public interface ManagerBackMapper {
+
+	/**
+	 * 初始化菜单栏
+	 * @param menuParent
+	 * @return
+	 */
+	List<MenuDto> initLeftMenu(@Param("menuParent") Integer menuParent);
+}

@@ -1,0 +1,90 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+		<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+		<link rel="stylesheet" href="css/mycss.min.css"/>
+		<link rel="stylesheet" href="css/adminRole.css"/>
+	</head>
+
+	<body>
+		<div class="col-xs-12 no-padding panel panel-primary">
+			<div class="panel-heading">
+				车辆出场查询
+			</div>
+
+			<div class="panel-body ">
+				
+				<div class="input-group scan-div">
+					<input id="name" type="text" class="form-control" placeholder="输入搜索车牌">
+				</div>
+  			    
+				<div class="scan-div">
+					<button id="selectBtn" class="btn btn-primary" type="button">计算收费</button>
+				</div>
+				<div class="scan-div">
+					<button id="balance" class="btn btn-primary" type="button">结算收费</button>
+				</div>
+				
+				<table class="table table-bordered" id="tb">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>车牌</th>
+							<th>角色</th>
+							<th>入场时间</th>
+							<th>出场时间</th>
+							<th>收费</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="tr">
+						</tr>
+					</tbody>
+						<tr >
+							<td colspan="6" align="center">
+								<input id="pre" type="button" value="上一页" />
+								<span  id="page" >1/1</span> 
+								<input id="next" type="button" value="下一页" />
+							</td>
+						</tr>
+				</table>
+			</div>
+		</div>
+		
+	</body>
+	
+	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+	<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+	<script type="text/javascript" src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+	<script >
+      //初始化分页器
+		$('#myPager').pager({
+			page: 1,
+			recPerPage: 5,
+			recTotal: 10
+		});
+
+		//初始化时间选择器组件
+		// 仅选择日期
+		$(".form-date").datetimepicker({
+			language: "zh-CN",
+			weekStart: 1,
+			todayBtn: 1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0,
+			format: "yyyy-mm-dd"
+		});
+	</script>
+	<script src="js/carOut.js"></script>
+</html>
+
+    

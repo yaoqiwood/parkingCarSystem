@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace = "com.example.dao.ManagerBackMapper">
+
+    <select id="initLeftMenu" resultMap = "leftMenuDtoMap">
+        SELECT * FROM PARK_MENU WHERE PM_PARENT = #{menuParent}
+    </select>
+
+    <select id="refMenuManager" resultMap = "leftMenuMap">
+        SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_MENU WHERE PM_STATE != 9 
+            <if test = "menuName != null and menuName != '' ">
+                AND PM_NAME = #{menuName}
+            </if>
+            <if test = "menuState != null and menuState != '' ">
+                AND PM_STATE = #{menuState}
+            </if>
+        ORDER BY PM_CREATE_TIME DESC )A) A WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+
+    <select id="cntMenuManager" resultType = "string">
+        SELECT COUNT(0) Count FROM PARK_MENU WHERE PM_STATE != 9 
+            <if test = "menuName != null and menuName != '' ">
+                AND PM_NAME = #{menuName}
+            </if>
+            <if test = "menuState != null and menuState != '' ">
+                AND PM_STATE = #{menuState}
+            </if>
+        ORDER BY PM_CREATE_TIME DESC 
+    </select>
+
+    <insert id = "addMenuManager">        
+        INSERT INTO PARK_MENU VALUES(SEQ_PARK_MENU.nextval,#{addParentID},#{addMenuName},#{addURL},1,null,SYSDATE,SYSDATE)
+    </insert>
+
+    <update id = "upMenuManager">
+        UPDATE PARK_MENU SET PM_NAME = #{upMenuName}, PM_PARENT = #{upParentID}, PM_URL = #{upURL} ,PM_UPDATE_TIME = SYSDATE WHERE PM_ID = #{upMenuId}
+    </update> 
+
+    <update id = "upStateMenuManager">
+        UPDATE PARK_MENU SET PM_STATE = #{upState},PM_UPDATE_TIME = SYSDATE WHERE PM_ID = #{Fid}
+    </update>
+
+    <!-- /============================ResultMap===========================/ -->
+    <resultMap id = "leftMenuMap" type = "com.example.bean.Menu">
+        <result column = "PM_ID" property = "menuId"/>
+        <result column = "PM_PARENT" property = "menuParent"/>
+        <result column = "PM_NAME" property = "menuName"/>
+        <result column = "PM_URL" property = "menuUrl"/>
+        <result column = "PM_STATE" property = "menuState"/>
+        <result column = "PM_MEMO" property = "menuMemo"/>
+        <result column = "PM_CREATE_TIME" property = "menuCreateTime"/>
+        <result column = "PM_UPDATE_TIME" property = "menuUpdateTime"/>
+    </resultMap>
+
+    <resultMap type = "com.example.dto.MenuDto" id = "leftMenuDtoMap" extends = "leftMenuMap">
+        <!-- collection Map -->
+        <collection property = "menuBeans" ofType = "com.example.dto.MenuDto" column = "{menuParent = PM_ID}" 
+            select = "initLeftMenu" />
+    </resultMap>
+</mapper>

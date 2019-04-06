@@ -1,0 +1,99 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+		<style type="text/css">
+			.s {
+				position: absolute;
+				left: 500px;
+				top: 10px;
+			}
+			
+			.table {
+				position: absolute;
+				left: 0px;
+				top: 20px;
+				width: 600px;
+			}
+			
+			.a {
+				position: absolute;
+				left: 10px;
+				top: 100px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<video id="video" width="480" height="320">
+		</video>
+		<div>
+			<canvas id="canvas" width="480" height="320" style="display: none"></canvas>
+		</div>
+		<div class="s">
+			<div class="row">
+				<div class="col-xs-12 col-md-4 scan ">
+					<button class="btn btn-primary" id="selectBtn" type="button">计算收费</button>
+				</div>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<div class="col-xs-12 col-md-4 scan ">
+					<button class="btn btn-primary" id="balance" type="button">结算收费</button>
+				</div>
+				<div class="table">
+					<table class="table table-bordered  table-hover " id="tb">
+						<thead>
+							<tr>
+								<th style="text-align: center">序号</th>
+								<th style="text-align: center">车牌</th>
+								<th style="text-align: center">角色</th>
+								<th style="text-align: center">入场时间</th>
+								<th style="text-align: center">出场时间</th>
+								<th style="text-align: center">收费</th>
+							</tr>
+						</thead>
+						<tbody id="tbody">
+
+						</tbody>
+					</table>
+				</div>
+				<div class="a">
+					<div class="floatRight">
+						<ul id="myPager" class="pager" data-ride="pager"
+							data-elements="prev_icon,page_of_total_text,next_icon">
+							<li class="pager-item-left pager-item-right"><a
+								id="lastPageBtn" class="pager-item" data-page="0"><i
+									class="icon icon-double-angle-left"></i></a></li>
+							<li>
+								<div class="pager-label">
+									第 <strong id="CurPageView">1</strong>/<strong id="TotalPageView">1</strong>
+									页
+								</div>
+							</li>
+							<li class="pager-item-left"><a id="nextPageBtn"
+								class="pager-item" data-page="1"><i
+									class="icon icon-double-angle-right"></i></a></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div id="face"></div>
+		
+</body>
+<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="js/myjs.js"></script>
+<script type="text/javascript" src="js/carOut.js"> </script>
+</html>
+
+
+    

@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package com.example.service;
+
+import com.example.bean.AdminAmountLog;
+import com.example.bean.CarService;
+
+/**
+ * <p>Title:CarServiceService</p>
+ * <p>Description:</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月25日 上午6:18:21
+ * @version:12.0.0
+ */
+public interface CarServiceService {
+	/**
+	 * 插入数据
+	 * @param carService 车服务对象
+	 * @param amountLogMapper 流水表对象
+	 * @return 0 1
+	 */
+	Integer addCarService(CarService carService,AdminAmountLog adminAmountLog);
+}

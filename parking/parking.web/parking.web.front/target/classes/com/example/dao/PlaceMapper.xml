@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.PlaceMapper">
+<resultMap type="com.example.bean.Place" id="placeMapper">
+	<result property="placeId" column="PP_ID"/>
+	<result property="placePsId" column="PP_PS_ID"/>
+	<result property="placeNumber" column="PP_NUMBER"/>
+	<result property="placeUrl" column="PP_URL"/>
+	<result property="placeState" column="PP_STATE"/>
+	<result property="placeMemo" column="PP_MEMO"/>
+	<result property="placeCreateTime" column="PP_CREATE_TIME"/>
+	<result property="placeUpdateTime" column="PP_UPDATE_TIME"/>
+</resultMap>
+<resultMap type="com.example.dto.PlaceDto" id="placeDtoMapper" extends="placeMapper">
+    <result property="subareaName" column="PS_NAME"/>
+    <result property="subareaFloor" column="PS_FLOOR"/>
+</resultMap>
+
+<select id="listPlaceByPage" resultMap="placeDtoMapper" >
+   SELECT * FROM (SELECT A.PP_PS_ID,A.PP_ID,PS_NAME,A.PP_NUMBER,PS_FLOOR,ROWNUM RN FROM PARK_PLACE A 
+   LEFT JOIN PARK_SUBAREA B ON A.PP_PS_ID=B.PS_ID
+<where>
+   (A.PP_STATE = 1 OR A.PP_STATE = 0)
+   <if test="name != null and name != '%%'">
+      AND A.PP_NUMBER LIKE #{name}
+   </if>
+   <if test="searchPlace != null and searchPlace != '' ">
+      AND B.PS_NAME = #{searchPlace}
+   </if>
+   <if test="searchFloor != null and searchFloor != '' ">
+     AND B.PS_FLOOR = #{searchFloor}
+   </if>
+</where>
+  ) WHERE RN BETWEEN #{start} AND #{end} 
+</select>
+
+<select id="countPlace" resultType="java.lang.Integer">
+    SELECT COUNT(0) FROM  PARK_PLACE A LEFT JOIN PARK_SUBAREA B ON A.PP_PS_ID=B.PS_ID
+   <where>
+    (A.PP_STATE = 1 OR A.PP_STATE = 0)
+  <if test="name != null and name != '%%'">
+      AND A.PP_NUMBER LIKE #{name}
+   </if>
+   <if test="searchPlace != null and searchPlace != '' ">
+      AND B.PS_NAME = #{searchPlace}
+   </if>
+   <if test="searchFloor != null and searchFloor != '' ">
+     AND B.PS_FLOOR = #{searchFloor}
+   </if>
+</where>
+</select>
+
+<update id="delPlace">
+    UPDATE PARK_PLACE SET PP_STATE = 9  WHERE PP_ID = #{placeId}
+</update>
+
+<update id="updatePlace">
+    UPDATE PARK_SUBAREA SET PS_NAME=#{dplace},PS_FLOOR =#{dfloor} WHERE PS_ID = #{placePsId}
+</update>
+
+<select id="getPlacepsId" resultType="java.lang.Integer">
+  SELECT PS_ID FROM PARK_SUBAREA WHERE PS_NAME=#{addplace} AND PS_FLOOR = #{addfloor}
+</select>
+
+<insert id="addPlace">
+  INSERT INTO PARK_PLACE VALUES(SEQ_PARK_PLACE.NEXTVAL,#{placepsId},#{addname},'BBBB',1,'',SYSDATE,SYSDATE) 
+</insert>
+
+</mapper>

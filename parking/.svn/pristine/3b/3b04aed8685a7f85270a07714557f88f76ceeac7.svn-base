@@ -1,0 +1,46 @@
+package com.example.service;
+
+import com.example.bean.Log;
+/**
+ * 
+  * <p>Title : AmountLogService</p>
+  * <p>Description : 收支明细</p>
+  * <p>DevelopTools : Eclipse_x64_v4.7.1</p>
+  * <p>DevelopSystem : Windows 10</p>
+  * <p>Company : org.chenmian</p>
+  * @author : ChenMian
+  * @date : 2019年2月23日 上午8:40:48
+  * @version : 12.0.0
+ */
+public interface AmountLogService {
+	/**
+	 * 总收入
+	 * @return
+	 */
+	public Integer sumAmount();
+	/**
+	 * 总停车数
+	 * @return
+	 */
+	public Integer countAmount();
+	/**
+	 * 临时用户
+	 * @return
+	 */
+	public Integer sumCasual();
+	/**
+	 * 月缴用户
+	 * @return
+	 */
+	public Integer sumMonth();
+	/**
+	 * 自助终端缴费
+	 * @return
+	 */
+	public Integer sumTerminal();
+	/**
+	 * 人工缴费
+	 * @return
+	 */
+	public Integer sumManual();
+}

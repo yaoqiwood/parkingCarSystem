@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.PaymentMapper">
+	<!--查询车辆id -->
+	<select id="queryCarId" resultType="java.lang.Integer">
+		SELECT PC_ID FROM PARK_CARNUM WHERE PC_NUM = #{carnum} 
+	</select>
+	
+	<!-- 查询车辆出入记录 -->
+	<select id="queryRecord" resultMap="PaymentDtoMap">
+		SELECT * FROM PARK_CAR_RECORD A
+		INNER JOIN PARK_CARNUM B ON A.PCRD_PC_ID = B.PC_ID
+		
+		<where>
+			<!-- 查询条件： -->
+            <if test="name!=null and name!=''">
+                PC_NUM = #{name} AND PCRD_STATE = 1
+            </if>
+            
+		</where>
+	</select>
+	<resultMap type="com.example.bean.CarRecord" id="PaymentResultMapper">
+		<result property="carRecordId" column="PCRD_ID" />
+		<result property="carRecordPCId" column="PCRD_PC_ID" />
+		<result property="carRecordComeTime" column="PCRD_COME_TIME" />
+		<result property="carRecordOutTime" column="PCRD_OUT_TIME" />
+		<result property="carRecordState" column="PCRD_STATE" />
+		<result property="carRecordMemo" column="PCRD_MEMO" />
+		<result property="carRecordCreateTime" column="PCRD_CREATE_TIME" />
+		<result property="carRecordUpdateTime" column="PCRD_UPDATE_TIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.CarRecordDto" id="PaymentDtoMap" extends="PaymentResultMapper" >
+		<result property="carNum" column="PC_NUM" />
+	</resultMap>
+	
+	<!-- 插入日记 -->
+	<insert id="updateRecord" parameterType="com.example.bean.CarRecord">
+		UPDATE "PARK_CAR_RECORD" SET "PCRD_OUT_TIME"=#{outDate} WHERE "PCRD_ID" = #{id}
+	</insert>
+</mapper>

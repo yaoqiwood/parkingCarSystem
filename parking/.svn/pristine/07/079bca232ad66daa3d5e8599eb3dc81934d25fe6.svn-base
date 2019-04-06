@@ -1,0 +1,188 @@
+package com.example.controller;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.MonthProduct;
+import com.example.service.MonthProductService;
+
+/**
+ * 月缴产品配置Controller层类
+ * <p>Title:MonthProductController</p>
+ * <p>Description:</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月21日 下午6:48:07
+ * @version:12.0.0
+ */
+@Controller
+public class MonthProductController {
+	@Autowired
+	private MonthProductService monthProductService;
+	
+	/**
+	 * 分页显示方法
+	 * @param startTime 搜索条件起始时间
+	 * @param endTime 搜索条件结束时间
+	 * @param proName 搜索条件名称
+	 * @param rowPage 每页显示条数
+	 * @param pageCount 当前页数
+	 * @return json
+	 */
+	@RequestMapping("/monthProduct.action") 
+	@ResponseBody
+	public JSONObject monthProductPage(String startTime,String endTime,String proName,String rowPage,String pageCount) {
+		Integer page = Integer.valueOf(pageCount);
+		Integer limit = Integer.valueOf(rowPage);
+		RowBounds rs = new RowBounds((page-1)*limit,limit*page);
+		ArrayList<MonthProduct> proList = new ArrayList<MonthProduct>();
+		proList=monthProductService.init(startTime, endTime, proName, rs);
+		Integer count = monthProductService.count(startTime, endTime, proName);
+		JSONObject data = new JSONObject();
+		data.put("list", proList);
+		data.put("count", count);
+		return data;
+	}
+	
+	/**
+	 * 添加方法
+	 * @param addName 产品名称
+	 * @param addmonth 产品配置月份
+	 * @param addMoney 产品配置金额
+	 * @return json
+	 */
+	@RequestMapping("/addMonthProduct.action") 
+	@ResponseBody
+	public JSONObject addMonthProduct(String addName,String addmonth,String addMoney) {
+		Integer month = Integer.valueOf(addmonth);
+		Integer money = Integer.valueOf(addMoney);
+		MonthProduct monthProduct = new MonthProduct();
+		monthProduct.setMonthProductName(addName);
+		monthProduct.setMonthProductMonth(month);
+		monthProduct.setMonthProductMoney(money);
+		Integer flag = monthProductService.addMonthProduct(monthProduct);
+		JSONObject data = new JSONObject();
+		if(flag==0) {
+			data.put("type", 0);
+			data.put("message", "插入失败");
+		}else {
+			data.put("type", 1);
+			data.put("message", "插入成功");
+		}
+		return data;		
+	}
+	
+	/**
+	 * 删除方法
+	 * @param pro_id 产品id
+	 * @return json
+	 */
+	@RequestMapping("/delMonthProduct.action") 
+	@ResponseBody
+	public JSONObject delMonthProduct(String pro_id) {
+		Integer flag = monthProductService.delMonthProduct(pro_id);
+		JSONObject data = new JSONObject();
+		if(flag==0) {
+			data.put("type", 0);
+			data.put("message", "删除失败");
+		}else {
+			data.put("type", 1);
+			data.put("message", "删除成功");
+		}
+		return data;		
+	}
+	
+	/**
+	 * 修改显示方法
+	 * @param pro_id 产品id
+	 * @return json
+	 */
+	@RequestMapping("/showMonthProduct.action") 
+	@ResponseBody
+	public JSONObject showMonthProduct(String pro_id) {
+		MonthProduct monthProduct = new MonthProduct();
+		monthProduct = monthProductService.showMonthProduct(pro_id);
+		JSONObject data = new JSONObject();
+		data.put("monthProduct", monthProduct);
+		return data;		
+	}
+	
+	/**
+	 * 修改方法
+	 * @param modName 修改名称
+	 * @param modMonth 修改月份
+	 * @param modMoney 修改金额
+	 * @param pro_id 产品id
+	 * @return json
+	 */
+	@RequestMapping("/modMonthProduct.action") 
+	@ResponseBody
+	public JSONObject modMonthProduct(String modName,String modMonth,String modMoney,String pro_id) {
+		MonthProduct monthProduct = new MonthProduct();
+		Integer proId = Integer.valueOf(pro_id);
+		Integer month = Integer.valueOf(modMonth);
+		Integer money = Integer.valueOf(modMoney);
+		monthProduct.setMonthProductId(proId);
+		monthProduct.setMonthProductName(modName);
+		monthProduct.setMonthProductMonth(month);
+		monthProduct.setMonthProductMoney(money);
+		Integer flag = monthProductService.modMonthProduct(monthProduct);
+		JSONObject data = new JSONObject();
+		if(flag==0) {
+			data.put("type", 0);
+			data.put("message", "修改失败");
+		}else {
+			data.put("type", 1);
+			data.put("message", "修改成功");
+		}
+		return data;
+	}
+	
+	/**
+	 * 禁用
+	 * @param pro_id 产品id
+	 * @return json
+	 */
+	@RequestMapping("/disableMonthProduct.action") 
+	@ResponseBody
+	public JSONObject disableMonthProduct(String pro_id) {
+		Integer flag = monthProductService.ableMonthProduct(pro_id, "0");
+		JSONObject data = new JSONObject();
+		if(flag==0) {
+			data.put("type", 0);
+			data.put("message", "禁用失败");
+		}else {
+			data.put("type", 1);
+			data.put("message", "禁用成功");
+		}
+		return data;
+	}
+	
+	/**
+	 * 启用
+	 * @param pro_id 产品id
+	 * @return json
+	 */
+	@RequestMapping("/enableMonthProduct.action") 
+	@ResponseBody
+	public JSONObject enableMonthProduct(String pro_id) {
+		Integer flag = monthProductService.ableMonthProduct(pro_id, "1");
+		JSONObject data = new JSONObject();
+		if(flag==0) {
+			data.put("type", 0);
+			data.put("message", "启用失败");
+		}else {
+			data.put("type", 1);
+			data.put("message", "启用成功");
+		}
+		return data;
+	}
+}

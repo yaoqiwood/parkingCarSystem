@@ -1,0 +1,30 @@
+package com.example.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.bean.Admin;
+import com.example.dao.AdminMapper;
+import com.example.service.AdminService;
+
+@Service
+public class AdminServiceImpl implements AdminService {
+	
+	@Autowired
+	private AdminMapper mapper;
+
+	@Override
+	public Admin adminLogin(String name, String password) {
+		// TODO Auto-generated method stub
+		Admin adminLogin = mapper.adminLogin(name, password);
+		return adminLogin;
+	}
+
+	@Override
+	public Admin adminLogin(Integer id) {
+		// TODO Auto-generated method stub
+		Admin adminLogin = mapper.adminLoginById(id);
+		return adminLogin;
+	}
+
+}

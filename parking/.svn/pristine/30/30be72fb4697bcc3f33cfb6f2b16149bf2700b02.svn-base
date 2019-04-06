@@ -1,0 +1,38 @@
+package com.example.utils;
+
+/**
+ *用于检测数据是否准确
+ *<p>Title : CheckInfoUtils</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64_v4.9.0</p>
+ * <p>DevelopSystem : window 10</p>
+ * @author : Lian
+ * @date : 2019年2月21日 上午11:11:43
+ * @version : 1.0.0
+ */
+public class CheckInfoUtils {
+
+	/**
+	 * 用于检测手机号码的合法性
+	 * @param phoneNum 手机号码
+	 * @return	合法返回true，非法返回false
+	 */
+	public static boolean isPhone(String phoneNum) {
+		String telExpr = "[1][3578]\\d{9}";
+		return phoneNum.matches(telExpr);
+	}
+	
+	/**
+	 * 判断字符串是否为空
+	 * @param str 检测字符串
+	 * @return	当字符串为""或当参数为null是否返回true(是空的)，否则返回false(不是空的)
+	 */
+	public static boolean isEmpty(String str) {
+		if(str.equals("") || str == null) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+}

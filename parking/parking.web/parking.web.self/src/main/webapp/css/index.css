@@ -1,0 +1,59 @@
+.ul_input{
+    position: relative;
+    top: 20px;
+}
+
+/* .user-h2{
+    position: relative;
+    top: -66px;
+} */
+
+.btn-center{
+    position: relative;
+    text-align: center;
+    top: -84px;
+}
+
+#banner.major{
+    height: 300px;
+}
+
+.car_input{
+    color:black;
+}
+
+.che_tit{
+    color:white;
+}
+
+.wel_title{
+    display: none;
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1.65;
+    font-size: 32px;
+    text-align: center;
+    /* position: absolute; */
+    /* margin: 0 0 1em 0; */
+}
+
+.user_hr{
+    content: '';
+    background-color: #ffffff;
+    display: block;
+    height: 2px;
+    margin: 0.325em 0 0.5em 0;
+    width: 100%; 
+}
+
+/* color: #ffffff;
+    font-weight: 600;
+    line-height: 1.65;
+    margin: 0 0 1em 0; */
+
+    /* content: '';
+    background-color: #ffffff;
+    display: block;
+    height: 2px;
+    margin: 0.325em 0 0.5em 0;
+    width: 100%; */

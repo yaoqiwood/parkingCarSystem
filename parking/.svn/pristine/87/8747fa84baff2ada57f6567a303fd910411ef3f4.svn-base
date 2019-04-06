@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.MonthProductMapper">
+
+	<resultMap type="com.example.bean.MonthProduct" id="monthProductMapper">
+		<result property="monthProductId" column="PMP_ID" />
+		<result property="monthProductName" column="PMP_NAME" />
+		<result property="monthProductMonth" column="PMP_MONTH" />
+		<result property="monthProductMoney" column="PMP_MONEY" />
+		<result property="monthProductState" column="PMP_STATE" />
+		<result property="monthProductMemo" column="PMP_MEMO" />
+		<result property="monthProductCreateTime" column="PMP_CREATE_TIME" />
+		<result property="monthProductUpdateTime" column="PMP_UPDATE_TIME" />
+	</resultMap>
+
+	<select id="init" resultMap="monthProductMapper">
+		SELECT * FROM PARK_MONTH_PRODUCT
+		<where>
+			<if test="proName != null  and proName != ''">
+				PMP_NAME = #{proName}
+			</if>
+
+			<if test="startTime !=null and startTime != ''">
+				<if test="endTime != null and endTime != ''">
+					AND PMP_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND
+					TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(0) AS count FROM PARK_MONTH_PRODUCT
+		<where>
+			<if test="proName != null  and proName != ''">
+				PMP_NAME = #{proName}
+			</if>
+
+			<if test="startTime !=null and startTime != ''">
+				<if test="endTime != null and endTime != ''">
+					AND PMP_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND
+					TO_DATE(#{endTime},'yyyy-mm-dd hh24:mi:ss')
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<insert id="addMonthProduct">
+		INSERT INTO PARK_MONTH_PRODUCT VALUES
+		(SEQ_PARK_MONTH_PRODUCT.NEXTVAL,#{monthProduct.monthProductName},#{monthProduct.monthProductMonth},#{monthProduct.monthProductMoney},1,NULL,SYSDATE,SYSDATE)
+	</insert>
+
+	<delete id="delMonthProduct">
+		DELETE FROM PARK_MONTH_PRODUCT WHERE PMP_ID = #{monthProductId}
+	</delete>
+
+	<select id="showMonthProduct" resultMap="monthProductMapper">
+		SELECT * FROM PARK_MONTH_PRODUCT WHERE PMP_ID = #{monthProductId}
+	</select>
+
+	<update id="modMonthProduct">
+		UPDATE PARK_MONTH_PRODUCT SET PMP_NAME = #{monthProduct.monthProductName},PMP_MONTH =
+		#{monthProduct.monthProductMonth},PMP_MONEY = #{monthProduct.monthProductMoney} WHERE PMP_ID =
+		#{monthProduct.monthProductId}
+	</update>
+</mapper>

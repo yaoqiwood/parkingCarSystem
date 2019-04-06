@@ -1,0 +1,23 @@
+package com.example.service;
+
+import com.example.bean.Admin;
+
+public interface AdminService {
+	
+	/**
+	 * 登录
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	Admin adminLogin(String name,String password);
+	
+	/**
+	 * 登录通过id
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	Admin adminLogin(Integer id);
+	
+}

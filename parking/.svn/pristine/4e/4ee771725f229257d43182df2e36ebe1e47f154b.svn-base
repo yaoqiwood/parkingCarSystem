@@ -1,0 +1,85 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css">
+		<style type="text/css">
+			.video{
+				height: 320px;
+				width: 480px;
+				margin: 20px auto;
+			}
+			
+			.panel{
+				max-width: 480px;
+				margin: 20px 0;
+				float: left;
+			}
+			
+			.scan{
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="col-sm-6" align="center">
+  			<video id="video" width="500" height="400"></video>
+			<canvas id="canvas" width="500" height="400" style="display: none"></canvas>
+			<div id="face"></div>
+		</div>
+		<div class="col-sm-6">
+			<div class="panel panel-primary">
+  				<div class="panel-heading">
+   					 车辆信息
+  				</div>
+  				<div class="panel-body">
+  					<div class="input-group scan">
+  						<span class="input-group-addon">序号</span>
+  						<input type="text" class="form-control" id="carId"/>
+					</div>
+  				
+  					<div class="input-group scan">
+  						<span class="input-group-addon">车牌号</span>
+  						<input type="text" class="form-control" id="carNum"/>
+					</div>
+					
+					<div class="input-group scan">
+  						<span class="input-group-addon">用户类型</span>
+  						<input type="text" class="form-control" id="carRole"/>
+					</div>
+					
+					<div class="input-group scan">
+  						<span class="input-group-addon">入场时间</span>
+  						<input type="text" class="form-control" id="carTime"/>
+					</div>
+					
+					<div class="input-group scan">
+  						<span class="input-group-addon">出场时间</span>
+  						<input type="text" class="form-control" id="carupdateTime"/>
+					</div>
+					
+					<div id="bdtts_div_id">
+						<audio id="tts_autio_id" autoplay="autoplay">
+						<source id="tts_source_id" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=播报内容" type="audio/mpeg">
+						<embed id="tts_embed_id" height="0" width="0" src="">
+						</audio>
+					</div>
+					
+  				</div>
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript" src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="js/myjs.js"></script>
+<script type="text/javascript" src="js/carOut.js"> </script>
+</html>
+
+
+    

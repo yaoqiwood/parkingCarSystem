@@ -1,0 +1,388 @@
+package com.example.controller;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.utils.ImageUtils;
+
+@Controller
+public class WelcomeController {
+	
+	/**
+	 * 登录界面
+	 * @return
+	 */
+	@RequestMapping("/")
+	public ModelAndView welcomePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("login");
+		return mv;
+	}
+	
+	/**
+	 * 验证码
+	 * @param request	
+	 * @param response
+	 * @throws IOException	流异常
+	 */
+	@RequestMapping("/code.jpg")
+	public void imageCode(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		ImageUtils imageUtilsNew = new ImageUtils();
+		BufferedImage newImage = imageUtilsNew.getImage();
+		String code = imageUtilsNew.getText();
+		ImageUtils.output(newImage, response.getOutputStream());
+		request.getSession().setAttribute("code",code);
+	}
+	
+	/**
+	 * 主界面
+	 * @return
+	 */
+	@RequestMapping("/frame")
+	public ModelAndView framePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("frame");
+		return mv;
+	}
+	
+	/**
+	 * 主界面
+	 * @return
+	 */
+	@RequestMapping("/hello")
+	public ModelAndView helloPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("hello");
+		return mv;
+	}
+
+	
+	/**
+	 * 用户信息界面
+	 * @return
+	 */
+	@RequestMapping("/adminRole")
+	public ModelAndView adminRolePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("adminRole");
+		return mv;
+	}
+	
+	/**
+	 * 白名单界面
+	 * @return
+	 */
+	@RequestMapping("/whiteList")
+	public ModelAndView whiteListPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("whiteList");
+		return mv;
+	}
+
+	/**
+	 * 车位界面
+	 * @return
+	 */
+	@RequestMapping("/carPlace")
+	public ModelAndView carPlacePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("carPlace");
+		return mv;
+	}
+	
+	/**
+	 * 车辆出入场
+	 * @return
+	 */
+	@RequestMapping("/carIn")
+	public ModelAndView carNumPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("carIn");
+		return mv;
+	}
+	
+	/**
+	 * 权限
+	 * @return
+	 */
+	@RequestMapping("/power")
+	public ModelAndView powerPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("power");
+		return mv;
+	}
+	
+	/**
+	 * 修改密码
+	 * @return
+	 */
+	@RequestMapping("/updatePwd")
+	public ModelAndView updatePwdPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("updatePwd");
+		return mv;
+	}
+	
+	/**
+	 * 月缴产品管理界面
+	 * @return
+	 */
+	@RequestMapping("/monthProduct")
+	public ModelAndView monthProductPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("monthProduct");
+		return mv;
+	}
+	
+	/**
+	 * 日志界面
+	 * @return
+	 */
+	@RequestMapping("/log")
+	public ModelAndView logPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("log");
+		return mv;
+	}
+	
+	/**
+	 * 收支明细界面
+	 * @return
+	 */
+	@RequestMapping("/amountLog")
+	public ModelAndView dailyPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("amountLog");
+		return mv;
+	}
+	
+	/**
+	 * Model链接计费规则
+	 * @return
+	 */
+	@RequestMapping("/feeRule")
+	public ModelAndView viewFeeRule() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("feeRuleView");
+		return mv;
+	}
+
+	
+	/**
+	 * 日结算界面
+	 * @return
+	 */
+	@RequestMapping("/dailyAccount")
+	public ModelAndView dailyAccountPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("dailyAccount");
+		return mv;
+	}
+	
+	/**
+	 * 角色管理
+	 * @return
+	 */
+	@RequestMapping("/roleManager")
+	public ModelAndView roleManager() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("roleManager");
+		return mv;
+	}
+	
+	/**
+	 * 菜单管理
+	 * @return
+	 */
+	@RequestMapping("/menuManager")
+	public ModelAndView menuManager() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("menuManager");
+		return mv;
+	}
+	
+	/**
+	 * 日结算每天界面
+	 * @return
+	 */
+	@RequestMapping("/dayCount")
+	public ModelAndView dayCountPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("dayCount");
+		return mv;
+	}
+	
+	/**
+	 * 销售月缴产品界面
+	 * @return
+	 */
+	@RequestMapping("/sellMonthProduct")
+	public ModelAndView sellMonthProductPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("sellMonthProduct");
+		return mv;
+	}
+	/**
+	 * 配置
+	 * @return
+	 */
+	@RequestMapping("/configure")
+	public ModelAndView configure() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("configure");
+		return mv;
+	}
+	
+	/**
+	 *	收入统计界面incomeMonth
+	 * @return
+	 */
+	@RequestMapping("/income")
+	public ModelAndView income() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("income");
+		return mv;
+	}
+	
+	/**
+	 *	临时和月缴用户统计界面
+	 * @return
+	 */
+	@RequestMapping("/incomeMonth")
+	public ModelAndView incomeMonth() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("incomeMonth");
+		return mv;
+	}
+	
+	/**
+	 *	月缴产品统计界面
+	 * @return
+	 */
+	@RequestMapping("/incomeProduct")
+	public ModelAndView incomeProduct() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("incomeProduct");
+		return mv;
+	}
+	
+	/**
+	 *	自助终端统计界面
+	 * @return
+	 */
+	@RequestMapping("/incomeMechine")
+	public ModelAndView incomeMechine() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("incomeMechine");
+		return mv;
+	}
+	
+	
+	/**
+	 *	工作人员统计界面
+	 * @return
+	 */
+	@RequestMapping("/incomeManual")
+	public ModelAndView incomeManual() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("incomeManual");
+		return mv;
+	}
+	
+	/**
+	 *	渠道分类统计界面
+	 * @return
+	 */
+	@RequestMapping("/incomeChannel")
+	public ModelAndView incomeChannel() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("incomeChannel");
+		return mv;
+	}
+	
+	/**
+	 * 范例界面
+	 * @return
+	 */
+	@RequestMapping("/tableDemo")
+	public ModelAndView tableDemo() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("tableDemo");
+		return mv;
+	}
+	
+	/**
+	 * 缴费信息
+	 * @return
+	 */
+	@RequestMapping("/payment")
+	public ModelAndView payment() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("payment");
+		return mv;
+	}
+	
+	
+	/**
+	 * 销售月缴产品界面
+	 * @return
+	 */
+	@RequestMapping("/refundMonthProduct")
+	public ModelAndView refundMonthProduct() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("refundMonthProduct");
+		return mv;
+	}
+	
+	/**
+	 * 范例界面2
+	 * @return
+	 */
+	@RequestMapping("/tableDemoSe")
+	public ModelAndView tableDemoSe() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("tableDemoSe");
+		return mv;
+	}
+	
+	/**
+	 * 测试支付页面
+	 * @return alipay.trade.page.pay.jsp
+	 */
+	@RequestMapping("/alipays")
+	public ModelAndView alipays() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("alipays");
+		return mv;
+	}
+	
+	/**
+	 * 支付页面
+	 * @return amechineLog.jsp
+	 */
+	@RequestMapping("/pays")
+	public ModelAndView pays() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("pays");
+		return mv;
+	}
+	
+	/**
+	 * 渠道日志页面
+	 * @return
+	 */
+	@RequestMapping("/amechineLog")
+	public ModelAndView amechineLog() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("amechineLog");
+		return mv;
+	}
+}

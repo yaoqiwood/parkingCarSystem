@@ -1,0 +1,100 @@
+function init() {
+	$
+			.ajax({
+				type : "POST",
+				url : "showSellMonthProduct.action",
+				dataType : "json",
+				success : function(msg) {
+					var arr = $(".radio");
+					for (var i = arr.length - 1; i >= 0; i--) {
+						$(arr[i]).remove();
+					}
+					if (msg.type == 1) {
+						// 添加数据
+						var proList = msg.list;
+						for (var i = 0; i < proList.length; i++) {
+							var $div = $("<div class = 'radio' ></div>");
+							var $label = $("<label></label>");
+							var $radio = $("<input type='radio' name='monthProduct' >");
+							$radio.val(proList[i].monthProductMoney);
+							var $name = $("<span></span>").html(
+									proList[i].monthProductName);
+							$label.append($radio);
+							$label.append($name);
+							$div.append($label);
+							$("#body").append($div);
+						}
+					} else {
+						alert(msg.message);
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+}
+
+init();
+
+// 购买按钮的监听
+$("#buyBtn").click(
+		function() {
+			$.ajax({
+				type : "POST",
+				url : "checkCarNum.action",
+				data : {
+					"carNum" : $("#carNum").val()
+				},
+				dataType : "json",
+				success : function(msg) {
+					if (msg.type == 1) {
+						$("#adddialog").css("display", "block");
+						$("#money").html(
+								$('input:radio[name="monthProduct"]:checked')
+										.val());
+					} else {
+						alert(msg.message);
+
+					}
+				},
+				error : function(msg) {
+					alert("请联系管理员。。。");
+				}
+			});
+
+		});
+
+// 购买弹窗中的返回按钮监听
+$("#addcancel").click(function() {
+	$("#adddialog").css("display", "none");
+});
+// 购买弹窗中的支付按钮监听
+$("#addcommit").click(
+		function() {
+				$.ajax({
+					type : "POST",
+					url : "addMonthProduct.action",
+					data : {
+						"addName" : $("#addName").val(),
+						"addmonth" : $("#addmonth").val(),
+						"addMoney" : $("#addMoney").val()
+					},
+					dataType : "json",
+					success : function(msg) {
+						if (msg.type == 1) {
+							alert(msg.message);
+							pageCount = 1;
+							page = 0;
+							rowPage = 5;
+							count = 0;
+							init();
+							$("#adddialog").css("display", "none");
+						} else {
+							alert(msg.message);
+						}
+					},
+					error : function(msg) {
+						alert("请联系管理员。。。");
+					}
+				});
+		});

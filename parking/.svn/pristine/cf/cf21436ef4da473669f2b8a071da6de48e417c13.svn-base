@@ -1,0 +1,121 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.FeeRule;
+import com.example.service.FeeRuleService;
+import com.example.utils.CheckInfoUtils;
+/**
+ * 计费规则控制层
+ * <p>Title : FeeRuleController</p>
+ * <p>Description : </p>
+ * <p>DevelopTools : Eclipse_x64</p>
+ * <p>DevelopSystem : Win10</p>
+ * <p>Company : org.NorwegianWoods</p>
+ * @author : CatWood
+ * @date : Feb 21, 2019 8:23:22 PM
+ * @version : 12.0.0
+ */
+
+@Controller
+public class FeeRuleController {
+
+	@Autowired
+	private FeeRuleService feeRuleService;
+	
+	/**
+	 * Model链接计费规则
+	 * @return
+	 */
+	@RequestMapping("/feeRule")
+	public ModelAndView viewFeeRule() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("feeRuleView");
+		return mv;
+	}
+
+	/**
+	 * 查看计费规则表格
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/ref-feeRuleView.action")
+	@ResponseBody
+	public JSONArray refFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String ruleMoney = req.getParameter("ruleMoney");
+		String ruleBeginTime = req.getParameter("ruleBeginTime");
+		String ruleEndTime = req.getParameter("ruleEndTime");
+		String CurrentPage = req.getParameter("CurrentPage");
+		String Limit = req.getParameter("Limit");
+
+		String time = null;
+		if (!(CheckInfoUtils.isEmpty(ruleBeginTime) || CheckInfoUtils.isEmpty(ruleEndTime)))
+			time = ruleBeginTime + "-" + ruleEndTime;
+		List<FeeRule> feeRules = feeRuleService.refFeeRuleView(ruleMoney, time, BeginPage(CurrentPage, Limit),
+				EndPage(CurrentPage, Limit));
+		JSONArray jsonArray = (JSONArray) JSONArray.toJSON(feeRules);
+		return jsonArray;
+	}
+
+	/**
+	 * 查看计费规则行数量
+	 * @param req
+	 * @param res
+	 * @return
+	 */
+	@RequestMapping("/cnt-feeRuleView.action")
+	@ResponseBody
+	public JSONObject cntFeeRuleView(HttpServletRequest req, HttpServletResponse res) {
+		String ruleMoney = req.getParameter("ruleMoney");
+		String ruleBeginTime = req.getParameter("ruleBeginTime");
+		String ruleEndTime = req.getParameter("ruleEndTime");
+
+		String time = null;
+		if (!(CheckInfoUtils.isEmpty(ruleBeginTime) || CheckInfoUtils.isEmpty(ruleEndTime)))
+			time = ruleBeginTime + "-" + ruleEndTime;
+		
+		Integer Count = feeRuleService.cntFeeRuleView(ruleMoney, time);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("count", Count);
+		return jsonObject;
+	}
+	
+	
+
+	/**
+	 * 计算分页开始
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String BeginPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim - (Lim - 1));
+	}
+
+	/**
+	 * 计算分页结束
+	 * @param CurrentPage
+	 * @param Limit
+	 * @return
+	 */
+	public String EndPage(String CurrentPage, String Limit) {
+		Integer CPage = Integer.parseInt(CurrentPage);
+		Integer Lim = Integer.parseInt(Limit);
+		return String.valueOf(CPage * Lim);
+	}
+}

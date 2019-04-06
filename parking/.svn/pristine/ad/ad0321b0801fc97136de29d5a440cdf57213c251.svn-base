@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.ConfigureMapper">
+	
+	<select id="refConfigure" resultMap="configureMap">
+		SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_CONFIGURE WHERE PC_STATE != 9
+			<if test="configureName != null and configureName != '' ">
+				AND PC_NAME = #{configureName}
+			</if>
+        ORDER BY PC_CREATE_TIME DESC )A) A WHERE A.RN BETWEEN #{begin} AND #{end}		
+	</select>
+	
+	<select id="cntConfigure" resultType="string">
+		SELECT COUNT(0) Count FROM PARK_CONFIGURE WHERE PC_STATE != 9
+			<if test="configureName != null and configureName != '' ">
+				AND PC_NAME = #{configureName}
+			</if>
+        ORDER BY PC_CREATE_TIME DESC 
+	</select>
+	
+	<insert id="addConfigure">
+		INSERT INTO PARK_CONFIGURE VALUES (SEQ_PARK_CONFIGURE.nextval,#{configureName},#{configureValue},1,null,SYSDATE,SYSDATE)
+	</insert>
+	
+	<update id="upConfigure">
+		UPDATE PARK_CONFIGURE SET PC_NAME = #{upConfigName}, PC_PARAMETER = #{upConfigParamter}, PC_UPDATE_TIME = SYSDATE  WHERE PC_ID = #{upConfigID}
+	</update>
+	
+	<update id="upStateConfigure">
+		UPDATE PARK_CONFIGURE SET PC_STATE = #{upState}, PC_UPDATE_TIME = SYSDATE WHERE PC_ID = #{Fid}	
+	</update>
+	
+	<!-- =====================================resultMap========================================== -->
+	
+	<resultMap type="com.example.bean.Configure" id="configureMap">
+		<result property="pcId" column="PC_ID" />
+		<result property="pcName" column="PC_NAME"/>
+		<result property="pcParameter" column="PC_PARAMETER"/>
+		<result property="pcState" column="PC_STATE"/>
+		<result property="pcMemo" column="PC_MEMO"/>
+		<result property="pcCreateTime" column="PC_CREATE_TIME"/>
+		<result property="pcUpdateTime" column="PC_UPDATE_TIME"/>
+	</resultMap>
+
+</mapper>

@@ -1,0 +1,13 @@
+package com.example.service;
+
+import com.example.bean.Log;
+
+public interface AmountLogService {
+
+	public Integer sumAmount();
+	public Integer countAmount();
+	public Integer sumCasual();
+	public Integer sumMonth();
+	public Integer sumTerminal();
+	public Integer sumManual();
+}

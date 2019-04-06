@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>月缴业务显示</title>
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+<link rel="stylesheet" href="css/mycss.min.css" />
+<link rel="stylesheet" href="css/monthProduct.css" />
+</head>
+
+<body>
+	<div class="col-xs-12 no-padding panel panel-primary">
+		<div class="panel-heading">月缴业务显示</div>
+
+		<div class="panel-body " id="body">
+			<div class="scan-div">
+				<input id="carNum" type="text" class="form-control"
+					placeholder="输入车牌号">
+			</div>
+			<div class="radio">
+				<label> <input type="radio" name="monthProduct"> 单选框
+					1
+				</label>
+			</div>
+			<div class="radio">
+				<label> <input type="radio" name="monthProduct"> 单选框
+					2
+				</label>
+			</div>
+			<div class="scan-div">
+				<button id="buyBtn" class="btn btn-primary" type="button">购买</button>
+			</div>
+
+		</div>
+		<div id="adddialog" class="adddialog">
+			<div class="title">购买产品</div>
+			<div class="content">
+				<br /> <br />
+				<table align="center">
+					<tr align="right">
+						<td><span class="font">请支付：</span></td>
+						<td><span id="money"></span></td>
+					</tr>
+
+					<tr>
+						<td colspan="2" align="center"><input id="addcommit"
+							class="btn" type="button" value="支付" /> <input id="addcancel"
+							class="btn" type="button" value="返回" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</body>
+<script type="text/javascript" src="3rd/zui/js/jquery.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="js/sellMonthProduct.js"></script>
+
+</html>

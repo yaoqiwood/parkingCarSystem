@@ -1,0 +1,275 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.Admin;
+import com.example.dto.AdminDto;
+import com.example.service.AdminService;
+import com.example.utils.RSAUtils;
+
+@Controller
+public class AdminController {
+	
+	@Autowired
+	private AdminService service;
+	
+	/**
+	 * 
+	 * @param name 账户名
+	 * @param password 账户密码
+	 * @param code 验证码
+	 * @param request	请求
+	 * @return	成功返回id：0；；验证码输入错误返回id：3；；用户不存在返回id：2；；用户已被禁用返回id：1；；
+	 * @throws Exception 
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public JSONObject login(String name,String password,String code,HttpServletRequest request) throws Exception {
+		password = RSAUtils.decryptByPrivateKey(password);
+		String nowCode = (String)request.getSession().getAttribute("code");
+		Admin adminLogin = service.adminLogin(name, password);
+		JSONObject model = new JSONObject();
+		if(!nowCode.equals(code)) {
+			model.put("message", "验证码输入错误");
+			model.put("id","3");
+			return model;
+		}
+		if(adminLogin == null) {
+			model.put("message", "用户不存在");
+			model.put("id","2");	
+		}else if(adminLogin.getAdminState() == 0) {
+			model.put("message", "用户已被禁用");
+			model.put("id","1");
+		}else {
+			model.put("message", "登录成功");
+			model.put("id","0");
+			model.put("location","frame");
+			HttpSession session = request.getSession();
+			session.setAttribute("admin", adminLogin);
+		}
+		return model;
+	}
+	
+	/**
+	 * 获取用户所有信息，刷新到表格
+	 * @param startTime
+	 * @param endTime
+	 * @param name
+	 * @param role
+	 * @param state
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listAdminByPage.action")
+	@ResponseBody
+	public JSONObject listAdminByPage(String startTime ,String endTime,String name,Integer role
+			,Integer state,Integer start,Integer end,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		List<AdminDto> listAdminByPage = service.listAdminByPage(startTime, endTime, name, role, state, start, end);
+		Integer countAdmin = service.countAdmin(startTime, endTime, name, role, state);
+		data.put("admins", listAdminByPage);
+		data.put("count", countAdmin);
+		data.put("id", 0);
+		
+		return data;
+		}
+
+	/**
+	 * 删除用户
+	 * @param adminId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/del.action")
+	@ResponseBody
+	public JSONObject delAdmin(String adminId,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer delAdmin = service.delAdmin(adminId); 
+		if(delAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "删除成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "删除失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 启/禁用
+	 * @param adminId
+	 * @param state
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/updateState.action")
+	@ResponseBody
+	public JSONObject updateAdminState(String adminId,String state,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer updateAdminState = service.updateAdminState(adminId, state);
+		if(updateAdminState >0 ) {
+			data.put("id", 0);
+			data.put("message", "更改成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "更改失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 修改用户
+	 * @param adminId
+	 * @param dstate
+	 * @param dname
+	 * @param dpassword
+	 * @param drole
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/motifyAdmin.action")
+	@ResponseBody
+	public JSONObject updateAdmin(String adminId,String dstate,String dname,String dpassword,String drole, HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer updateAdmin = service.updateAdmin(adminId,dstate,dname,dpassword,drole);
+		if(updateAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "修改成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "修改失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 重置密码
+	 * @param adminId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/resette.action")
+	@ResponseBody
+	public JSONObject resetteAdmin(String adminId,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer resetteAdmin = service.resetteAdmin(adminId);
+		if(resetteAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "重置密码成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "重置密码失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 添加用户
+	 * @param addname
+	 * @param addpassword
+	 * @param addrole
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/addAdmin.action")
+	@ResponseBody
+	public JSONObject addAdmin(String addname, String addpassword, String addrole,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer addAdmin = service.addAdmin(addname, addpassword, addrole);
+		if(addAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "添加成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "添加失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 注销用户
+	 * @param adminId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/canceladmin.action")
+	@ResponseBody
+	public JSONObject cancelAdmin(String adminId,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		Integer cancelAdmin = service.cancelAdmin(adminId); 
+		if(cancelAdmin >0 ) {
+			data.put("id", 0);
+			data.put("message", "注销成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "注销失败");
+		}
+		return data;
+	}
+	
+	@RequestMapping("/singleAdmin.action")
+	@ResponseBody
+	public JSONObject singleAdminInfo(String adminId) {
+		JSONObject data = new JSONObject();
+		Admin singleAdminInfo = service.singleAdminInfo(adminId);
+		if(singleAdminInfo != null) {
+			data.put("id", 0);
+			data.put("admin", singleAdminInfo);
+		}else {
+			data.put("id", 1);
+			data.put("message", "请求失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 注销用户
+	 * @param adminId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/updatepwd.action")
+	@ResponseBody
+	public JSONObject updatepwdAdmin(String oldpwd,String newpwd,HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		//HttpSession session = request.getSession();
+		//Admin admin = (Admin)session.getAttribute("admin");
+		//Integer adminId = admin.getAdminId();
+		Integer updatepwd = service.updatepwd(oldpwd, 1, newpwd);
+		if(updatepwd >0 ) {
+			data.put("id", 0);
+			data.put("message", "修改成功");
+		}else {
+			data.put("id", 1);
+			data.put("message", "修改失败");
+		}
+		return data;
+	}
+	
+	/**
+	 * 退出
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/cancel.action")
+	public ModelAndView cancelAdmin(HttpServletRequest request) {
+//		HttpSession session = request.getSession();
+//		session.invalidate();
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("login");
+		return mv;
+	}
+	
+}

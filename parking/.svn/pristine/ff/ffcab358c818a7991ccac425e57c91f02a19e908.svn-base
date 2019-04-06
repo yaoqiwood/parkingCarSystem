@@ -1,0 +1,84 @@
+package com.example.bean;
+
+import java.util.Date;
+
+public class Admin {
+	
+	private Integer id;
+	private Integer roleId;
+	private String name;
+	private String password;
+	private Integer state;
+	private String memo;
+	private Date createTime;
+	private Date updateTime;
+	public Admin() {
+		super();
+	}
+	public Admin(Integer id, Integer roleId, String name, String password, Integer state, String memo, Date createTime,
+			Date updateTime) {
+		super();
+		this.id = id;
+		this.roleId = roleId;
+		this.name = name;
+		this.password = password;
+		this.state = state;
+		this.memo = memo;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Integer getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Integer getState() {
+		return state;
+	}
+	public void setState(Integer state) {
+		this.state = state;
+	}
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+	@Override
+	public String toString() {
+		return "Admin [id=" + id + ", roleId=" + roleId + ", name=" + name + ", password=" + password + ", state="
+				+ state + ", memo=" + memo + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+	}
+
+}

@@ -1,0 +1,25 @@
+package com.example.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.Admin;
+
+public interface AdminMapper {
+	
+	/**
+	 * 登录
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	Admin adminLogin(@Param("name") String name,@Param("password") String password);
+		
+	/**
+	 * 登录通过id
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	Admin adminLoginById(@Param("id") Integer id);
+	
+}

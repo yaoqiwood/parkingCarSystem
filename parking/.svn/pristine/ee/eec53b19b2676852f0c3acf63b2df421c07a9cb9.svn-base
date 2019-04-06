@@ -1,0 +1,117 @@
+package com.example.controller;
+
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.baidu.aip.util.Base64Util;
+import com.example.bean.Carnum;
+import com.example.bean.WhiteList;
+import com.example.dto.CarnumDto;
+import com.example.service.AuthService;
+import com.example.service.CarInService;
+import com.example.utils.HttpUtil;
+import com.example.utils.ImageUtils;
+
+@Controller
+public class CarInController {
+
+	@Autowired
+	private CarInService service;
+
+	/**
+	 * 获取车辆所有信息，刷新到表格
+	 * 
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listcarInByPage.action")
+	@ResponseBody
+	public JSONObject listcarInByPage(String data, HttpServletRequest request) {
+		String otherHost = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate";
+        JSONObject model = new JSONObject();
+        try {
+        	byte[] baseToByte = ImageUtils.baseToByte(data);
+            String imgStr = Base64Util.encode(baseToByte);
+            String params = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(imgStr, "UTF-8");
+            /**
+             * 线上环境access_token有过期时间， 客户端可自行缓存，过期后重新获取。
+             */
+            String accessToken = AuthService.getAuth();
+            String result = HttpUtil.post(otherHost, accessToken, params);
+            String number = null;
+            Map<String, Object> map = JSON.parseObject(result.toString(), Map.class);
+            if(map != null) {
+    			Map<String, Object> resultMap = (Map)map.get("words_result");
+    				if(resultMap != null) {
+    						for (Map.Entry<String, Object> entry:resultMap.entrySet()) {
+    							if(entry.getKey().equals("number")) {
+    								number = entry.getValue().toString();
+    								break;
+    							}
+    					}
+    				}
+    		}
+            if(number != null) {
+            	Carnum checkCarnum = service.checkCarnum(number);
+            	WhiteList whiteListInfo = service.whiteListInfo(number);
+            	if(checkCarnum == null) {
+            		Carnum carnum = new Carnum();
+            		carnum.setCarNumber(number);
+            		Integer addCarnum = service.addCarnum(carnum);
+            		if(addCarnum > 0) {
+            			carnum.setCarRoleId(1);
+            			checkCarnum = carnum;
+            		}else {
+            			model.put("id",1);
+                		model.put("message", "录入信息失败");
+                		return model;
+            		}
+            	}
+            	if(whiteListInfo != null) {
+            		checkCarnum.setCarRoleId(3);
+            	}
+            	Integer ppnum = new Random().nextInt(80)+113;
+            	Integer updatePlaceState = service.updatePlaceState(ppnum+"", checkCarnum.getCarNumber());
+            	if(updatePlaceState > 0) {
+            		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            		Date inTime = new Date();
+            		Integer addcarRecord = service.addcarRecord(checkCarnum.getCarnumId()+"", dateFormat.format(inTime));
+            		if(addcarRecord > 0) {
+            			model.put("id", 0);
+            			checkCarnum.setCarnumCreateTime(inTime);
+            			model.put("car", checkCarnum);
+            		}else {
+            			model.put("id",1);
+            			model.put("message", "录入信息失败");
+            		}
+            	}else {
+            		model.put("id",1);
+            		model.put("message", "录入信息失败");
+            	}
+            }else {
+            	model.put("id",1);
+				model.put("message", "识别失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+	}
+
+}

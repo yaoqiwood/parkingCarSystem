@@ -1,0 +1,75 @@
+package com.example.utils;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
+
+/**
+ * 图片工具类
+ * <p>Title : ImageUtils</p>
+ * <p>Description :用于生成图片</p>
+ * <p>DevelopTools : Eclipse_x64_v4.9.0</p>
+ * <p>DevelopSystem : window 10</p>
+ * @author : Lian
+ * @date : 2019年2月21日 上午11:06:46
+ * @version : 1.0.0
+ */
+public class ImageUtils {
+	
+	/**
+	 * 随机生成字符串码（范围：0~9/a~z/A~Z）
+	 * @return	返回随机字符串
+	 */
+	public static String randomString() {
+		ArrayList<String> arr = new ArrayList<String>();
+		for (int i = 2; i < 9; i++) {
+			arr.add(i + "");
+		}
+		for (int i = 65; i <= 90; i++) {
+			if (i != 73 && i != 79) {
+				arr.add((char) (i) + "");
+			}
+		}
+		for (int i = 97; i <= 122; i++) {
+			if (i != 108 && i != 111) {
+				arr.add((char) (i) + "");
+			}
+		}
+		// 1.随机生成4位数的字符串
+		String code = "";
+		Random r = new Random();
+		for (int i = 0; i < 4; i++) {
+			int index = r.nextInt(arr.size());
+			code += arr.get(index);
+		}
+		return code;
+	}
+
+	/**
+	 * 根据输入的字符串生成对应图片
+	 * @param rondomCode	随机字符串码
+	 * @return	返回BufferedImage
+	 * @throws IOException
+	 */
+	public static BufferedImage newImage(String rondomCode) throws IOException {
+
+		// -- 这三个参数代表，图片的宽，高，颜色的色调 (制定一张纸，而这张纸，在内存中)
+		BufferedImage bi = new BufferedImage(240, 40, BufferedImage.TYPE_INT_RGB);
+		// -- 获取画笔
+		Graphics g = bi.getGraphics();
+		// -- 绘制白色背景
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, 240, 40);
+		// -- 绘制文字
+		g.setColor(Color.RED);
+		for (int i = 0; i < rondomCode.length(); i++) {
+			String code = rondomCode.charAt(i) + "";
+			g.drawString(code, 50 * i + 50, 24);
+		}
+		return bi;
+	}
+
+}

@@ -1,0 +1,52 @@
+package com.example.service;
+
+import java.util.List;
+
+
+import com.example.bean.Admin;
+
+public interface AdminService {
+	
+	/**
+	 * 登录
+	 * @param name
+	 * @param password
+	 * @return
+	 */
+	Admin adminLogin(String name,String password);
+	
+	
+	/**
+	 * 分页查询用户信息
+	 * @param startTime
+	 * @param endTime
+	 * @param name
+	 * @param roleId
+	 * @param state
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<Admin> listAdminByPage(String startTime ,String endTime,
+			String name ,Integer roleId,Integer state,Integer start,Integer end);
+
+	/**
+	 * 用户总数
+	 * @param startTime
+	 * @param endTime
+	 * @param name
+	 * @param roleId
+	 * @param state
+	 * @return
+	 */
+     Integer countAdmin(String startTime ,String endTime,
+ 			String name ,Integer roleId,Integer state);
+	
+
+     /**
+      * 删除用户
+      * @param adminId
+      * @return
+      */
+     Integer delAdmin(String adminId);
+}

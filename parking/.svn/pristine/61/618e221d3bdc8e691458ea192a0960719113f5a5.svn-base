@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.PlaceMapper" >
+	<resultMap type="com.example.bean.Place" id="placeMapper">
+		<result property="placeId" column="PP_ID"/>
+		<result property="placePsId" column="PP_PS_ID"/>
+		<result property="placeNumber" column="PP_NUMBER"/>
+		<result property="placeUrl" column="PP_URL"/>
+		<result property="placeState" column="PP_STATE"/>
+		<result property="placeMemo" column="PP_MEMO"/>
+		<result property="placeCreateTime" column="PP_CREATE_TIME"/>
+		<result property="placeUpdateTime" column="PP_UPDATE_TIME"/>
+	</resultMap>
+
+	<select id="placeCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_PLACE WHERE PP_STATE != 9
+	</select>
+	
+	<select id="placeHasCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_PLACE WHERE PP_STATE = 2
+	</select>
+	
+	<select id="placeInfo" resultMap="placeMapper">
+		SELECT * FROM PARK_PLACE WHERE PP_MEMO = #{carnum}
+	</select>
+</mapper>

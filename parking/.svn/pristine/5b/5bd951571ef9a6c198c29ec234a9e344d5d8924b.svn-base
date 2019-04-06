@@ -1,0 +1,30 @@
+package com.example.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.dto.CarnumDto;
+
+public interface CarnumMapper {
+	
+	/**
+	 * 分页查询车辆信息
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<CarnumDto> listCarnumByPage(@Param("name")String name ,@Param("start")Integer start,
+			@Param("end")Integer end);
+
+	/**
+	 * 车辆总数
+	 * @param name
+	 * @return
+	 */
+     Integer countCarnum(@Param("name")String name);
+    
+     
+
+}

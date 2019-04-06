@@ -1,0 +1,21 @@
+package com.example.service;
+
+import java.util.List;
+
+import com.example.bean.Log;
+
+public interface LogService {
+	/**
+	 * 分页查询日志
+	 * @param timeSt
+	 * @param timeEn
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<Log> queryLogBySearch(String timeSt,String timeEn, String name, String start, String end);
+	
+	public int countLogBySearch(String timeSt,String timeEn, String name);
+
+}

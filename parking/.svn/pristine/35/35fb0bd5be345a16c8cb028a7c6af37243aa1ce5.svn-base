@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>路径文字描述</title>
+		<link rel="stylesheet" href="3rd/zui/css/zui.min.css"/>
+		<link rel="stylesheet" href="css/common.css"/>
+		<link rel="stylesheet" href="3rd/fengniao/lib/bootstrap.min.css"/>
+		<link href="3rd/fengniao/css/style.css" rel="stylesheet"/>
+	<!-- 	<link href="css/iconfont.css" rel="stylesheet" /> -->
+		<link rel="stylesheet" href="3rd/CarNumPlugin/css/CarNumPlugin.css"/>
+		<link rel="stylesheet" href="css/common.css"/>
+		<!-- <link rel="stylesheet" href="css/self-servicepayment.css"/> -->
+	</head>
+
+	<body>
+	
+	<div id="fengMap" ></div>
+		<!-- 楼层按钮组 -->
+	<div class="btn-group-vertical group-layer" data-toggle="buttons">
+		<span id="top" class="btn btn-default"><i class="icon iconfont">&#8743;</i></span>
+		<div class="btn-group-vertical layer-list" data-toggle="buttons"></div>
+		<span id="down" class="btn btn-default disabled"><i  class="icon iconfont">&#8744;</i></span>
+	</div>
+	
+	<div class="col-md-4">
+        <div class="panel panel-primary carnum-plugin">
+            <div class="panel-heading text-heading">车牌输入</div>
+            <div class="panel-body">
+                <div>
+                    <div class="che_tit">输入车牌</div>
+                    <div class="car_input">
+                        <ul class="clearfix ul_input">
+                            <li class="input_pro"><span></span></li>
+                            <li class="input_pp input_zim"><span></span></li>
+                            <li class="input_pp"><span></span></li>
+                            <li class="input_pp"><span></span></li>
+                            <li class="input_pp"><span></span></li>
+                            <li class="input_pp"><span></span></li>
+                            <li class="input_pp"><span></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="btn-center">
+                    <button id="selectBtn" class="btn btn-primary" type="button">查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="3rd/fengniao/lib/fengmap.min.js"></script>
+<script src="3rd/fengniao/lib/bootstrap.min.js"></script>
+<script src="js/jquery.nicescroll.js"></script>
+		
+		<script src="3rd/CarNumPlugin/js/layer.js" type="text/javascript"></script>
+		<script src="3rd/CarNumPlugin/js/index.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/layerGroup.js"></script>
+		<script type="text/javascript" src="js/layerList.js"></script>
+		<script type="text/javascript" src="js/table_funs.js"></script>
+		<script type="text/javascript" src="js/parkState.js"></script>
+		
+</html>

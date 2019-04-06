@@ -1,0 +1,81 @@
+package com.example.controller;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.utils.ImageUtils;
+
+@Controller
+public class WelcomeController {
+	
+	/**
+	 * 登录界面
+	 * @return
+	 */
+	@RequestMapping("/")
+	public ModelAndView welcomePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("login");
+		return mv;
+	}
+	
+	/**
+	 * 登录界面(人脸)
+	 * @return
+	 */
+	@RequestMapping("/face")
+	public ModelAndView facePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("loginFace");
+		return mv;
+	}
+	
+	/**
+	 * 验证码
+	 * @param request	
+	 * @param response
+	 * @throws IOException	流异常
+	 */
+	@RequestMapping("/code.jpg")
+	public void imageCode(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		ImageUtils imageUtilsNew = new ImageUtils();
+		BufferedImage newImage = imageUtilsNew.getImage();
+		String code = imageUtilsNew.getText();
+		ImageUtils.output(newImage, response.getOutputStream());
+		request.getSession().setAttribute("code",code);
+	}
+	
+	/**
+	 * 主界面
+	 * @return
+	 */
+	@RequestMapping("/frame")
+	public ModelAndView framePage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("frame");
+		return mv;
+	}
+	
+	/**
+	 * 主界面
+	 * @return
+	 */
+	@RequestMapping("/hello")
+	public ModelAndView helloPage() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("hello");
+		return mv;
+	}
+
+	
+	
+	
+
+}

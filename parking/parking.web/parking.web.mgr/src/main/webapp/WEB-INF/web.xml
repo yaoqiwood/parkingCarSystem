@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<!-- Spring的配置 Start -->
+	<context-param>
+		<description>配置spring读取的xml文件,param-name是spring规定,spring自动加载以下内容.</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- Spring的配置 Ends -->
+
+	<!-- SpringMVC 配置 Start -->
+
+	<!-- Web请求编码过滤器,POST中文乱码解决方案 -->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- DispatcherServlet 配置加载 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<!-- 以下配置springmvc-servlet.xml放在包内或部署的classes目录下的对应目录下皆可. -->
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springMVC-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	
+	<filter>
+    	<filter-name>springSessionRepositoryFilter</filter-name>
+    	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  	</filter>
+  	<filter-mapping>
+    	<filter-name>springSessionRepositoryFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+  	</filter-mapping>
+
+	<!-- SpringMVC 配置 Ends -->
+	<filter>
+		<filter-name>myXssFilter</filter-name>
+		<filter-class>com.example.interceptor.MyXssFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>myXssFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+<!-- 	<listener>  
+    	<listener-class>com.example.thread.ParkInfoPostListener</listener-class>  
+	</listener>  -->
+</web-app>

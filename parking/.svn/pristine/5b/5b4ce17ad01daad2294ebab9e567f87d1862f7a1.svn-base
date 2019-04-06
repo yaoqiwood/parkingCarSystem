@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package com.example.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.Carnum;
+
+/**
+ * <p>Title:CarNumMapper</p>
+ * <p>Description:注册车辆</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月25日 上午3:42:56
+ * @version:12.0.0
+ */
+public interface CarnumMapper {
+	/**
+	 * 查看是否存在注册车辆
+	 * @param carNum 车号
+	 * @return 车信息
+	 */
+	Carnum checkCarnum(@Param("carNum") String carNum);
+}

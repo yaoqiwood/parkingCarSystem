@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AdminMapper">
+<resultMap type="com.example.bean.Admin" id="adminMapper">
+	<result property="adminId" column="PA_ID"/>
+	<result property="adminRoleId" column="PA_PR_ID"/>
+	<result property="adminName" column="PA_NAME"/>
+	<result property="adminPassword" column="PA_PASSWORD"/>
+	<result property="adminState" column="PA_STATE"/>
+	<result property="adminMemo" column="PA_MEMO"/>
+	<result property="adminCreateTime" column="PA_CREATE_TIME"/>
+	<result property="adminUpdateTime" column="PA_UPDATE_TIME"/>
+</resultMap>
+<resultMap type="com.example.dto.AdminDto" id="adminDtoMapper" extends="adminMapper">
+    <result property="adminRoleName" column="PAR_NAME"/>
+</resultMap>
+
+<select id="adminLogin" resultMap="adminMapper">
+	SELECT * FROM PARK_ADMIN WHERE PA_NAME = #{name} AND PA_PASSWORD = #{password}
+</select>
+
+<select id="listAdminByPage" resultMap="adminDtoMapper" >
+   SELECT * FROM (SELECT A.PA_ID, A.PA_NAME,PAR_NAME,A.PA_PASSWORD,A.PA_CREATE_TIME,A.PA_STATE, ROWNUM RN FROM PARK_ADMIN A 
+   INNER JOIN PARK_ADMIN_ROLE B ON A.PA_PR_ID=B.PAR_ID
+<where>
+   (A.PA_STATE = 1 OR A.PA_STATE = 0 OR A.PA_STATE= 2 )
+   <if test="startTime != null and startTime !='' and endTime != null and endTime != ''">
+    AND A.PA_CREATE_TIME BETWEEN(TO_DATE(#{time},'yyyy-mm-dd hh24:mi:ss')) AND (TO_DATE(#{time1},'yyyy-mm-dd hh24:mi:ss'))
+   </if>
+   <if test="name != null and name != '%%'">
+      AND A.PA_NAME LIKE #{name}
+   </if>
+   <if test="roleId != null and roleId != '-1'">
+      AND B.PAR_ID = #{roleId}
+   </if>
+   <if test="state != null and state != '-1' ">
+     AND A.PA_STATE = #{state}
+   </if>
+</where>
+  ) WHERE RN BETWEEN #{start} AND #{end} 
+</select>
+
+<select id="countAdmin" resultType="java.lang.Integer">
+    SELECT COUNT(0) FROM PARK_ADMIN A INNER JOIN PARK_ADMIN_ROLE B ON A.PA_PR_ID=B.PAR_ID
+   <where>
+   (A.PA_STATE = 1 OR A.PA_STATE = 0 OR A.PA_STATE = 2)
+   <if test="startTime != null and startTime !='' and endTime != null and endTime != ''">
+    AND A.PA_CREATE_TIME BETWEEN(TO_DATE(#{time},'yyyy-mm-dd hh24:mi:ss')) AND (TO_DATE(#{time1},'yyyy-mm-dd hh24:mi:ss'))
+   </if>
+   <if test="name != null and name != '%%'">
+      AND A.PA_NAME LIKE #{name}
+   </if>
+   <if test="roleId != null and roleId != '-1'">
+      AND B.PAR_ID = #{roleId}
+   </if>
+   <if test="state != null and state != '-1' ">
+     AND A.PA_STATE = #{state}
+   </if>
+</where>
+</select>
+
+<update id="delAdmin">
+    UPDATE PARK_ADMIN SET PA_STATE = 9  WHERE PA_ID = #{adminId}
+</update>
+	
+<update id="updateAdminState">
+    UPDATE PARK_ADMIN SET PA_STATE = #{state}  WHERE PA_ID = #{adminId}
+</update>
+
+<update id="updateAdmin">
+    UPDATE PARK_ADMIN SET PA_NAME=#{dname},PA_PR_ID =#{drole} ,PA_PASSWORD =#{dpassword},PA_STATE = #{dstate} WHERE PA_ID = #{adminId}
+</update>
+
+<update id="resetteAdmin">
+    UPDATE PARK_ADMIN SET PA_PASSWORD = '123456'  WHERE PA_ID = #{adminId}
+</update>
+
+<insert id="addAdmin">
+  INSERT INTO PARK_ADMIN VALUES(SEQ_PARK_ADMIN.NEXTVAL,#{addrole},#{addname},#{addpassword},1,'',SYSDATE,SYSDATE) 
+</insert>
+
+<update id="cancelAdmin">
+    UPDATE PARK_ADMIN SET PA_STATE = 2  WHERE PA_ID = #{adminId}
+</update>
+</mapper>

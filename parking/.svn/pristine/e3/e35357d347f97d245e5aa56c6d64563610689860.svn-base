@@ -1,0 +1,68 @@
+package com.example.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.dao.AmountLogMapper;
+import com.example.service.AmountLogService;
+@Service
+public class AmountLogServiceImpl implements AmountLogService{
+	
+	@Autowired
+	private AmountLogMapper amountLogMapper;
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumAmount() {
+		// TODO Auto-generated method stub
+		Integer sumAmount = amountLogMapper.sumAmount();
+		System.out.println("sumAmount= "+sumAmount);
+		return sumAmount;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer countAmount() {
+		// TODO Auto-generated method stub
+		Integer countAmount = amountLogMapper.countAmount();
+		System.out.println("countAmount= "+countAmount);
+		return countAmount;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumCasual() {
+		// TODO Auto-generated method stub
+		Integer sumCasual = amountLogMapper.sumCasual();
+		System.out.println("sumCasual= "+sumCasual);
+		return sumCasual;
+	}
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumMonth() {
+		// TODO Auto-generated method stub
+		Integer sumMonth = amountLogMapper.sumMonth();
+		System.out.println("sumMonth= "+sumMonth);
+		return sumMonth;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumTerminal() {
+		// TODO Auto-generated method stub
+		Integer sumTerminal = amountLogMapper.sumTerminal();
+		System.out.println("sumTerminal= "+sumTerminal);
+		return sumTerminal;
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public Integer sumManual() {
+		// TODO Auto-generated method stub
+		Integer sumManual = amountLogMapper.sumManual();
+		System.out.println("sumManual= "+sumManual);
+		return sumManual;
+	}
+
+	
+}

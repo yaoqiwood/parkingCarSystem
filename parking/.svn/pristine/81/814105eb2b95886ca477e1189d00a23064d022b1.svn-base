@@ -1,0 +1,83 @@
+var tempData = new data();
+// 刷新表页
+var url = "./ref-feeRuleView.action";
+var pageUrl = "./cnt-feeRuleView.action";
+$(document).ready(function () {
+    $("#addBtn").click(function () {
+        var status = $("#addPanelBox").css("display");
+        $("#addPanelBox").css("display", (status == "block" ? "none" : "block"));
+    });
+    RefreshTableDataAndPage(url, pageUrl);
+    // 按钮监听
+    BtnListener();
+});
+
+function data() {
+    this.CurrentPage = 1;
+    this.TotalPage = 0;
+    this.Limit = 5;
+    this.Count = 0; //  行总数
+
+    this.ruleMoney = "";
+    this.ruleBeginTime = "";
+    this.ruleEndTime = "";
+
+    this.RefreshJSON = function () {
+        var JSON = {};
+        JSON.ruleMoney = tempData.ruleMoney;
+        JSON.ruleBeginTime = tempData.ruleBeginTime;
+        JSON.ruleEndTime = tempData.ruleEndTime;
+        JSON.CurrentPage = tempData.CurrentPage;
+        JSON.Limit = tempData.Limit;
+        return JSON;
+    };
+
+    this.SearchJSON = function () {
+        var JSON = {};
+        JSON.ruleMoney = tempData.ruleMoney = $("#ruleMoney").val();
+        JSON.ruleBeginTime = tempData.ruleBeginTime = $("#ruleBeginTime").val();
+        JSON.ruleEndTime = tempData.ruleEndTime = $("#ruleEndTime").val();
+        JSON.CurrentPage = tempData.CurrentPage;
+        JSON.Limit = tempData.Limit;
+        return JSON;
+    };
+};
+
+
+function fillTableBody(param) {
+    $("#table").append(
+        "<tr class = 'table_content' fid = '" + param.feeRuleId + "'>" +
+        // "<td>" + param.feeRuleId + "</td>" +
+        "<td>" + param.feeRuleTime + "</td>" +
+        "<td>" + param.feeRuleMoney + "</td>" +
+        "<td>" + (param.feeRuleState == 0 ? "未启用" : "已启用") + "</td>" +
+        "<td>" + formatUnixtimestamp(new Date(param.feeRuleUpdateTime)) + "</td>" +
+        "<td>" + "<button class='btn btn-warning' id = 'updateBtn' type='button'>修改</button> "
+        + "<button class='btn btn-danger ' id = 'deleteBtn' type='button'>删除</button>"
+        + "</td>" +
+        +"</tr >"
+    );
+};
+
+function BtnListener() {
+    // 搜索按键
+    $("#Search_Btn").click(function () {
+        tempData.CurrentPage = 1;
+        tempData.SearchJSON();
+        RefreshTableDataAndPage(url, pageUrl);
+        $("#CurPageView").html(tempData.CurrentPage);
+    });
+
+    // 上一页
+    $("#lastPageBtn").click(function () {
+        lastPage(url, pageUrl);
+        $("#CurPageView").html(tempData.CurrentPage);
+    });
+
+    // 下一页
+    $("#nextPageBtn").click(function () {
+        nextPage(url, pageUrl);
+        $("#CurPageView").html(tempData.CurrentPage);
+    });
+};
+

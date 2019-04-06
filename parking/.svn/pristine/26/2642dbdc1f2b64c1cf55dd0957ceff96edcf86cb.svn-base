@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace = "com.example.dao.ManagerBackMapper">
+
+    <select id="initLeftMenu" resultMap = "leftMenuDtoMap">
+        SELECT * FROM PARK_MENU WHERE PM_PARENT = #{menuParent}
+    </select>
+
+
+    <!-- /============================ResultMap===========================/ -->
+    <resultMap id = "leftMenuMap" type = "com.example.bean.Menu">
+        <result column = "PM_ID" property = "menuId"/>
+        <result column = "PM_PARENT" property = "menuParent"/>
+        <result column = "PM_NAME" property = "menuName"/>
+        <result column = "PM_URL" property = "menuUrl"/>
+        <result column = "PM_STATE" property = "menuState"/>
+        <result column = "PM_MEMO" property = "menuMemo"/>
+        <result column = "PM_CREATE_TIME" property = "menuCreateTime"/>
+        <result column = "PM_UPDATE_TIME" property = "menuUpdateTime"/>
+    </resultMap>
+
+    <resultMap type = "com.example.bean.MenuDto" id = "leftMenuDtoMap" extends = "leftMenuMap">
+          <!-- collection Map -->
+        <collection property = "menuBeans" ofType = "com.example.bean.MenuDto" column = "{menuParent = PM_ID}" 
+            select = "initLeftMenu" />
+    </resultMap>
+</mapper>

@@ -1,0 +1,470 @@
+//时间控件
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length)
+				+ "-" + date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	//定义搜索变量
+	var searchTimeSt = "";
+	var searchTimeEn = "";
+	var searchName = "";
+	//定义分页变量
+	var start = 1;//开始
+	var end = 5;//结束
+	var count = 0;//一共多少条
+	var currPage = 1;//当前第几页
+	var allPage = 0;//一共多少页
+	var limit = 5;//每页显示多少条
+	
+	//
+	//初始化分页器
+	$('#myPager4').pager({
+		page : currPage,
+		recTotal : count,
+		recPerPage : limit,
+	});
+	//初始化
+	function initMechine() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-incomeMechine.ajax",
+			type : "POST",
+			data : {
+				"offset" : start,
+				"limit" : limit
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				//首先清空
+				var arr = $(".tr4");
+				for (var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove();
+				}
+				/* var arr1 = $(".tr1");
+				for (var i = arr1.length - 1; i >= 0; i--) {
+					$(arr1[i]).remove();
+				} */
+				//tb1
+				var sumMechineA = data.sumMechineA;
+				var sumMechineB = data.sumMechineB;
+				var sumMechineC = data.sumMechineC;
+				var sumMechineD = data.sumMechineD;
+				var $sumMechineA = $("#sumMechineA");
+				var $sumMechineB = $("#sumMechineB");
+				var $sumMechineC = $("#sumMechineC");
+				var $sumMechineD = $("#sumMechineD");
+				$sumMechineA.html(sumMechineA+sumMechineB+sumMechineC+sumMechineD);
+				$sumMechineB.html(sumMechineB);
+				$sumMechineC.html(sumMechineC);
+				$sumMechineD.html(sumMechineD);
+
+				//tb
+				var incomeMechineList = data.incomeMechineList;
+				var c = data.count;
+				var $tb4 = $("#tb4");
+				for (var i = 0; i < incomeMechineList.length; i++) {
+					var $tr4 = $("<tr class='tr4' align='left'></tr>");
+					var $td1 = $("<td></td>");
+					$td1.html(incomeMechineList[i].mechineLogId);
+					var $td2 = $("<td></td>");
+					$td2.html(incomeMechineList[i].selfMechineNum);
+					var $td3 = $("<td></td>");
+					$td3.html(incomeMechineList[i].carNum);
+					var $td4 = $("<td></td>");
+					$td4.html(incomeMechineList[i].mechineLogMoney);
+					var $td5 = $("<td></td>");
+					$td5.html(incomeMechineList[i].mechineLogDesc);
+					var $td6 = $("<td></td>");
+					$td6.html(formatUnixtimestamp(new Date(
+							incomeMechineList[i].mechineLogCreateTime)));
+					$tr4.append($td1);
+					$tr4.append($td2);
+					$tr4.append($td3);
+					$tr4.append($td4);
+					$tr4.append($td5);
+					$tr4.append($td6);
+					$("#tb4").append($tr4);
+				}
+				//显示page
+				count = c;
+				$('#myPager4').data('zui.pager').set(currPage, count, limit);
+				if (incomeMechineList.length == 0) {
+					zuiAlert("暂无数据");
+				}
+				// 基于准备好的dom，初始化echarts实例
+				var myChart = echarts.init(document.getElementById('main4'),
+				        'westeros');
+				option = {
+					legend : {},
+					tooltip : {},
+					dataset : {
+						source : [
+								[ '缴费机', 'A出口缴费机收入', 'B出口缴费机收入', 'C出口缴费机收入',
+										'D出口缴费机收入' ],
+								[ '1月数据', 14300.3, 18500.8, 19300.7, 18000 ],
+								[ '2月数据', 18300.1, 17300.4, 15500.1, 15000 ],
+								[ '3月数据', sumMechineA, sumMechineB,
+										sumMechineC, sumMechineD ] ]
+					},
+					xAxis : {
+						type : 'category'
+					},
+					yAxis : {},
+					// Declare several bar series, each will be mapped
+					// to a column of dataset.source by default.
+					series : [ {
+						type : 'bar'
+					}, {
+						type : 'bar'
+					}, {
+						type : 'bar'
+					}, {
+						type : 'bar'
+					} ]
+				};
+				// 使用刚指定的配置项和数据显示图表。
+				myChart.setOption(option);
+			},
+			error : function(msg) {
+				zuiAlert("请联系管理员...");
+			}
+		});
+	}
+	initMechine();
+	//页码监听
+	$('#myPager4').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			//tempData.CurrentPage = state.page;
+			currPage = state.page;
+			initMechine();
+		}
+	});
+
+	//
+	//初始化分页器
+	$('#myPager5').pager({
+		page : currPage,
+		recTotal : count,
+		recPerPage : limit,
+	});
+	//初始化
+	function initManual() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-incomeManual.ajax",
+			type : "POST",
+			data : {
+				"offset" : start,
+				"limit" : limit
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				//首先清空
+				var arr = $(".tr5");
+				for (var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove();
+				}
+				
+				var incomeManualList = data.incomeManualList;
+				var $sumManual = $("#sumManual");
+				$sumManual.html(incomeManualList[0].sumMoney+incomeManualList[1].sumMoney+incomeManualList[2].sumMoney+incomeManualList[3].sumMoney);
+				//图表
+				//获取数组
+				if(incomeManualList.length != 0){
+					var name = [incomeManualList[0].adminName];
+					for(var i = 0; i < incomeManualList.length; i++){
+						var ele = incomeManualList[i].adminName;
+						if(name.indexOf(ele) == -1) {
+							name.push(ele);
+						}
+					}
+					var income = [incomeManualList[0].sumMoney ];
+					for(var i = 0; i < incomeManualList.length; i++){
+						var ele = incomeManualList[i].sumMoney;
+						if(income.indexOf(ele) == -1) {
+							income.push(ele);
+						}
+					}
+					
+					//图表
+					var dom = document.getElementById("main5");
+					var myChart = echarts.init(dom,'westeros');
+					var app = {};
+					option = null;
+					app.title = '人员管理';
+					
+					option = {
+						color: ['#3398DB'],
+						tooltip: {
+							trigger: 'axis',
+							axisPointer: { // 坐标轴指示器，坐标轴触发有效
+								type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+							}
+						},
+						grid: {
+							left: '3%',
+							right: '4%',
+							bottom: '3%',
+							containLabel: true
+						},
+						xAxis: [{
+							type: 'category',
+							data: name,
+							axisTick: {
+								alignWithLabel: true
+							}
+						}],
+						yAxis: [{
+							type: 'value'
+						}],
+						series: [{
+							name: '直接访问',
+							type: 'bar',
+							barWidth: '60%',
+							data: income
+						}]
+					};;
+					if(option && typeof option === "object") {
+						myChart.setOption(option, true);
+					}
+				}else{
+					
+					//图表
+					var dom = document.getElementById("main5");
+					var myChart = echarts.init(dom,'westeros');
+					var app = {};
+					option = null;
+					app.title = '人员管理';
+					
+					option = {
+						color: ['#3398DB'],
+						tooltip: {
+							trigger: 'axis',
+							axisPointer: { // 坐标轴指示器，坐标轴触发有效
+								type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+							}
+						},
+						grid: {
+							left: '3%',
+							right: '4%',
+							bottom: '3%',
+							containLabel: true
+						},
+						xAxis: [{
+							type: 'category',
+							data: [0, 0, 0, 0, 0],
+							axisTick: {
+								alignWithLabel: true
+							}
+						}],
+						yAxis: [{
+							type: 'value'
+						}],
+						series: [{
+							name: '直接访问',
+							type: 'bar',
+							barWidth: '60%',
+							data: [0, 0, 0, 0, 0]
+						}]
+					};;
+					if(option && typeof option === "object") {
+						myChart.setOption(option, true);
+					}
+				}
+				
+				//tb
+				var queryIncomeManual = data.queryIncomeManual;
+				var c = data.count;
+				var $tb5 = $("#tb5");
+				for (var i = 0; i < queryIncomeManual.length; i++) {
+					var $tr5 = $("<tr class='tr5' align='left'></tr>");
+					var $td1 = $("<td></td>");
+					$td1.html(queryIncomeManual[i].amountLogId);
+					var $td2 = $("<td></td>");
+					$td2.html(queryIncomeManual[i].adminName);
+					var $td3 = $("<td></td>");
+					$td3.html(queryIncomeManual[i].amountLogCarnum);
+					var $td4 = $("<td></td>");
+					$td4.html(queryIncomeManual[i].amountLogMoney);
+					var $td5 = $("<td></td>");
+					$td5.html(queryIncomeManual[i].amountLogDesc);
+					var $td6 = $("<td></td>");
+					$td6.html(formatUnixtimestamp(new Date(
+							queryIncomeManual[i].amountLogDescCreateTime)));
+					$tr5.append($td1);
+					$tr5.append($td2);
+					$tr5.append($td3);
+					$tr5.append($td4);
+					$tr5.append($td5);
+					$tr5.append($td6);
+					$("#tb5").append($tr5);
+				}
+				
+				//显示page
+				count = c;
+				$('#myPager5').data('zui.pager').set(currPage, count, limit);
+				if (queryIncomeManual.length == 0) {
+					zuiAlert("暂无数据");
+				}
+			},
+			error : function(msg) {
+				zuiAlert("请联系管理员...");
+			}
+		});
+	}
+	initManual();
+	//页码监听
+	$('#myPager5').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			//tempData.CurrentPage = state.page;
+			currPage = state.page;
+			initManual();
+		}
+	});
+	
+	//初始化分页器
+	$('#myPager6').pager({
+	    page: currPage,
+	    recTotal: count,
+	    recPerPage: limit,
+	});
+	//初始化
+	function initChannel() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-incomeChannel.ajax",
+			type : "POST",
+			data : {
+				"offset" : start,
+				"limit" : limit
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				//首先清空
+				/* var arr = $(".tr");
+				for (var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove();
+				} */
+				var arr1 = $(".tr6");
+				for (var i = arr1.length - 1; i >= 0; i--) {
+					$(arr1[i]).remove();
+				}
+				
+				//tb1
+				var sumTerminal = data.sumTerminal;
+				var sumManual = data.sumManual;
+				var $sumTerminal = $("#sumTerminal");
+				var $sumManual = $("#sumManual");
+				$sumTerminal.html(sumTerminal);
+				$sumManual.html(sumManual);
+				var $tb6 = $("#tb6");
+				var $tr6 = $("<tr class='tr6' align='left'></tr>");
+				var $td10 = $("<td></td>");
+				$td10.html("自助终端收费");
+				var $td8 = $("<td></td>");
+				$td8.html(sumTerminal);
+                var $tr7 = $("<tr class='tr6' align='left'></tr>");
+                var $td11 = $("<td></td>");
+                $td11.html("收费人员收费");
+				var $td9 = $("<td></td>");
+				$td9.html(sumManual);
+				$tr6.append($td10);
+				$tr6.append($td8);
+				$tr7.append($td11);
+                $tr7.append($td9);
+				$("#tb6").append($tr6);
+				$("#tb6").append($tr7);
+				//图表
+				var myChart = echarts.init(document.getElementById('main6'),'westeros');
+				option = {
+					legend: {},
+					tooltip: {},
+					dataset: {
+						source: [
+							['缴费机', '临时用户收入', '月缴用户收入'],
+							['1月数据', 1430.3, 1850.8],
+							['2月数据', 1830.1, 1730.4],
+							['3月数据', 1750, 2100]
+						]
+					},
+					xAxis: {
+						type: 'category'
+					},
+					yAxis: {},
+					// Declare several bar series, each will be mapped
+					// to a column of dataset.source by default.
+					series: [{
+							type: 'bar'
+						},
+						{
+							type: 'bar'
+						}
+					]
+				};
+				// 使用刚指定的配置项和数据显示图表。
+				myChart.setOption(option);
+				/* var incomeMonthList = data.incomeMonthList;
+				var c = data.count;
+				var $tb = $("#tb");
+				for (var i = 0; i < incomeMonthList.length; i++) {
+					var $tr = $("<tr class='tr' align='left'></tr>");
+					var $td1 = $("<td></td>");
+					$td1.html(incomeMonthList[i].amountLogId);
+					var $td2 = $("<td></td>");
+					$td2.html(incomeMonthList[i].carnumRoleId == 1 ? "临时用户" : "月缴用户");
+					var $td3 = $("<td></td>");
+					$td3.html(incomeMonthList[i].amountLogCarnum);
+					var $td4 = $("<td></td>");
+					$td4.html(incomeMonthList[i].amountLogMoney);
+					var $td5 = $("<td></td>");
+					$td5.html(incomeMonthList[i].amountLogDesc);
+					var $td6 = $("<td></td>");
+					$td6.html(formatUnixtimestamp(new Date(
+							incomeMonthList[i].amountLogDescCreateTime)));
+					$tr.append($td1);
+					$tr.append($td2);
+					$tr.append($td3);
+					$tr.append($td4);
+					$tr.append($td5);
+					$tr.append($td6);
+					$("#tb").append($tr);
+				}
+				//显示page
+				count = c;
+				$('#myPager').data('zui.pager').set(currPage, count, limit);
+				if (incomeMonthList.length == 0) {
+					alert("暂无数据");
+				} */
+			},
+			error : function(msg) {
+				zuiAlert("请联系管理员...");
+			}
+		});
+	}
+	initChannel();
+	//页码监听6
+	$('#myPager6').on('onPageChange', function (e, state, oldState) {
+		if (state.page !== oldState.page) {
+			console.log('页码从', oldState.page, '变更为', state.page);
+			//tempData.CurrentPage = state.page;
+			currPage = state.page;
+			initChannel();
+		}
+	});

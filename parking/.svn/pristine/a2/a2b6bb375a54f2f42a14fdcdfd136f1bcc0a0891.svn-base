@@ -1,0 +1,40 @@
+//判断是否点击验证码输入框，点击显示图片 未点击则隐藏
+$("body").click(function(event) {
+	if ($(event.target).hasClass("lookimage")) {
+		$("#image").show(500);
+	} else {
+		$("#image").hide(500);
+	}
+});
+
+//刷新验证码图片
+$("#vercode").click(function(event) {
+	$("#vercode").attr("src", "code.jpg?_data=" + new Date());
+});
+
+$("#login").click(function() {
+	var name = $("#name").val();
+	var password = $("#password").val();
+	var code = $("#code").val();
+	$.ajax({
+		type : "POST",
+		url : "login.action",
+		data : {
+			"name" : name,
+			"password" : password,
+			"code" : code
+		},
+		success : function(msg) {
+			var obj = eval("(" + msg + ")");
+			alert(obj.message);
+			if (obj.id == 0) {
+				if (obj.location != null) {
+					document.location = obj.location;
+				}
+			}
+		},
+		error : function(msg) {
+			alert("请联系管理员！");
+		}
+	});
+});

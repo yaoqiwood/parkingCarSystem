@@ -1,0 +1,67 @@
+package com.example.utils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.baidu.aip.ocr.AipOcr;
+
+public class AipOcrSample {
+	// 设置APPID/AK/SK
+	public static final String APP_ID = "15610858";
+	public static final String API_KEY = "EwSfDOp7hpbNoNPxRGdaSkkT";
+	public static final String SECRET_KEY = "OUTIVbrIsiaaRpdMt7ZncRcvWQA2iu9a";
+
+	// 初始化一个AipOcr
+	private static AipOcr client;
+
+	static {
+		client = new AipOcr(APP_ID, API_KEY, SECRET_KEY);
+		// 可选：设置网络连接参数
+		client.setConnectionTimeoutInMillis(20000);
+		client.setSocketTimeoutInMillis(60000);
+	}
+
+	private AipOcrSample() {
+	}
+
+	public static JSONObject getLicense(String filePath) {
+
+		System.out.println("调用API");
+//		client = new AipOcr(APP_ID, API_KEY, SECRET_KEY);
+//		client.setConnectionTimeoutInMillis(20000);
+//		client.setSocketTimeoutInMillis(60000);
+
+		// 可选：设置代理服务器地址, http和socket二选一，或者均不设置
+//        client.setHttpProxy("proxy_host", proxy_port);  // 设置http代理
+//        client.setSocketProxy("proxy_host", proxy_port);  // 设置socket代理
+
+		// 可选：设置log4j日志输出格式，若不设置，则使用默认配置
+		// 也可以直接通过jvm启动参数设置此环境变量
+//        System.setProperty("aip.log4j.conf", "path/to/your/log4j.properties");
+
+
+		// 调用接口
+		HashMap<String, String> options = new HashMap<String, String>();
+		options.put("multi_detect", "true");
+
+		String image = filePath;
+
+		JSONObject res = client.plateLicense(image, options);
+
+//		System.out.println(res.toString(2));
+		return res;
+	}
+
+	public static void main(String[] args) {
+		JSONObject json = getLicense("C:\\Users\\比比\\Desktop\\智能停车场系统\\licenseTest.jpg");
+
+		JSONArray json1 = (JSONArray) json.get("words_result");
+		System.out.println(json1.getJSONObject(0).get("number"));
+
+	}
+
+}

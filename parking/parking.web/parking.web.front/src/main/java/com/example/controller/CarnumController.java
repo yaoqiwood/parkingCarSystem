@@ -1,0 +1,68 @@
+package com.example.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.dto.CarnumDto;
+import com.example.service.CarnumService;
+
+@Controller
+public class CarnumController {
+
+	@Autowired
+	private CarnumService service;
+
+	/**
+	 * 获取车辆所有信息，刷新到表格
+	 * 
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/listcarInByPage.action")
+	@ResponseBody
+	public JSONObject listcarInByPage(String name, Integer start, Integer end, HttpServletRequest request) {
+		JSONObject data = new JSONObject();
+		List<CarnumDto> listCarnumByPage = service.listCarnumByPage(name, start, end);
+		Integer countCarnum = service.countCarnum(name);
+		Integer ppId = (int) (Math.random() * 3);
+		String carNum = service.carNum(ppId);
+		if (name.equals("") || name == null) {
+			data.put("message", "请输入车牌");
+			data.put("id", 1);
+		} else {
+			if (listCarnumByPage.size() == 0) {
+				Integer addCarnum = service.addCarnum(name);
+				if (addCarnum > 0) {
+					if (carNum != null) {
+						data.put("carnum", carNum);
+					}
+					data.put("message", "欢迎" + name + "用户");
+					data.put("id", 0);
+				}
+				data.put("admins", listCarnumByPage);
+				data.put("count", countCarnum);
+			} else {
+				data.put("admins", listCarnumByPage);
+				data.put("count", countCarnum);
+				data.put("id", 0);
+				data.put("message", "欢迎" + name + "用户");
+				if (carNum != null) {
+					data.put("carnum", carNum);
+				}
+			}
+		}
+
+		return data;
+	}
+
+}

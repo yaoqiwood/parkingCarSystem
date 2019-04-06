@@ -1,0 +1,129 @@
+//访问用户媒体设备的兼容方法
+			function getUserMedia(constraints, success, error) {
+				if(navigator.mediaDevices.getUserMedia) {
+					//最新的标准API
+					navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+				} else if(navigator.webkitGetUserMedia) {
+					//webkit核心浏览器
+					navigator.webkitGetUserMedia(constraints, success, error)
+				} else if(navigator.mozGetUserMedia) {
+					//firfox浏览器
+					navigator.mozGetUserMedia(constraints, success, error);
+				} else if(navigator.getUserMedia) {
+					//旧版API
+					navigator.getUserMedia(constraints, success, error);
+				}
+			}
+
+			let video = document.getElementById('video');
+			let canvas = document.getElementById('canvas');
+			let context = canvas.getContext('2d');
+
+			function success(stream) {
+				//兼容webkit核心浏览器
+				let CompatibleURL = window.URL || window.webkitURL;
+				//将视频流设置为video元素的源
+				console.log(stream);
+
+				//video.src = CompatibleURL.createObjectURL(stream);
+				video.srcObject = stream;
+				video.play();
+			}
+
+			function error(error) {
+				console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+			}
+
+			if(navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+				//调用用户媒体设备, 访问摄像头
+				getUserMedia({
+					video: {
+						width: 480,
+						height: 320
+					}
+				}, success, error);
+			} else {
+				alert('不支持访问用户媒体');
+			}
+function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length) + "-" + date.substring(date.length - 2, date.length) +
+		" " + hour.substring(hour.length - 2, hour.length) + ":" +
+		minute.substring(minute.length - 2, minute.length) + ":" +
+		second.substring(second.length - 2, second.length);
+}
+// 定义分页变量
+var currPage = 1;
+var limit = 5;
+
+function init() {
+	var startTime = new Date().getTime();
+	var interval = setInterval(function() {
+			if(new Date().getTime() - startTime > 1000) {
+				context.drawImage(video, 0, 0, 480, 320);
+				let data = canvas.toDataURL();
+				let img = document.createElement('img');
+		img.src = data;
+		var start = (currPage - 1) * limit + 1;
+		var end = currPage * limit;
+		$.ajax({
+			url: "listcarInByPage.action",
+			type: "POST",
+			dataType: "json",
+			data: {
+				"data": data,
+				"start": start,
+				"end": end
+			},
+			success: function(data) {
+				var msg = JSON.stringify(data);
+				var obj = eval("(" + msg + ")");
+				// 首先清空数据
+				var arr = $(".tr")
+				for(var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove()
+				};
+				// 添加数据
+				var admins = obj.admins;
+				var c = obj.count;
+				var carnum = obj.carnum;
+				if(c == 0) {
+					init();
+					clearInterval(interval);
+				} else{
+					alert("您的车位为" + carnum);
+					alert(obj.message);
+					for(var i = 0; i < admins.length; i++) {
+					var $tr = $("<tr class='tr'></tr>");
+					$tr.append($("<td>" + admins[i].carnumId + "</td>"));
+					$tr.append($("<td>" + admins[i].carNumber + "</td>"));
+					$tr.append($("<td>" + admins[i].carRoleName + "</td>"));
+					$tr.append($("<td>" + formatUnixtimestamp(new Date(admins[i].carnumCreateTime)) + "</td>"));
+					$tr.append($("<td>" + formatUnixtimestamp(new Date(admins[i].carnumUpdateTime)) + "</td>"));
+					$("#tb").append($tr);
+					};
+				}
+				$('#myPager').data('zui.pager').set(currPage, c, limit);
+				clearInterval(interval);
+			},
+			error: function(msg) {
+				alert("请联系管理员");
+				}
+			});
+		}
+		},5000);
+}
+init();
+//页码监听
+$('#myPager').on('onPageChange', function (e, state, oldState) {
+	if (state.page !== oldState.page) {
+		currPage = state.page;
+		init();
+	}
+});

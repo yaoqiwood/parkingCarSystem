@@ -1,0 +1,125 @@
+function formatUnixtimestamp(unixtimestamp) {
+	var unixtimestamp = new Date(unixtimestamp);
+	var year = 1900 + unixtimestamp.getYear();
+	var month = "0" + (unixtimestamp.getMonth() + 1);
+	var date = "0" + unixtimestamp.getDate();
+	var hour = "0" + unixtimestamp.getHours();
+	var minute = "0" + unixtimestamp.getMinutes();
+	var second = "0" + unixtimestamp.getSeconds();
+	return year + "-" + month.substring(month.length - 2, month.length) + "-" + date.substring(date.length - 2, date.length) +
+		" " + hour.substring(hour.length - 2, hour.length) + ":" +
+		minute.substring(minute.length - 2, minute.length) + ":" +
+		second.substring(second.length - 2, second.length);
+}
+function emty(){
+	var $name = $("#name");
+	$name.val("");
+}
+//定义搜索变量
+var searchName = "";
+// 定义分页变量
+var currPage = 1;
+var limit = 5;
+var startTime = null;
+var endTime = null;
+var carNum = 0;
+var carNumId=0;
+var money = 0;
+
+function init() {
+	var start = (currPage - 1) * limit + 1;
+	var end = currPage * limit;
+	$.ajax({
+		url: "listcarOutByPage.action",
+		type: "POST",
+		dataType:"json",
+		data: {
+			"name": searchName,
+			"start": start,
+			"end": end
+		},
+		success: function(data) {
+			var msg = JSON.stringify(data);
+			var obj = eval("(" + msg + ")");
+			// 首先清空数据
+			var arr = $(".tr")
+			for(var i = arr.length - 1; i >= 0; i--) {
+				$(arr[i]).remove()
+			};
+			// 添加数据
+			var admins = obj.admins;
+			var c = obj.count;
+			var blance = obj.blance;
+			if(searchName != null && obj.id==1){
+				alert(obj.message);
+				return;
+			}
+			if(c == 0){
+				$('#myPager').data('zui.pager').set(1, 1,limit);
+				$("#tb").append($("<tr class='tr' align='center'><td colspan='6'>未搜索到相关数据</td></tr>"));
+			} else if(obj.id==0){
+				alert(obj.message);
+				for(var i = 0; i < admins.length; i++) {
+					var $tr = $("<tr class='tr'></tr>");
+					carNumId = admins[i].carnumId
+					$tr.append($("<td>"+ carNumId +"</td>"));
+					carNum = admins[i].carNumber
+					$tr.append($("<td>"+ carNum +"</td>"));
+					$tr.append($("<td>"+ admins[i].carRoleName +"</td>"));
+					startTime = new Date(admins[i].carnumCreateTime).toLocaleString('chinese', { hour12: false });
+					$tr.append($("<td>"+ formatUnixtimestamp(startTime) +"</td>"));
+					endTime=new Date();
+					$tr.append($("<td>"+ endTime.toLocaleString() +"</td>"));
+					$("#tb").append($tr);
+					money = blance;
+					$tr.append($("<td>"+ money+"</td>"));
+				};
+			}
+			$('#myPager').data('zui.pager').set(currPage, c, limit);
+		},
+		error: function(msg) {
+			alert("请联系管理员");
+		}
+	});
+}
+
+//页码监听
+$('#myPager').on('onPageChange', function (e, state, oldState) {
+	if (state.page !== oldState.page) {
+		currPage = state.page;
+		init();
+	}
+});
+//搜索
+$("#selectBtn").click(function() {
+	searchName = $("#name").val();
+	currPage = 1;
+	init();
+	emty();
+});
+
+$("#balance").click(function(){
+	$.ajax({
+		   url:"addCarnum.action",
+		   type:"POST",
+		   dataType:"json",
+		   data:{
+		   		"carNum" : carNum ,
+		   		"money" : money,
+		   		"startTime" :startTime,
+			    "carNumId" : carNumId 
+		   },
+		   success:function(data){
+			   var msg = JSON.stringify(data);
+			   var obj = eval("(" + msg + ")");
+			   if(carNum == 0 || money == 0 || startTime == null || carNumId == 0){
+				   alert("数据有误，请稍后重试！")
+			   }else if(obj.id==0){
+				   alert(obj.message);
+			   }
+		   },
+		   error:function(msg){
+			   alert("请联系管理员");
+		   }
+	 });
+});

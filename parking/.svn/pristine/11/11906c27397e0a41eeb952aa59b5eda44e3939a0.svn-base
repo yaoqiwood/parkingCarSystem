@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AmountLogMapper">
+
+	<!-- 总收入 -->
+	<select id="sumAmount" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM PARK_AMOUNT_LOG
+	</select>
+	<!-- 总数 -->
+	<select id="countAmount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG
+	</select>
+	<!-- 临时收入 -->
+	<select id="sumCasual" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG A
+		INNER JOIN
+		PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+		WHERE B.PC_PCR_ID = 1)
+	</select>
+	<!-- 月卡收入 -->
+	<select id="sumMonth" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG A
+		INNER JOIN
+		PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+		WHERE B.PC_PCR_ID = 2)
+	</select>
+	<!-- 终端收入 -->
+	<select id="sumTerminal" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG WHERE PAL_PA_ID &lt; 0)
+	</select>
+	<!-- 人工收入 -->
+	<select id="sumManual" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG WHERE PAL_PA_ID &gt; 0)
+	</select>
+</mapper>

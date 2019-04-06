@@ -1,0 +1,77 @@
+package com.example.dao;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
+
+import com.example.bean.MonthProduct;
+
+/**
+ * 月缴产品配置dao层类
+ * <p>Title:MonthProductMapper</p>
+ * <p>Description:</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月21日 下午6:20:26
+ * @version:12.0.0
+ */
+public interface MonthProductMapper {
+	/**
+	 * 月缴产品配置分页
+	 * @param startTime 开始时间
+	 * @param endTime 结束时间
+	 * @param proName 产品名
+	 * @param rb RowBounds
+	 * @return 产品的集合
+	 */
+	ArrayList<MonthProduct> init(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("proName") String proName,RowBounds rb);
+	
+	/**
+	 * 月缴产品配置总条数
+	 * @param startTime 开始时间
+	 * @param endTime 结束时间
+	 * @param proName 产品名
+	 * @return 总条数
+	 */
+	Integer count(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("proName") String proName);
+	
+	/**
+	 * 月缴产品配置添加
+	 * @param monthProduct 产品对象
+	 * @return 0 1
+	 */
+	Integer addMonthProduct(@Param("monthProduct") MonthProduct monthProduct);
+	
+	/**
+	 * 月缴产品删除
+	 * @param monthProductId 产品id
+	 * @return 0 1
+	 */
+	Integer delMonthProduct(@Param("monthProductId") String monthProductId);
+	
+	/**
+	 * 月缴产品修改显示
+	 * @param monthProductId 产品id
+	 * @return 产品对象
+	 */
+	MonthProduct showMonthProduct(@Param("monthProductId") String monthProductId);
+	
+	/**
+	 * 月缴产品配置修改
+	 * @param monthProduct 产品对象
+	 * @return 0 1
+	 */
+	Integer modMonthProduct(@Param("monthProduct") MonthProduct monthProduct);
+	
+	/**
+	 * 月缴产品配置修改状态
+	 * @param monthProductId 产品id
+	 * @param monthProductState 状态
+	 * @return 0 1
+	 */
+	Integer ableMonthProduct(@Param("monthProductId") String monthProductId,@Param("monthProductState") String monthProductState);
+}

@@ -1,0 +1,187 @@
+/**
+ * 
+ */
+package com.example.controller;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.example.bean.DailyAccount;
+import com.example.service.AmountLogService;
+import com.example.service.DailyAccountService;
+import com.example.service.MonthProductService;
+
+/**
+ * <p>
+ * Title:DailyAccountController
+ * </p>
+ * <p>
+ * Description:日结算控制层类
+ * </p>
+ * <p>
+ * DevelopTools:Eclipse_x64_v4.7.1
+ * </p>
+ * <p>
+ * DevelopSystem : macOS Sierra 10.12.1
+ * </p>
+ * <p>
+ * Company : org.xiongyi
+ * </p>
+ * 
+ * @author:XiongYi
+ * @date:2019年2月22日 下午2:37:14
+ * @version:12.0.0
+ */
+@Controller
+public class DailyAccountController {
+	@Autowired
+	private DailyAccountService dailyAccountService;
+
+	@Autowired
+	private AmountLogService amountLogService;
+
+	/**
+	 * 日结分页显示
+	 * 
+	 * @param time
+	 * @param rowPage
+	 * @param pageCount
+	 * @return
+	 */
+	@RequestMapping("/dailyAccountPage.action")
+	@ResponseBody
+	public JSONObject dailyAccountPage(String time, String rowPage, String pageCount) {
+		Integer page = Integer.valueOf(pageCount);
+		Integer limit = Integer.valueOf(rowPage);
+		RowBounds rs = new RowBounds((page - 1) * limit, limit * page);
+		ArrayList<DailyAccount> accList = dailyAccountService.dailyAccountPage(time, rs);
+		Integer count = dailyAccountService.count(time);
+		JSONObject data = new JSONObject();
+		data.put("list", accList);
+		data.put("count", count);
+		return data;
+	}
+
+	/**
+	 * 早中晚结算
+	 * 
+	 * @param time 班次名称
+	 * @return json
+	 */
+	@RequestMapping("/dailyAccount.action")
+	@ResponseBody
+	public JSONObject automaticDailyAccount(String time) {
+		System.out.println(time);
+		DailyAccount dailyAccount = new DailyAccount();
+		dailyAccount.setDailyAccountTime(time);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String st = dt.format(new Date());
+		JSONObject data = new JSONObject();
+		if (time != null && time.equals("") == false) {
+			if (time.equals("早班")) {
+				String startTime = df.format(new Date()) + " " + "08:00:00";
+				String endTime = df.format(new Date()) + " " + "15:59:59";
+				Integer res = dailyAccountService.checkDailyAccount(time);
+				if (res == 0) {
+					if (isTime(st, startTime, endTime)) {
+						data.put("type", 0);
+						data.put("message", "结算失败，您正处于早班时刻");
+					} else {
+						System.out.println(startTime);
+						Integer ret = amountLogService.sumAmountLog(startTime, endTime);
+						if (ret == null) {
+							ret = 0;
+						}
+						dailyAccount.setDailyAccountTime(time);
+						dailyAccount.setDailyAccountMoney(ret);
+						Integer flag = dailyAccountService.addDailyAccount(dailyAccount);
+						data.put("type", 1);
+						data.put("message", "结算成功");
+					}
+				} else {
+					data.put("type", 2);
+					data.put("message", "今日已结算");
+				}
+			} else if (time.equals("中班")) {
+				String startTime = df.format(new Date()) + " " + "16:00:00";
+				String endTime = df.format(new Date()) + " " + "23:59:59";
+				Integer res = dailyAccountService.checkDailyAccount(time);
+				System.out.println(res);
+				if (res == 0) {
+					if (isTime(st, startTime, endTime)) {
+						data.put("type", 0);
+						data.put("message", "结算失败，您正处于中班时刻");
+					} else {
+						Integer ret = amountLogService.sumAmountLog(startTime, endTime);
+						if (ret == null) {
+							ret = 0;
+						}
+						dailyAccount.setDailyAccountTime(time);
+						dailyAccount.setDailyAccountMoney(ret);
+						Integer flag = dailyAccountService.addDailyAccount(dailyAccount);
+						data.put("type", 1);
+						data.put("message", "结算成功");
+					}
+				} else {
+					data.put("type", 2);
+					data.put("message", "今日已结算");
+				}
+			} else if (time.equals("晚班")) {
+				String startTime = df.format(new Date()) + " " + "00:00:00";
+				String endTime = df.format(new Date()) + " " + "07:59:59";
+				Integer res = dailyAccountService.checkDailyAccount(time);
+				if (res == 0) {
+					if (isTime(st, startTime, endTime)) {
+						data.put("type", 0);
+						data.put("message", "结算失败，您正处于晚班时刻");
+					} else {
+						Integer ret = amountLogService.sumAmountLog(startTime, endTime);
+						if (ret == null) {
+							ret = 0;
+						}
+						dailyAccount.setDailyAccountTime(time);
+						dailyAccount.setDailyAccountMoney(ret);
+						Integer flag = dailyAccountService.addDailyAccount(dailyAccount);
+						data.put("type", 1);
+						data.put("message", "结算成功");
+					}
+				} else {
+					data.put("type", 2);
+					data.put("message", "今日已结算");
+				}
+			}
+		}
+
+		return data;
+	}
+
+	public boolean isTime(String st, String startTime, String endTime) {
+		boolean flag = false;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date sysdate;
+		try {
+			sysdate = sdf.parse(st);
+			Date sTime = sdf.parse(startTime);
+			Date eTime = sdf.parse(endTime);
+			int compareToStime = sysdate.compareTo(sTime);
+			int compareToEtime = sysdate.compareTo(eTime);
+			if (compareToStime == 1 && compareToEtime == -1) {
+				flag = true;
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return flag;
+	}
+}

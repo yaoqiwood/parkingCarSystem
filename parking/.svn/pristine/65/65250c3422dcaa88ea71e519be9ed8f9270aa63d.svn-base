@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.FeeRuleMapper">
+
+	<!-- 刷新费用规则表 -->
+    <select id="refFeeRuleView" resultMap = "feeRuleMap">
+        SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT * FROM PARK_FEE_RULE WHERE PFR_STATE != 9 
+        	<if test = "ruleMoney != null and ruleMoney != '' ">	
+               AND PFR_MONEY = #{ruleMoney}
+        	</if>
+        ORDER BY PFR_CREATE_TIME DESC )A) A WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+
+	<!-- 统计费用规则表 -->
+    <select id="cntFeeRuleView" resultType = "Integer">
+        SELECT COUNT(0) Count FROM PARK_FEE_RULE WHERE PFR_STATE != 9 
+        <if test = "ruleMoney != null and ruleMoney != '' ">
+              AND PFR_MONEY = #{ruleMoney}
+        </if>
+    </select>
+    
+	<!-- 查看所有时段 -->
+    <select id="viewTimesPeriod" resultType="String">
+    	SELECT PFR_TIME FROM PARK_FEE_RULE WHERE PFR_STATE != 9 
+    	<if test="upRuleID != null and upRuleID != '' ">
+    		AND PFR_ID != #{upRuleID}
+    	</if>
+    </select>
+    
+    
+   	<!-- 查看是否有存在重复的时间规则 -->
+   	<select id="checkReTimes" resultType="integer">
+   		SELECT COUNT(0) Count FROM PARK_FEE_RULE WHERE PFR_STATE != 9 AND PFR_TIME = #{time}
+   	</select>
+
+	<!-- 查看该ID下规则所有信息 -->
+	<select id="viewSinFeeRule" resultMap="feeRuleMap">
+		SELECT * FROM PARK_FEE_RULE WHERE PFR_STATE != 9 AND PFR_ID = #{feeRuleId}
+	</select>
+	
+	<!-- 查最大时间 -->
+	<select id="viewMaxTFeeRule" resultType ="Integer">
+		SELECT MAX(TO_NUMBER(REGEXP_SUBSTR(PFR_TIME,'([^-]+)',1,2))) max FROM PARK_FEE_RULE WHERE PFR_STATE != 9
+	</select>
+	
+	<!-- 查最大时间行 -->
+	<select id="viewMaxTFeeRuleForCol" resultMap="feeRuleMap">
+		SELECT * FROM PARK_FEE_RULE WHERE PFR_STATE != 9 AND REGEXP_SUBSTR(PFR_TIME,'([^-]+)',1,2) =(
+		SELECT MAX(TO_NUMBER(REGEXP_SUBSTR(PFR_TIME,'([^-]+)',1,2))) max FROM PARK_FEE_RULE WHERE PFR_STATE != 9)
+	</select>
+	
+	<!-- 查最大开始时间 -->
+	<select id="viewMaxSFeeRule" resultType="integer">
+		SELECT MAX(TO_NUMBER(REGEXP_SUBSTR(PFR_TIME,'([^-]+)',1,1))) max FROM PARK_FEE_RULE WHERE PFR_STATE != 9
+	</select>
+	
+    <insert id = "insertFeeRuleView">
+        INSERT INTO PARK_FEE_RULE VALUES (SEQ_PARK_FEE_RULE.nextval,#{time},#{ruleHourMoney},1,null,SYSDATE,SYSDATE)
+    </insert>
+
+    <update id = "upFeeRuleView">
+        UPDATE PARK_FEE_RULE SET PFR_TIME = #{time}, PFR_MONEY = #{upRuleMoney} , PFR_UPDATE_TIME = SYSDATE WHERE PFR_ID = #{upRuleID}
+    </update>
+
+    <update id = "upStateFeeRuleView">
+        UPDATE PARK_FEE_RULE SET PFR_STATE = #{upState}, PFR_UPDATE_TIME = SYSDATE  WHERE PFR_ID = #{Fid}
+    </update>
+
+    <!--___________________________ ResultMap_________________________________________ -->
+    <resultMap id = "feeRuleMap" type = "com.example.bean.FeeRule">
+        <result property = "feeRuleId" column = "PFR_ID" />
+        <result property = "feeRuleTime" column = "PFR_TIME" />
+        <result property = "feeRuleMoney" column = "PFR_MONEY" />
+        <result property = "feeRuleState" column = "PFR_STATE" />
+        <result property = "feeRuleMemo" column = "PFR_MEMO" />
+        <result property = "feeRuleCreateTime" column = "PFR_CREATE_TIME" />
+        <result property = "feeRuleUpdateTime" column = "PFR_UPDATE_TIME" />
+    </resultMap>
+    
+    <select id="selectFeeRule" resultMap="feeRuleMap">
+    	SELECT * FROM PARK_FEE_RULE WHERE PFR_STATE = 1 ORDER BY PFR_ID
+    </select>
+</mapper>

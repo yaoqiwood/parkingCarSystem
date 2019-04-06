@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AdminRoleMenuMapper">
+<resultMap type="com.example.bean.AdminRoleMenu" id="adminRoleMenuMapper">
+	<result property="adminRoleMenuId" column="PARM_ID"/>
+	<result property="adminRoleMenuParId" column="PARM_PAR_ID"/>
+	<result property="adminRoleMenuMenuId" column="PARM_MENU_ID"/>
+	<result property="adminRoleMenuState" column="PARM_STATE"/>
+	<result property="adminRoleMenuMemo" column="PARM_MEMO"/>
+	<result property="adminRoleMenuCreateTime" column="PARM_CREATE_TIME"/>
+	<result property="adminRoleMenuUpDateTime" column="PARM_CREATE_TIME"/>
+</resultMap>
+
+<select id="roleMenuInf" resultMap="adminRoleMenuMapper">
+	SELECT * FROM PARK_ADMIN_ROLE_MENU WHERE PARM_PAR_ID = #{roleId}
+</select>
+
+<select id="roleMenuSingle" resultMap="adminRoleMenuMapper">
+	SELECT * FROM PARK_ADMIN_ROLE_MENU WHERE PARM_PAR_ID = #{roleId} AND PARM_MENU_ID = #{menuId}
+</select>
+
+<insert id="roleMenuInsert">
+	INSERT INTO PARK_ADMIN_ROLE_MENU VALUES(SEQ_PARK_ADMIN_ROLE_MENU.NEXTVAL,#{roleId},#{menuId},#{state},'',SYSDATE,SYSDATE)
+</insert>
+
+<update id="roleMenuUpdate">
+	UPDATE PARK_ADMIN_ROLE_MENU SET PARM_STATE = #{state} WHERE PARM_PAR_ID = #{roleId} AND PARM_MENU_ID = #{menuId}
+</update>
+	
+</mapper>

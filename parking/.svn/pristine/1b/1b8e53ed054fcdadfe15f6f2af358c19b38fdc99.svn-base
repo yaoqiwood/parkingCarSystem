@@ -1,0 +1,265 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>收支明细</title>
+<link rel="stylesheet" href="3rd/zui/css/zui.min.css" />
+<link rel="stylesheet" href="3rd/zui/css/zui-theme.min.css" />
+<link rel="stylesheet" href="css/mycss.min.css" />
+
+</head>
+
+<body>
+	<div class="col-xs-12 no-padding panel panel-primary">
+		<div class="panel-heading">总收入查看</div>
+
+		<div class="panel-body ">
+
+			<table class="table table-bordered" id="tb">
+				<thead>
+					<tr>
+						<th>总收入</th>
+						<th>总停车数</th>
+						<th>临时用户收入</th>
+						<th>月缴用户收入</th>
+						<th>月缴用户产品包收入</th>
+						<th>自助缴费总收入</th>
+						<th>人工缴费总收入</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="tr">
+						<td>892.4</td>
+						<td>8</td>
+						<td>1480</td>
+						<td>840</td>
+						<td>260</td>
+						<td>32.2</td>
+						<td>20.2</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<!-- <tr>
+						<td colspan="6" align="center">
+							<ul id="myPager" class="pager" data-ride="pager"
+								data-elements="prev_icon,page_of_total_text,next_icon"></ul>
+						</td>
+					</tr> -->
+					<!-- <ul id="myPager" class="pager" data-ride="pager"
+						data-elements="prev_icon,page_of_total_text,next_icon"></ul> -->
+				</tfoot>
+			</table>
+			<p>临时收费--蓝色</p>
+			<p>月卡收费--红色</p>
+			<canvas id="myChart1" width="600" height="300"></canvas>
+			<canvas id="myChart2" width="600" height="300"></canvas>
+			<p>一月套餐--蓝色</p>
+			<p>三月套餐--红色</p>
+			<p>六月套餐--绿色</p>
+			<canvas id="myChart3" width="600" height="300"></canvas>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="3rd/zui/js/zui.min.js"></script>
+<script type="text/javascript"
+	src="3rd/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+<script type="text/javascript" src="3rd/zui/lib/chart/zui.chart.min.js"></script>
+<script>
+	//初始化分页器
+	$('#myPager').pager({
+		page : 1,
+		recPerPage : 5,
+		recTotal : 10
+	});
+	
+	//初始化时间选择器组件
+	// 仅选择日期
+	$(".form-date").datetimepicker({
+		language : "zh-CN",
+		weekStart : 1,
+		todayBtn : 1,
+		autoclose : 1,
+		todayHighlight : 1,
+		startView : 2,
+		minView : 2,
+		forceParse : 0,
+		format : "yyyy-mm-dd"
+	});
+	
+	function formatUnixtimestamp(unixtimestamp) {
+		var unixtimestamp = new Date(unixtimestamp);
+		var year = 1900 + unixtimestamp.getYear();
+		var month = "0" + (unixtimestamp.getMonth() + 1);
+		var date = "0" + unixtimestamp.getDate();
+		var hour = "0" + unixtimestamp.getHours();
+		var minute = "0" + unixtimestamp.getMinutes();
+		var second = "0" + unixtimestamp.getSeconds();
+		return year + "-" + month.substring(month.length - 2, month.length) + "-"
+				+ date.substring(date.length - 2, date.length) + " "
+				+ hour.substring(hour.length - 2, hour.length) + ":"
+				+ minute.substring(minute.length - 2, minute.length) + ":"
+				+ second.substring(second.length - 2, second.length);
+	}
+	
+	
+	
+	//定义搜索变量
+
+	//定义分页变量
+	var start = 1;//开始
+	var end = 5;//结束
+	var count = 0;//一共多少条
+	var currPage = 1;//当前第几页
+	var allPage = 0;//一共多少页
+	var limit = 5;//每页显示多少条
+	//自定义统计变量
+	var casual = 0;
+	var month = 0;
+	//初始化
+	function init() {
+		start = (currPage - 1) * limit + 1;
+		end = currPage * limit;
+		$.ajax({
+			url : "do-amountLog.ajax",
+			type : "POST",
+			data : {
+				
+			},
+			dataType : "json",
+			success : function(data) {
+				console.log(data);
+				//首先清空
+				var arr = $(".tr");
+				for (var i = arr.length - 1; i >= 0; i--) {
+					$(arr[i]).remove();
+				}
+				var sumAmount = data.sumAmount;
+				var countAmount = data.countAmount;
+				var sumCasual = data.sumCasual;
+				var sumMonth = data.sumMonth;
+				var sumTerminal = data.sumTerminal;
+				var sumManual = data.sumManual;
+				var $tb = $("#tb");
+				var $tr = $("<tr class='tr' align='left'></tr>");
+				var $td1 = $("<td></td>");
+				$td1.html(sumAmount);
+				var $td2 = $("<td></td>");
+				$td2.html(countAmount);
+				var $td3 = $("<td></td>");
+				$td3.html(sumCasual);
+				var $td4 = $("<td></td>");
+				$td4.html(sumMonth);
+				var $td5 = $("<td></td>");
+				$td5.html('');
+				var $td6 = $("<td></td>");
+				$td6.html(sumTerminal);
+				var $td7 = $("<td></td>");
+				$td7.html(sumManual);
+				$tr.append($td1);
+				$tr.append($td2);
+				$tr.append($td3);
+				$tr.append($td4);
+				$tr.append($td5);
+				$tr.append($td6);
+				$tr.append($td7);
+				$("#tb").append($tr);
+				//显示page
+				count = c;
+				$('#myPager').data('zui.pager').set(currPage, count, limit);
+				if (logList.length == 0) {
+					alert("暂无数据");
+				} 
+				//
+				/*var page = document.getElementById("page");
+				allPage = c%5 == 0? c/5 : parseInt(c/5+1);
+				page.innerHTML = currPage + "/" +allPage; 
+				if(allPage === 0){
+					page.innerHTML = "1/1";
+				}*/
+				
+			},
+			error : function(msg) {
+				alert("请联系管理员...");
+			}
+		});
+	}
+	
+	// 当分液器被点击的时候 会走的方法
+	$('#myPager').on('onPageChange', function(e, state, oldState) {
+		if (state.page !== oldState.page) {
+			//获取变化后的页数和变化前的页数
+			//				console.log('页码从', oldState.page, '变更为', state.page);
+			currPage = state.page;
+
+			//$('#myPager').data('zui.pager').set(currPage, count, limit);
+			init();
+			//当前页 总数  Limit 
+		}
+	});
+
+	//清空表格内body对象的数据
+//			$("#table tbody").html("");
+	//添加数据到表格内body对象
+//			$("#table tbody").append("");
+
+	//初始化
+	init();
+	
+	var data1 = [{
+		value: 200,
+		color: "#C33430", // 使用颜色名称
+		label: "临时收费"
+	}, {
+		value: 400,
+		color: "#2E4454", // 自定义颜色
+		// highlight: "#FF5A5E", // 自定义高亮颜色
+		label: "月卡收费"
+	}];
+	// 创建环形饼图
+	var myDoughnutChart = $("#myChart1").doughnutChart(data1, {
+		segmentShowStroke: false
+	});
+	
+	var data2 = [{
+		value: 200,
+		color: "#C33430", // 使用颜色名称
+		label: "自助收费"
+	}, {
+		value: 20,
+		color: "#2E4454", // 自定义颜色
+		// highlight: "#FF5A5E", // 自定义高亮颜色
+		label: "人工收费"
+	}];
+	// 创建环形饼图
+	var myDoughnutChart = $("#myChart2").doughnutChart(data2, {
+		segmentShowStroke: false
+	});
+	var data3 = [{
+		value: 250,
+		color: "#2E4454", // 使用颜色名称
+		label: "一月套餐"
+	}, {
+		value: 150,
+		color: "#C33430", // 自定义颜色
+		// highlight: "#FF5A5E", // 自定义高亮颜色
+		label: "三月套餐"
+	}, {
+		value: 50,
+		color: '#5FA2AA',
+		label: "六月套餐"
+	}];
+	// 创建饼图
+	var myPieChart = $("#myChart3").pieChart(data3, options);
+	// 图表配置项，可以留空来使用默认的配置
+	var options = {
+		scaleShowLabels: true, // 展示标签
+	};
+	
+</script>
+
+</html>

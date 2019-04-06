@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.AmountLogMapper">
+	<resultMap type="com.example.bean.AdminAmountLog" id="AdminAmountLogMapper">
+		<result property="adminAmountLogId" column="PAL_ID" />
+		<result property="adminAmountLogPaId" column="PAL_PA_ID" />
+		<result property="adminAmountLogPcNum" column="PAL_PC_NUM" />
+		<result property="adminAmountLogMoney" column="PAL_MONEY" />
+		<result property="adminAmountLogDesc" column="PAL_DESC" />
+		<result property="adminAmountLogState" column="PAL_STATE" />
+		<result property="adminAmountLogMemo" column="PAL_MEMO" />
+		<result property="adminAmountLogCreateTime" column="PAL_CREATE_TIME" />
+	</resultMap>
+
+	<!-- 总收入 -->
+	<select id="sumAmount" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM PARK_AMOUNT_LOG
+	</select>
+	<!-- 总数 -->
+	<select id="countAmount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG
+	</select>
+	<!-- 临时收入 -->
+	<select id="sumCasual" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG A
+		INNER JOIN
+		PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+		WHERE B.PC_PCR_ID = 1)
+	</select>
+	<!-- 月卡收入 -->
+	<select id="sumMonth" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG A
+		INNER JOIN
+		PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+		WHERE B.PC_PCR_ID = 2)
+	</select>
+	<!-- 终端收入 -->
+	<select id="sumTerminal" resultType="java.lang.Integer">
+		SELECT SUM(PML_MONEY) FROM
+		(SELECT * FROM PARK_MACHINE_LOG )
+	</select>
+	<!-- 人工收入 -->
+	<select id="sumManual" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) FROM
+		(SELECT * FROM PARK_AMOUNT_LOG WHERE PAL_PA_ID &gt;
+		0)
+	</select>
+
+	
+	<!-- 收支总数统计 -->
+	<select id="sumAmountLog" resultType="java.lang.Integer">
+		SELECT SUM(PAL_MONEY) AS ACCOUNT FROM PARK_AMOUNT_LOG WHERE PAL_STATE = 1
+		AND PAL_CREATE_TIME BETWEEN TO_DATE(#{startTime},'yyyy-mm-dd hh24:mi:ss') AND TO_DATE(#{endTime},'yyyy-mm-dd
+		hh24:mi:ss')
+	</select>
+
+	<insert id="addAmountLog">
+		INSERT INTO PARK_AMOUNT_LOG
+		VALUES(SEQ_PARK_AMOUNT_LOG.NEXTVAL,#{adminAmountLog.adminAmountLogPaId},#{adminAmountLog.adminAmountLogPcNum},#{adminAmountLog.adminAmountLogMoney},#{adminAmountLog.adminAmountLogDesc},1,NULL,SYSDATE)
+	</insert>
+	
+	<!-- 收入明细 -->
+	<select id="queryIncome" resultMap="incomeMap">
+		SELECT * FROM PARK_AMOUNT_LOG ORDER BY PAL_CREATE_TIME DESC<!--  -->
+	</select>
+	<resultMap type="com.example.bean.AmountLog" id="incomeMap">
+		<result property="amountLogId" column="PAL_ID"/>
+		<result property="adminRoleId" column="PAL_PA_ID"/>
+		<result property="amountLogCarnum" column="PAL_PC_NUM"/>
+		<result property="amountLogMoney" column="PAL_MONEY"/>
+		<result property="amountLogDesc" column="PAL_DESC"/>
+		<result property="amountLogState" column="PAL_STATE"/>
+		<result property="amountLogMemo" column="PAL_MEMO"/>
+		<result property="amountLogDescCreateTime" column="PAL_CREATE_TIME"/>
+
+	</resultMap>
+	<!-- 明细分页 -->
+	<select id="countIncome" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG
+	</select>
+	<!-- 临时月缴用户 -->
+	<select id="queryIncomeMonth" resultMap="incomeMonthDtoMap">
+		SELECT * FROM PARK_AMOUNT_LOG A
+		INNER JOIN PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+	</select>
+	<resultMap type="com.example.bean.AmountLog" id="incomeMonthResultMapper">
+		<result property="amountLogId" column="PAL_ID" />
+		<result property="adminRoleId" column="PAL_PA_ID" />
+		<result property="amountLogCarnum" column="PAL_PC_NUM" />
+		<result property="amountLogMoney" column="PAL_MONEY" />
+		<result property="amountLogDesc" column="PAL_DESC" />
+		<result property="amountLogState" column="PAL_STATE" />
+		<result property="amountLogMemo" column="PAL_MEMO" />
+		<result property="amountLogDescCreateTime" column="PAL_CREATE_TIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.AmountLogDto" id="incomeMonthDtoMap" extends="incomeMonthResultMapper" >
+		<result property="carnumId" column="PC_ID" />
+		<result property="carnumRoleId" column="PC_PCR_ID" />
+		<result property="carNum" column="PC_NUM" />
+		<result property="carnumPhotoUrl" column="PC_PHOTO_URL" />
+		<result property="carnumState" column="PC_STATE" />
+		<result property="carnumMemo" column="PC_MEMO" />
+		<result property="carnumCreateTime" column="PC_CREATE_TIME" />
+		<result property="carnumUpdateTime" column="PC_UPDATE_TIME" />
+	</resultMap>
+	<!-- 临时月缴用户分页 -->
+	<select id="countIncomeMonth" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG A
+		INNER JOIN PARK_CARNUM B ON A.PAL_PC_NUM = b.pc_num
+	</select>
+	
+	<!-- 月缴产品用户 -->
+	<select id="queryIncomeProduct" resultMap="incomeProductDtoMap">
+		SELECT A.*,B.PC_NUM,C.PMP_NAME,C.PMP_MONTH,C.PMP_MONEY FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID
+		INNER JOIN PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID
+	</select>
+	<resultMap type="com.example.bean.CarService" id="incomeProductResultMapper">
+		<result property="carServiceId" column="PCS_ID" />
+		<result property="carServiceCarnumId" column="PCS_PC_ID" />
+		<result property="carServicePmpId" column="PCS_PMP_ID" />
+		<result property="carServiceState" column="PCS_STATE" />
+		<result property="carServiceMemo" column="PCS_MEMO" />
+		<result property="carServiceCreateTime" column="PCS_CREATE_TIME" />
+		<result property="carServiceUpdateTime" column="PCS_UPDATE_TIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.CarServiceDto" id="incomeProductDtoMap" extends="incomeProductResultMapper" >
+		<result property="carNum" column="PC_NUM" />
+		<result property="monthProduct" column="PMP_NAME" />
+		<result property="monthProductMonth" column="PMP_MONTH" />
+		<result property="monthProductMoney" column="PMP_MONEY" />
+	</resultMap>
+	<!-- 月缴产品分页 -->
+	<select id="countIncomeProduct" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_CAR_SERVICE A
+		INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID
+		INNER JOIN PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID 
+	</select>
+	<!-- 月缴产品统计 -->
+    <select id="sumProduct" resultType="java.lang.Integer">
+		SELECT SUM(PMP_MONEY) FROM PARK_CAR_SERVICE A
+	    INNER JOIN PARK_CARNUM B ON A.PCS_PC_ID = B.PC_ID
+	    INNER JOIN PARK_MONTH_PRODUCT C ON A.PCS_PMP_ID = C.PMP_ID
+	    WHERE PMP_NAME = #{name} 
+	</select>
+	
+	<!-- 自助终端信息 -->
+	<select id="queryIncomeMechine" resultMap="incomeMechineDtoMap">
+		SELECT * FROM PARK_MACHINE_LOG A 
+		INNER JOIN PARK_SELF_MACHINE B ON A.PML_PSM_ID = B.PSM_ID
+	</select>
+	<resultMap type="com.example.bean.MechineLog" id="incomeMechineResultMapper">
+		<result property="mechineLogId" column="PML_ID" />
+		<result property="selfMechineId" column="PML_PSM_ID" />
+		<result property="carNum" column="PML_PC_NUM" />
+		<result property="mechineLogMoney" column="PML_MONEY" />
+		<result property="mechineLogDesc" column="PML_DESC" />
+		<result property="mechineLogState" column="PML_STATE" />
+		<result property="mechineLogMemo" column="PML_MEMO" />
+		<result property="mechineLogCreateTime" column="PML_CREATE_TIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.MechineLogDto" id="incomeMechineDtoMap" extends="incomeMechineResultMapper" >
+		<result property="selfMechineNum" column="PSM_NUM" />
+	</resultMap>
+	<!-- 自助终端分页 -->
+	<select id="countIncomeMechine" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_MACHINE_LOG A 
+		INNER JOIN PARK_SELF_MACHINE B ON A.PML_PSM_ID = B.PSM_ID
+	</select>
+	
+	<!-- 月缴产品统计 -->
+    <select id="sumMechine" resultType="java.lang.Integer">
+    	SELECT SUM(PML_MONEY) FROM (
+		SELECT * FROM PARK_MACHINE_LOG A 
+		INNER JOIN PARK_SELF_MACHINE B ON A.PML_PSM_ID = B.PSM_ID
+		WHERE PML_PSM_ID = #{id} )
+	</select>
+	<!-- 收费人员统计 -->
+	<select id="sumIncomeManual" resultMap="incomeManualMap">
+		SELECT PAL_PA_ID,PA_NAME,SUM(PAL_MONEY) AS SUM_MONEY FROM PARK_AMOUNT_LOG A
+		INNER JOIN PARK_ADMIN B ON a.pal_pa_id = b.pa_id
+		GROUP BY PAL_PA_ID,PA_NAME
+	</select>
+	<resultMap type="com.example.bean.SumManual" id="incomeManualMap">
+		<result property="adminId" column="PAL_PA_ID" />
+		<result property="adminName" column="PA_NAME" />
+		<result property="sumMoney" column="SUM_MONEY" />
+	</resultMap>
+	
+	<!-- 收费人员查询 -->
+	<select id="queryIncomeManual" resultMap="incomeManualDtoMap">
+		SELECT A.*,B.PA_NAME FROM PARK_AMOUNT_LOG A
+		INNER JOIN PARK_ADMIN B ON A.PAL_PA_ID = B.PA_ID
+	</select>
+	<resultMap type="com.example.bean.AmountLog" id="incomeManualResultMapper">
+		<result property="amountLogId" column="PAL_ID" />
+		<result property="adminRoleId" column="PAL_PA_ID" />
+		<result property="amountLogCarnum" column="PAL_PC_NUM" />
+		<result property="amountLogMoney" column="PAL_MONEY" />
+		<result property="amountLogDesc" column="PAL_DESC" />
+		<result property="amountLogState" column="PAL_STATE" />
+		<result property="amountLogMemo" column="PAL_MEMO" />
+		<result property="amountLogDescCreateTime" column="PAL_CREATE_TIME" />
+	</resultMap>
+	<resultMap type="com.example.dto.AmountLogDto" id="incomeManualDtoMap" extends="incomeManualResultMapper" >
+		<result property="adminName" column="PA_NAME" />
+	</resultMap>
+	<!-- 收费人员分页 -->
+	<select id="countIncomeManual" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM PARK_AMOUNT_LOG A
+		INNER JOIN PARK_ADMIN B ON A.PAL_PA_ID = B.PA_ID
+	</select>
+</mapper>

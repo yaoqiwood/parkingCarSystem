@@ -1,0 +1,21 @@
+/**
+ * 
+ */
+package com.example.controller;
+
+import org.springframework.stereotype.Controller;
+
+/**
+ * <p>Title:CarServiceController</p>
+ * <p>Description:车服务</p>
+ * <p>DevelopTools:Eclipse_x64_v4.7.1</p>
+ * <p>DevelopSystem : macOS Sierra 10.12.1</p>
+ * <p>Company : org.xiongyi</p>
+ * @author:XiongYi
+ * @date:2019年2月25日 上午6:07:24
+ * @version:12.0.0
+ */
+@Controller
+public class CarServiceController {
+
+}

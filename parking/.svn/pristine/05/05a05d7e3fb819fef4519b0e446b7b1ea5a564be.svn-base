@@ -1,0 +1,18 @@
+package com.example.dao;
+
+
+public interface AmountLogMapper {
+	/*总收入*/
+	Integer sumAmount();
+	/*总停车数*/
+	Integer countAmount();
+	/*临时收入*/
+	Integer sumCasual();
+	/*月卡收入*/
+	Integer sumMonth();
+	/*终端收入*/
+	Integer sumTerminal();
+	/*人工收入*/
+	Integer sumManual();
+	
+}

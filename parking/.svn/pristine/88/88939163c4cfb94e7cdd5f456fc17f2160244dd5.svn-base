@@ -1,0 +1,12 @@
+package com.example.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.example.bean.Place;
+
+public interface PlaceMapper {
+	
+	Place searchCar(@Param("name") String name);
+
+	Integer updateCar(@Param("id") Integer id);
+}
